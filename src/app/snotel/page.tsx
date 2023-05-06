@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { QueryResultRow } from "pg";
-import { BaseMap } from "~/components/maps";
+// import { BaseMap } from "~/components/maps";
 import { postgresql } from "~/server/db";
 
 import {
@@ -78,7 +78,6 @@ export default async function SnotelListPage() {
   return (
     <div>
       <h1>Snotel</h1>
-      <BaseMap containerProps={{ center: [46.87, -113.99], zoom: 9 }} />
       {snotels.map((snotel) => (
         <SnotelLink key={snotel.id} snotel={snotel} />
       ))}
