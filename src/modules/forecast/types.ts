@@ -1,4 +1,7 @@
-import type { forecast, forecastDiscussion } from "~/utils/test";
+import type {
+  forecast,
+  forecastDiscussion,
+} from "~/modules/forecast/test-data";
 
 export type NoaaMetadata = (typeof forecast)["metadata"];
 

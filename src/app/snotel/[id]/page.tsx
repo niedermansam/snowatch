@@ -1,7 +1,7 @@
 import {
   SnotelSnowGraph,
   SnotelTemperatureGraph,
-} from "~/components/graphs/Snotel";
+} from "~/modules/snotel/components/SnotelGraph";
 import { Snotel } from "~/modules/snotel/data";
 
 export default async function SnotelPage({

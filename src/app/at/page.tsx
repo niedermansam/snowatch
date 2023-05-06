@@ -1,5 +1,5 @@
 import SnowForecastGraph from "~/modules/forecast/components/ForecastSnowGraph";
-import Forecast,{  type  FullForecastInstance } from "~/modules/forecast";
+import Forecast, { type FullForecastInstance } from "~/modules/forecast";
 
 function ForecastDetailsItem({
   forecast,

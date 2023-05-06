@@ -1,5 +1,5 @@
-import { testMetadata, testForecast, testHourlyForecast } from "../../modules/forecast/testData";
-import { testDiscussion, testDiscussionMetadata } from "../../modules/forecast/testDiscussion";
+import { testMetadata, testForecast, testHourlyForecast } from "./testData";
+import { testDiscussion, testDiscussionMetadata } from "./testDiscussion";
 
 export const forecast = {
   metadata: testMetadata,
@@ -10,4 +10,4 @@ export const forecast = {
 export const forecastDiscussion = {
   metadata: testDiscussionMetadata,
   discussion: testDiscussion,
-}
+};
