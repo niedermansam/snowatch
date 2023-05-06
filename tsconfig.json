@@ -40,7 +40,7 @@
     "**/*.cjs",
     "**/*.mjs",
     ".next/types/**/*.ts"
-, "src/app/layout.tsx"  ],
+, "src/app/layout.tsx", "src/app/snotel/near/[geohash]"  ],
   "exclude": [
     "node_modules"
   ]

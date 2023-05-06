@@ -71,15 +71,19 @@ function SnotelLink({ snotel }: { snotel: SnotelDistance }) {
   );
 }
 
-export default async function SnotelListPage() {
-  const { lat, lon } = Geohash.decode("c2q2h");
+export default async function SnotelListPage({
+  params,
+}: {
+  params: { geohash: string };
+}) {
+  const { lat, lon } = Geohash.decode(params.geohash);
 
   const snotels = await getClosestSnotels(lat, lon, 5, 5000);
 
   return (
     <div>
       <h1>Snotel</h1>
-      <Map containerProps={{ center: [46.87, -113.99], zoom: 13 }} />
+      <Map containerProps={{ center: [lat, lon], zoom: 8 }} />
       {snotels.map((snotel) => (
         <SnotelLink key={snotel.id} snotel={snotel} />
       ))}
