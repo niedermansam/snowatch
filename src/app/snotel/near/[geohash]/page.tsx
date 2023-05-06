@@ -7,7 +7,11 @@ const Map = dynamic(() => import("~/modules/snotel/components/SnotelMap"), {
   ssr: false,
 });
 
-import { FEET_TO_METERS, METERS_TO_FEET, METERS_TO_MILES } from "~/utils/units";
+import {
+  FEET_TO_METERS,
+  METERS_TO_FEET,
+  METERS_TO_MILES,
+} from "~/common/utils/units";
 import Geohash from "latlon-geohash";
 
 interface SnotelDistance extends QueryResultRow {

@@ -4,8 +4,7 @@ import type {
   NoaaMetadata,
   NoaaForecastDiscussion,
 } from "~/modules/forecast/types";
-import { METERS_TO_FEET } from "../../utils/units";
-
+import { METERS_TO_FEET } from "../../common/utils/units";
 
 const parseSnowData = (data: NoaaForecast["properties"]["periods"][number]) => {
   const outputObject = {
@@ -135,7 +134,7 @@ class ForecastDiscussion {
     this.issuedAt = new Date(data.issuanceTime);
   }
 
-/*   private getCleanDiscussion(discussion: string) {
+  /*   private getCleanDiscussion(discussion: string) {
     const justTheDiscussion = discussion.match(/DISCUSSION...(.*)AVIATION/);
   } */
 }
