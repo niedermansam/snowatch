@@ -1,5 +1,5 @@
 "use client";
-import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer } from "react-leaflet";
 
 type ContainerProps = Parameters<typeof MapContainer>[0]
 

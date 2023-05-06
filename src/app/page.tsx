@@ -1,8 +1,6 @@
 
 import { type NextPage } from "next";
-import Head from "next/head";
-import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/react";
+// import { signIn, signOut, useSession } from "next-auth/react";
 
 import type { Metadata } from "next";
 
@@ -24,7 +22,7 @@ const Home: NextPage = () => {
 
 export default Home;
 
-const AuthShowcase: React.FC = () => {
+/* const AuthShowcase: React.FC = () => {
   const { data: sessionData } = useSession();
 
 
@@ -43,3 +41,4 @@ const AuthShowcase: React.FC = () => {
     </div>
   );
 };
+ */

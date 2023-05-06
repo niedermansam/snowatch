@@ -1,4 +1,3 @@
-import { SnotelSnowGraph } from "~/components/graphs/Snotel";
 
 interface SnotelData {
   date: Date | null;

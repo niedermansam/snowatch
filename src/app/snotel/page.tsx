@@ -1,27 +1,13 @@
 import Link from "next/link";
-import { QueryResultRow } from "pg";
+import type { QueryResultRow } from "pg";
 import { BaseMap } from "~/components/maps";
-import { postgresql, prisma } from "~/server/db";
-import { Snotel } from "~/modules/snotel/data";
+import { postgresql } from "~/server/db";
+
 import {
   FEET_TO_METERS,
-  FEET_TO_MILES,
   METERS_TO_FEET,
   METERS_TO_MILES,
 } from "~/utils/units";
-
-const saveSnotel = async (
-  id: number,
-  lat: number,
-  lon: number,
-  elevation: number,
-  name: string
-) => {
-  await prisma.$queryRawUnsafe(`
-    INSERT INTO snotel (id, coords, elevation, name)
-    VALUES ('${id}',ST_GeomFromText('POINT(${lat} ${lon})', 4326), ${elevation}, '${name}');
-    `);
-};
 
 interface SnotelDistance extends QueryResultRow {
   id: string;
@@ -87,12 +73,7 @@ function SnotelLink({ snotel }: { snotel: SnotelDistance }) {
 export default async function SnotelListPage() {
   const snotels = await getClosestSnotels(46.87, -113.99, 5, 5000);
 
-  const snotelId = "901:MT:SNTL"; // snotels[0]?.id as string;  // "916:MT:SNTL";
 
-  const snotel = new Snotel(snotelId);
-
-  await snotel.getWaterYearDailyData();
-  await snotel.getHourlyData();
 
   return (
     <div>
