@@ -42,7 +42,7 @@ function ClickHandler({_setCenter}: {_setCenter: (center: [number, number]) => v
 
 interface CustomContainerProps extends ContainerProps {
   center: [number, number];
-  zoom: number;
+  zoom?: number;
 }
 
 type MapProps = {
@@ -52,7 +52,7 @@ type MapProps = {
 
 export default function BaseMap({ containerProps, children }: MapProps) {
   const [center, setCenter] = useState(containerProps.center);
-  const [zoom] = useState(containerProps.zoom);
+  const [zoom] = useState(8);
   return (
     <MapContainer
       style={{

@@ -169,7 +169,7 @@ export default async function SnotelListPage({
           </span>
         </p>
       </div>
-      <Map containerProps={{ center: [lat, lon], zoom: 8 }} />
+      <Map containerProps={{ center: [lat, lon] }} />
       <ElevationSelector geohash={params.geohash} />
         <SnotelLinkSection snotels={snotels} />
     </div>
