@@ -13,12 +13,19 @@ import {
   METERS_TO_MILES,
 } from "~/common/utils/units";
 import Geohash from "latlon-geohash";
+import { Snotel } from "~/modules/snotel/data";
+import {
+  SnotelSnowGraphWithoutAxis,
+  SnotelTemperatureGraphWithoutAxis,
+} from "~/modules/snotel/components/SnotelGraph";
+import { ElevationSelector } from "~/modules/snotel/components/ElevationSelector";
 
 interface SnotelDistance extends QueryResultRow {
   id: string;
   name: string;
   dist: number;
   bearing: number;
+  state: string;
 }
 
 function translateBearing(bearing: number) {
@@ -45,7 +52,7 @@ const getClosestSnotels = async (
   minElevation: number
 ) => {
   const snotels = await postgresql.query<SnotelDistance>(`
-SELECT id, name, elevation, lat, lon,
+SELECT id, name, elevation, lat, lon, state,
 coords::geography <-> ST_SetSRID(ST_MakePoint( ${lon}, ${lat} ),4326)::geography AS dist,
 ST_Azimuth( ST_SetSRID(ST_MakePoint( ${lon}, ${lat} ),4326)::geography, coords::geography )/(2*pi())*360 AS bearing
 FROM snotel WHERE elevation > ${FEET_TO_METERS * minElevation}
@@ -55,42 +62,82 @@ ORDER BY dist LIMIT ${n};
   return snotels.rows;
 };
 
-function SnotelLink({ snotel }: { snotel: SnotelDistance }) {
+async function SnotelLink({ snotel }: { snotel: SnotelDistance }) {
   const distanceInMiles = (snotel.dist * METERS_TO_MILES).toFixed(2);
 
+  const snotelData = new Snotel(snotel.id);
+
+  await snotelData.getWaterYearDailyData();
+
+  const snowData = snotelData.getDailySnowGraphData();
+  const tempData = snotelData.getDailyTemperatureData();
+
   return (
-    <div className="my-6">
-      {" "}
-      <Link key={snotel.id} href={`/snotel/${snotel.id}`}>
-        <h2>{snotel.name} </h2>
-      </Link>
-      <p>
-        {distanceInMiles} miles to the {translateBearing(snotel.bearing)}{" "}
-      </p>
-      <p>
-        lat: {snotel.lat} lon: {snotel.lon}
-      </p>
-      <p>{Math.floor(snotel.elevation * METERS_TO_FEET)} ft.</p>
+    <div className="my-6 flex min-h-fit">
+      <div className="p-2">
+        <Link key={snotel.id} href={`/snotel/${snotel.id}`}>
+          <h2>
+            {snotel.name}, {snotel.state}{" "}
+          </h2>
+        </Link>
+        <p>
+          {distanceInMiles} miles {translateBearing(snotel.bearing)}{" "}
+        </p>
+        <p>
+          lat: {snotel.lat} lon: {snotel.lon}
+        </p>
+        <p>{Math.floor(snotel.elevation * METERS_TO_FEET)} ft.</p>
+      </div>
+      <div className="block " style={{ height: 200, width: "40%" }}>
+        <h3 className="px-3 pb-2 text-xs font-bold">Snow Depth</h3>
+        <SnotelSnowGraphWithoutAxis
+          snowDepth={snowData.snowDepths}
+          height={150}
+        />
+      </div>
+      <div className="block " style={{ height: 200, width: "40%" }}>
+        <h3 className="px-3 pb-2 text-xs font-bold">Temperature</h3>
+        <SnotelTemperatureGraphWithoutAxis
+          high={tempData.high}
+          low={tempData.low}
+          avg={tempData.avg}
+          height={150}
+        />
+      </div>
+    </div>
+  );
+}
+
+function SnotelLinkSection({ snotels }: { snotels: SnotelDistance[] }) {
+  return (
+    <div>
+      {snotels.map((snotel) => (
+        <div key={snotel.id}>
+          {/* @ts-expect-error Async Server Component */}
+          <SnotelLink snotel={snotel} />
+        </div>
+      ))}
     </div>
   );
 }
 
 export default async function SnotelListPage({
   params,
+  searchParams,
 }: {
   params: { geohash: string };
+  searchParams: { elev: number };
 }) {
-  const { lat, lon } = Geohash.decode(params.geohash);
+  const { lat, lon } = Geohash.decode(decodeURI(params.geohash).trim());
 
-  const snotels = await getClosestSnotels(lat, lon, 5, 5000);
+  const snotels = await getClosestSnotels(lat, lon, 5, searchParams?.elev || 0);
 
   return (
     <div>
       <h1>Snotel</h1>
       <Map containerProps={{ center: [lat, lon], zoom: 8 }} />
-      {snotels.map((snotel) => (
-        <SnotelLink key={snotel.id} snotel={snotel} />
-      ))}
+      <ElevationSelector geohash={params.geohash} />
+      <SnotelLinkSection snotels={snotels} />
     </div>
   );
 }

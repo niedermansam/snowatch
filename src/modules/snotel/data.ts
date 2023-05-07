@@ -99,6 +99,26 @@ export class Snotel {
     this.id = id;
   }
 
+  private get30DayUrl() {
+    return `https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customSingleStationReport/daily/${this.id}%7Cid=%22%22%7Cname/-30,0/WTEQ::value,WTEQ::delta,SNWD::value,SNWD::delta,TAVG::value,TMIN::value,TMAX::value,SNDN::value?fitToScreen=false`;
+  }
+
+  async get30DayData() {
+    const url = this.get30DayUrl();
+    const response = await fetch(url, {
+      next: {
+        revalidate: 60 * 30,
+      },
+    });
+    const data = await response.text();
+    const json = processSnotelCSV(data);
+
+    if (!this.daily) this.daily = json;
+
+    return json;
+  }
+
+
   private getWaterYearDailyUrl() {
     return `https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customSingleStationReport/daily/${this.id}%7Cid=%22%22%7Cname/CurrentWY,CurrentWYEnd/WTEQ::value,WTEQ::delta,SNWD::value,SNWD::delta,TAVG::value,TMIN::value,TMAX::value,SNDN::value?fitToScreen=false`;
   }

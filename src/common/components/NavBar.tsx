@@ -37,9 +37,8 @@ export function NavBar() {
 
             >
                 <div className="text-sm lg:flex-grow">
-                    <Link href="/about"><span className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-white mr-4">About</span></Link>
-                    <Link href="/contact"><span className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-white mr-4">Contact</span></Link>
-                    <Link href="/login"><span className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-white mr-4">Login</span></Link>
+                    <Link href="/at"><span className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-white mr-4">Forecast</span></Link>
+                    <Link href="/snotel"><span className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-white mr-4">Snotel</span></Link>
                 </div>
             </div>
       </nav>
