@@ -17,7 +17,7 @@ import Geohash from "latlon-geohash";
 import { useState } from "react";
 type ContainerProps = Parameters<typeof MapContainer>[0];
 
-function ClickHandler({setCenter}: {setCenter: (center: [number, number]) => void}) {
+function ClickHandler({_setCenter}: {setCenter: (center: [number, number]) => void}) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -32,7 +32,7 @@ function ClickHandler({setCenter}: {setCenter: (center: [number, number]) => voi
       
       map.panTo([e.latlng.lat, e.latlng.lng]);
 
-     // setCenter([e.latlng.lat, e.latlng.lng]);
+     // _setCenter([e.latlng.lat, e.latlng.lng]);
 
        setTimeout(() => router.replace(`/snotel/near/${geohash}` + elevationString), 20) ;
     },
