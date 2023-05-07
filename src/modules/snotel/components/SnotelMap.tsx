@@ -17,7 +17,7 @@ import Geohash from "latlon-geohash";
 import { useState } from "react";
 type ContainerProps = Parameters<typeof MapContainer>[0];
 
-function ClickHandler({_setCenter}: {setCenter: (center: [number, number]) => void}) {
+function ClickHandler({_setCenter}: {_setCenter: (center: [number, number]) => void}) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -68,7 +68,7 @@ export default function BaseMap({ containerProps, children }: MapProps) {
         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
       />
-      <ClickHandler setCenter={setCenter} />
+      <ClickHandler _setCenter={setCenter} />
       <Marker position={center}>
         <Popup>
           Current Location
