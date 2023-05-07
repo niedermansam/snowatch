@@ -5,7 +5,7 @@ import { useState } from "react";
 export function NavBar() {
     const [isOpen, setIsOpen] = useState(false);
   return (
-      <nav className="flex flex-wrap items-center justify-between bg-gradient-to-r from-[#2e026d] to-[#15162c] p-6">
+      <nav className="flex flex-wrap items-center justify-between bg-gradient-to-r from-[#2e026d] to-[#15162c] px-6 py-3">
         <div className="mr-6 flex flex-shrink-0 items-center text-white">
           <Link href="/"><span className="text-xl font-semibold tracking-tight">SnoWatch</span></Link>
 
@@ -37,8 +37,8 @@ export function NavBar() {
 
             >
                 <div className="text-sm lg:flex-grow">
-                    <Link href="/at"><span className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-white mr-4">Forecast</span></Link>
-                    <Link href="/snotel"><span className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-white mr-4">Snotel</span></Link>
+                    <Link href="/at"><span className="block mt-2 lg:inline-block lg:mt-0 text-white hover:text-white mr-4">Forecast</span></Link>
+                    <Link href="/snotel"><span className="block mt-2 lg:inline-block lg:mt-0 text-white hover:text-white mr-4">Snotel</span></Link>
                 </div>
             </div>
       </nav>
