@@ -74,7 +74,7 @@ async function SnotelLink({ snotel }: { snotel: SnotelDistance }) {
 
   return (
     <div className="my-6 flex min-h-fit">
-      <div className="p-2">
+      <div className="p-2 flex flex-col">
         <Link key={snotel.id} href={`/snotel/${snotel.id}`}>
           <h2>
             {snotel.name}, {snotel.state}{" "}
@@ -83,10 +83,13 @@ async function SnotelLink({ snotel }: { snotel: SnotelDistance }) {
         <p>
           {distanceInMiles} miles {translateBearing(snotel.bearing)}{" "}
         </p>
-        <p>
-          lat: {snotel.lat} lon: {snotel.lon}
-        </p>
         <p>{Math.floor(snotel.elevation * METERS_TO_FEET)} ft.</p>
+        <Link
+          href={`/snotel/${snotel.id}`}
+          className=" mt-6 rounded bg-indigo-700 p-2 font-bold text-white"
+        >
+          More Info
+        </Link>
       </div>
       <div className="block " style={{ height: 200, width: "40%" }}>
         <h3 className="px-3 pb-2 text-xs font-bold">Snow Depth</h3>
@@ -121,6 +124,26 @@ function SnotelLinkSection({ snotels }: { snotels: SnotelDistance[] }) {
   );
 }
 
+const decodeLatitude = (lat: number) => {
+  const latDegrees = Math.floor(Math.abs(lat));
+  const latMinutes = Math.floor((Math.abs(lat) - latDegrees) * 60);
+  const latSeconds = Math.floor(
+    ((Math.abs(lat) - latDegrees) * 60 - latMinutes) * 60
+  );
+
+  return `${latDegrees}°${latMinutes}'${latSeconds}" ${lat > 0 ? "N" : "S"}`;
+};
+
+const decodeLongitude = (lon: number) => {
+  const lonDegrees = Math.floor(Math.abs(lon));
+  const lonMinutes = Math.floor((Math.abs(lon) - lonDegrees) * 60);
+  const lonSeconds = Math.floor(
+    ((Math.abs(lon) - lonDegrees) * 60 - lonMinutes) * 60
+  );
+
+  return `${lonDegrees}°${lonMinutes}'${lonSeconds}" ${lon > 0 ? "E" : "W"}`;
+};
+
 export default async function SnotelListPage({
   params,
   searchParams,
@@ -134,7 +157,15 @@ export default async function SnotelListPage({
 
   return (
     <div>
-      <h1>Snotel</h1>
+      <div className="flex items-end bg-indigo-900 px-6 py-2 text-white">
+        <h1 className=" mr-2 text-xl font-bold">Snotel</h1>
+        <p className="font-light">
+          near{" "}
+          <span className="text-xs">
+            {decodeLatitude(lat)}, {decodeLongitude(lon)}
+          </span>
+        </p>
+      </div>
       <Map containerProps={{ center: [lat, lon], zoom: 8 }} />
       <ElevationSelector geohash={params.geohash} />
       <SnotelLinkSection snotels={snotels} />
