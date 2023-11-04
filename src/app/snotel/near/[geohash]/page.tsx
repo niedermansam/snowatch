@@ -95,7 +95,7 @@ async function SnotelLink({ snotel }: { snotel: SnotelDistance }) {
         <div className="block " style={{ height: 200, width: "40%" }}>
           <h3 className="px-3 pb-2 text-xs font-bold">Snow Depth</h3>
           <SnotelSnowGraphWithoutAxis
-            snowDepth={snowData.snowDepths}
+            snowDepth={snowData.snowDepth}
             height={150}
           />
         </div>
@@ -118,7 +118,6 @@ function SnotelLinkSection({ snotels }: { snotels: SnotelDistance[] }) {
       {snotels.map((snotel) => (
         <div key={snotel.id}>
     <Suspense fallback={<p>loading...</p>}>
-          {/* @ts-expect-error Async Server Component */}
           <SnotelLink snotel={snotel} />
           </Suspense>
         </div>

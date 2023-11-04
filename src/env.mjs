@@ -23,11 +23,11 @@ export const env = createEnv({
     // Add `.min(1) on ID and SECRET if you want to make sure they're not empty
     // DISCORD_CLIENT_ID: z.string(),
     // DISCORD_CLIENT_SECRET: z.string(),
-    PGSQL_HOST: z.string(),
-    PGSQL_PORT: z.string(),
-    PGSQL_USER: z.string(),
-    PGSQL_PASSWORD: z.string(),
-    PGSQL_DATABASE: z.string(),
+    // PGSQL_HOST: z.string(),
+    // PGSQL_PORT: z.string(),
+    // PGSQL_USER: z.string(),
+    // PGSQL_PASSWORD: z.string(),
+    // PGSQL_DATABASE: z.string(),
 
   },
 
@@ -51,11 +51,11 @@ export const env = createEnv({
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     // DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID,
     // DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
-    PGSQL_HOST: process.env.PGSQL_HOST,
-    PGSQL_PORT: process.env.PGSQL_PORT,
-    PGSQL_USER: process.env.PGSQL_USER,
-    PGSQL_PASSWORD: process.env.PGSQL_PASSWORD,
-    PGSQL_DATABASE: process.env.PGSQL_DATABASE,
+    // PGSQL_HOST: process.env.PGSQL_HOST,
+    // PGSQL_PORT: process.env.PGSQL_PORT,
+    // PGSQL_USER: process.env.PGSQL_USER,
+    // PGSQL_PASSWORD: process.env.PGSQL_PASSWORD,
+    // PGSQL_DATABASE: process.env.PGSQL_DATABASE,
     
   },
 });
