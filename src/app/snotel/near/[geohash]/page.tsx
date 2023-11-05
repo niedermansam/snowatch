@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { QueryResultRow } from "pg";
 import dynamic from "next/dynamic";
-import { postgresql } from "~/server/db";
+import { db } from "~/server/db";
 
 const Map = dynamic(() => import("~/modules/snotel/components/SnotelMap"), {
   ssr: false,
@@ -52,15 +52,15 @@ const getClosestSnotels = async (
   n: number,
   minElevation: number
 ) => {
-  const snotels = await postgresql.query<SnotelDistance>(`
+  const snotels = await db.$queryRaw<SnotelDistance[]>`
 SELECT id, name, elevation, lat, lon, state,
 coords::geography <-> ST_SetSRID(ST_MakePoint( ${lon}, ${lat} ),4326)::geography AS dist,
 ST_Azimuth( ST_SetSRID(ST_MakePoint( ${lon}, ${lat} ),4326)::geography, coords::geography )/(2*pi())*360 AS bearing
 FROM snotel WHERE elevation > ${FEET_TO_METERS * minElevation}
 ORDER BY dist LIMIT ${n};
-    `);
+    `;
 
-  return snotels.rows;
+  return snotels;
 };
 
 async function SnotelLink({ snotel }: { snotel: SnotelDistance }) {

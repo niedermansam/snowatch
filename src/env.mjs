@@ -29,6 +29,10 @@ export const env = createEnv({
     // PGSQL_PASSWORD: z.string(),
     // PGSQL_DATABASE: z.string(),
 
+    DATABASE_HOST: z.string(),
+    DATABASE_PASSWORD: z.string(),
+    DATABASE_USERNAME: z.string(),
+
   },
 
   /**
@@ -49,6 +53,9 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+    DATABASE_HOST: process.env.DATABASE_HOST,
+    DATABASE_PASSWORD: process.env.DATABASE_PASSWORD,
+    DATABASE_USERNAME: process.env.DATABASE_USERNAME,
     // DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID,
     // DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
     // PGSQL_HOST: process.env.PGSQL_HOST,

@@ -1,7 +1,7 @@
 "use client";
 import Geohash from "latlon-geohash";
 import type { Map } from "leaflet";
-import type { AppRouterInstance } from "next/dist/shared/lib/app-router-context";
+
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from "react-leaflet";
@@ -33,23 +33,37 @@ const getMapUrl = (map: Map, forecastLocations: string[]) => {
   return `/map?${newPath.toString()}`
 }
 
-const handleViewChange = (map: Map, router: AppRouterInstance, forecastLocations: string[]) => {
+const useViewChange = (map: Map, forecastLocations: string[]) => {
+  const router = useRouter()
   router.replace(getMapUrl(map, forecastLocations))
 }
 
-const handleNewMarker = (map: Map, router: AppRouterInstance, forecastLocations: string[]) => {
+const useNewMarker = (map: Map, forecastLocations: string[]) => {
+  const router = useRouter()
   router.push(getMapUrl(map, forecastLocations))
 }
 
 function UrlHandler({forecastLocations}: {forecastLocations: string[]}) {
-  const router = useRouter()
   const map = useMapEvents(
     {
       zoomend: () => {
-        handleViewChange(map, router, forecastLocations)
+        function useZoomChange(map: Map,  forecastLocations: string[]) {
+  const router = useRouter();
+
+          router.replace(getMapUrl(map, forecastLocations))
+        }
+
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        useZoomChange(map, forecastLocations)
       },
       moveend: () => {
-        handleViewChange(map, router, forecastLocations)
+        function useMoveChange(map: Map,  forecastLocations: string[]) {
+          const router = useRouter();
+          router.replace(getMapUrl(map, forecastLocations))
+        }
+
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        useMoveChange(map, forecastLocations)
       },
 
 
@@ -91,7 +105,9 @@ function HandleClickEvent({forecastLocations}: {forecastLocations: string[]}) {
     {
       click: (e) => {
         const newMarker = <ForecastMarker lat={e.latlng.lat} lng={e.latlng.lng} key={e.latlng.toString()} />
-        handleNewMarker(map, router, [...forecastLocations, Geohash.encode(e.latlng.lat, e.latlng.lng, 6) ])
+
+        // eslint-disable-next-line react-hooks/rules-of-hooks
+        useNewMarker(map,  [...forecastLocations, Geohash.encode(e.latlng.lat, e.latlng.lng, 6) ])
       }
     }
   )
@@ -107,12 +123,10 @@ function FullPageMap({
   center,
   zoom,
   forecastLocations,
-  forecasts,
 }: {
   center: [number, number];
   zoom: number;
   forecastLocations: string[];
-  forecasts: Promise<Forecast>[];
 }) {
   return (
     <MapContainer

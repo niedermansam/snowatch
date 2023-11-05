@@ -162,7 +162,7 @@ export class Snotel {
     const data = await response.text();
     const json = processSnotelCSV(data);
 
-    console.log(json);
+    // console.log(json);
 
     this.daily = json;
     return json;
