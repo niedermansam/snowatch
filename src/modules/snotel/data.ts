@@ -1,4 +1,3 @@
-
 interface SnotelData {
   date: Date | null;
   swe: {
@@ -23,7 +22,7 @@ function processSnotelDatum(str: string | undefined): number | null {
 }
 
 function processSnotelCSV(csv: string) {
-  // console.log(csv)
+  //console.log(csv)
   // remove lines that start with #
   const lines = csv.split("\n").filter((line) => !line.startsWith("#"));
 
@@ -92,6 +91,15 @@ function processSnotelCSV(csv: string) {
 
 export class Snotel {
   id: string;
+  dailyData: {
+    waterYear: SnotelData[];
+    calendarYear: SnotelData[];
+    thirtyDay: SnotelData[];
+  } = {
+    waterYear: [],
+    calendarYear: [],
+    thirtyDay: [],
+  };
   daily: SnotelData[] = [];
   hourly: SnotelData[] = [];
 
@@ -113,14 +121,21 @@ export class Snotel {
     const data = await response.text();
     const json = processSnotelCSV(data);
 
-    if (!this.daily) this.daily = json;
+    this.daily = json;
 
     return json;
   }
 
-
   private getWaterYearDailyUrl() {
     return `https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customSingleStationReport/daily/${this.id}%7Cid=%22%22%7Cname/CurrentWY,CurrentWYEnd/WTEQ::value,WTEQ::delta,SNWD::value,SNWD::delta,TAVG::value,TMIN::value,TMAX::value,SNDN::value?fitToScreen=false`;
+  }
+
+  private getHourlyUrl() {
+    return `https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customSingleStationReport/hourly/${this.id}%7Cid=%22%22%7Cname/-23,0/WTEQ::value,WTEQ::delta,SNWD::value,SNWD::delta,TAVG::value,TMIN::value,TMAX::value,SNDN::value?fitToScreen=false`;
+  }
+
+  private getCalendarYearDailyUrl() {
+    return `https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customSingleStationReport/daily/start_of_period/${this.id}%7Cid=%22%22%7Cname/CurrentCY,CurrentCYEnd/WTEQ::value,WTEQ::median_1991,WTEQ::pctOfMedian_1991,SNWD::value,PREC::value,PREC::median_1991,PREC::pctOfMedian_1991,TMAX::value,TMIN::value,TAVG::value?fitToScreen=false`;
   }
 
   async getWaterYearDailyData() {
@@ -137,21 +152,33 @@ export class Snotel {
     return json;
   }
 
-  private getHourlyUrl() {
-    return `https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customSingleStationReport/hourly/${this.id}%7Cid=%22%22%7Cname/-23,0/WTEQ::value,WTEQ::delta,SNWD::value,SNWD::delta,TAVG::value,TMIN::value,TMAX::value,SNDN::value?fitToScreen=false`;
+  async getCalendarYearDailyData() {
+    const url = this.getCalendarYearDailyUrl();
+    const response = await fetch(url, {
+      next: {
+        revalidate: 0, //60 * 30,
+      },
+    });
+    const data = await response.text();
+    const json = processSnotelCSV(data);
+
+    // console.log(json);
+
+    this.daily = json;
+    return json;
   }
 
   getDailySnowGraphData() {
     const dates: string[] = [];
-    const snowDepths: number[] = [];
+    const snowDepth: number[] = [];
     this.daily.forEach((datum) => {
-      if (datum.date && datum.snow.depth) {
+      if (datum.date && datum.snow.depth !== null) {
         dates.push(datum.date.toLocaleDateString());
-        snowDepths.push(datum.snow.depth);
+        snowDepth.push(datum.snow.depth);
       }
     });
-    
-    return { dates, snowDepths };
+
+    return { xAxis: dates, snowDepth };
   }
 
   getDailyTemperatureData() {
@@ -170,7 +197,7 @@ export class Snotel {
     return { xAxis, avg, high, low };
   }
 
-
+  
 
   async getHourlyData() {
     const url = this.getHourlyUrl();

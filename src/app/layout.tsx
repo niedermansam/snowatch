@@ -1,6 +1,22 @@
 import { NavBar } from "~/common/components/NavBar";
 import "~/common/styles/globals.css";
 
+import { Inter } from "next/font/google";
+import { headers } from "next/headers";
+
+import { TRPCReactProvider } from "~/trpc/react";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-sans",
+});
+
+export const metadata = {
+  title: "SnoWatch",
+  description: "Helping you find your next powder day.",
+  icons: [{ rel: "icon", url: "/favicon.ico" }],
+};
+
 export default function RootLayout({
   children,
 }: {
@@ -8,9 +24,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
-        <NavBar />
-        {children}
+      <body className={`font-sans ${inter.variable}`}>
+        <TRPCReactProvider headers={headers()}>
+          <NavBar />
+          {children}</TRPCReactProvider>
       </body>
     </html>
   );

@@ -1,13 +1,17 @@
 "use client";
 import ReactECharts from "echarts-for-react";
+import { type } from "os";
+import { Snotel } from "../data";
+
+type SnotelSnowGraphData = {
+  xAxis: string[];
+  snowDepth: number[];
+};
 
 export function SnotelSnowGraph({
   xAxis,
   snowDepth,
-}: {
-  xAxis: string[];
-  snowDepth: number[];
-}) {
+}: SnotelSnowGraphData) {
   const options = {
     grid: { top: 8, right: 8, bottom: 15, left: 36 },
     xAxis: {
@@ -84,12 +88,14 @@ export function SnotelSnowGraphWithoutAxis({
 
 type NullOrNumber = number | null;
 
-export function SnotelTemperatureGraph({xAxis, high, low, avg}: {
+type TemperatureGraphData = {
   xAxis: string[];
   high: NullOrNumber[];
   low: NullOrNumber[];
   avg: NullOrNumber[];
-})  {
+};
+
+export function SnotelTemperatureGraph({xAxis, high, low, avg}: TemperatureGraphData)  {
   const options = {
     grid: { top: 8, right: 8, bottom: 90, left: 36 },
     xAxis: {
@@ -182,4 +188,133 @@ export function SnotelTemperatureGraphWithoutAxis({
   };
   return  <ReactECharts  option={options} />;
 
+}
+
+type SnotelGraphSectionProps = {
+  snowData: SnotelSnowGraphData;
+  temperatureData: TemperatureGraphData;
+};
+
+export function SnotelGraphSection({
+  snotel
+}: {snotel: InstanceType<typeof Snotel>}) {
+
+  const option = {
+    tooltip: {
+      trigger: "axis",
+      axisPointer: {
+        animation: false,
+      },
+    },
+    legend: {
+      data: ["Evaporation", "Rainfall"],
+      left: 10,
+    },
+    toolbox: {
+      feature: {
+        dataZoom: {
+          yAxisIndex: "none",
+        },
+        restore: {},
+        saveAsImage: {},
+      },
+    },
+    axisPointer: {
+      link: [
+        {
+          xAxisIndex: "all",
+        },
+      ],
+    },
+    dataZoom: [
+      {
+        show: true,
+        realtime: true,
+        xAxisIndex: [0, 1],
+      },
+      {
+        type: "inside",
+        realtime: true,
+        xAxisIndex: [0, 1],
+      },
+    ],
+    grid: [
+      {
+        left: 60,
+        right: 50,
+        height: "33%",
+      },
+      {
+        left: 60,
+        right: 50,
+        top: "55%",
+        height: "33%",
+      },
+    ],
+    xAxis: [
+      {
+        type: "category",
+        boundaryGap: false,
+        axisLine: { onZero: true },
+        data: snotel.daily.map((d) => d.date),
+        show: false,
+      },
+      {
+        gridIndex: 1,
+        type: "category",
+        boundaryGap: false,
+        axisLine: { onZero: true },
+        data: snotel.daily.map(d => d.date),
+      },
+    ],
+    yAxis: [
+      {
+        name: "Temperature",
+        type: "value",
+        gridIndex: 0,
+      },
+      {
+        gridIndex: 1,
+        name: "Snow Depth",
+        type: "value",
+      },
+    ],
+    series: [
+      {
+        name: "Temperature",
+        type: "line",
+        symbolSize: 0,
+
+        // prettier-ignore
+        data: snotel.daily.map(d => d.temp.avg),
+      },
+      {
+        name: "Minimum Temperature",
+        type: "line",
+        symbolSize: 0,
+        data: snotel.daily.map(d => d.temp.min)
+      },
+      {
+        name: "Maximum Temperature",
+        type: "line",
+        symbolSize: 0,
+        data: snotel.daily.map(d => d.temp.max)
+      },
+      {
+        name: "SnowDepth",
+        type: "line",
+        xAxisIndex: 1,
+        yAxisIndex: 1,
+        symbolSize: 0,
+
+        // prettier-ignore
+        data: snotel.daily.map(d => d.snow.depth),
+      },
+    ],
+  };
+
+
+  return <ReactECharts option={option} style={{
+    height: 600
+  }} />;
 }

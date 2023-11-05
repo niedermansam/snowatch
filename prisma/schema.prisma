@@ -16,21 +16,17 @@ datasource db {
     extensions = [postgis]
 }
 
-model Example {
-    id        String   @id @default(cuid())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-}
+
 
 model SnoTel {
-    id        String @id @default(cuid())
-    name      String
-    elevation Int
+    id        String @id @db.VarChar(12)
+    name      String @db.VarChar(155)
+    elevation Int @db.SmallInt
     lat      Float
     lon     Float
-    state    String
-    county   String
-    location String
+    state    String @db.VarChar(2)
+    county   String @db.VarChar(155)
+    location String @db.VarChar(255)
 
     // the geometry column itself
     coords Unsupported("geometry(Point, 4326)")

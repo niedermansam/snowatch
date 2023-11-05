@@ -2,10 +2,14 @@
 import Link from "next/link";
 import { useState } from "react";
 
+export const DESKTOP_NAVBAR_HEIGHT = 64;
+
 export function NavBar() {
     const [isOpen, setIsOpen] = useState(false);
   return (
-      <nav className="flex flex-wrap items-center justify-between bg-gradient-to-r from-[#2e026d] to-[#15162c] px-6 py-3">
+      <nav className="flex flex-wrap items-center justify-between bg-gradient-to-r from-[#2e026d] to-[#15162c] px-6 py-3" style={{
+            height: DESKTOP_NAVBAR_HEIGHT,
+      }}>
         <div className="mr-6 flex flex-shrink-0 items-center text-white">
           <Link href="/"><span className="text-xl font-semibold tracking-tight">SnoWatch</span></Link>
 
@@ -13,7 +17,7 @@ export function NavBar() {
         </div>
 
         <div className="block lg:hidden">
-            <button 
+            {false &&<button 
                 onClick={() => setIsOpen(!isOpen)}
             className="flex items-center px-3 py-2 border rounded text-white border-white hover:text-white hover:border-white">
                 <svg
@@ -27,10 +31,10 @@ export function NavBar() {
                         fillRule="evenodd"
                     />
                 </svg>
-            </button>
+            </button>} 
             </div>
 
-            <div 
+          {false &&  <div 
                 className=
                 {`  w-full flex-grow lg:flex lg:items-center lg:w-auto ${isOpen ? "block" : "hidden"} `}
                 id="nav-content"
@@ -40,7 +44,7 @@ export function NavBar() {
                     <Link href="/at"><span className="block mt-2 lg:inline-block lg:mt-0 text-white hover:text-white mr-4">Forecast</span></Link>
                     <Link href="/snotel"><span className="block mt-2 lg:inline-block lg:mt-0 text-white hover:text-white mr-4">Snotel</span></Link>
                 </div>
-            </div>
+            </div>}
       </nav>
   );
 }

@@ -23,11 +23,15 @@ export const env = createEnv({
     // Add `.min(1) on ID and SECRET if you want to make sure they're not empty
     // DISCORD_CLIENT_ID: z.string(),
     // DISCORD_CLIENT_SECRET: z.string(),
-    PGSQL_HOST: z.string(),
-    PGSQL_PORT: z.string(),
-    PGSQL_USER: z.string(),
-    PGSQL_PASSWORD: z.string(),
-    PGSQL_DATABASE: z.string(),
+    // PGSQL_HOST: z.string(),
+    // PGSQL_PORT: z.string(),
+    // PGSQL_USER: z.string(),
+    // PGSQL_PASSWORD: z.string(),
+    // PGSQL_DATABASE: z.string(),
+
+    DATABASE_HOST: z.string(),
+    DATABASE_PASSWORD: z.string(),
+    DATABASE_USERNAME: z.string(),
 
   },
 
@@ -49,13 +53,16 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+    DATABASE_HOST: process.env.DATABASE_HOST,
+    DATABASE_PASSWORD: process.env.DATABASE_PASSWORD,
+    DATABASE_USERNAME: process.env.DATABASE_USERNAME,
     // DISCORD_CLIENT_ID: process.env.DISCORD_CLIENT_ID,
     // DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
-    PGSQL_HOST: process.env.PGSQL_HOST,
-    PGSQL_PORT: process.env.PGSQL_PORT,
-    PGSQL_USER: process.env.PGSQL_USER,
-    PGSQL_PASSWORD: process.env.PGSQL_PASSWORD,
-    PGSQL_DATABASE: process.env.PGSQL_DATABASE,
+    // PGSQL_HOST: process.env.PGSQL_HOST,
+    // PGSQL_PORT: process.env.PGSQL_PORT,
+    // PGSQL_USER: process.env.PGSQL_USER,
+    // PGSQL_PASSWORD: process.env.PGSQL_PASSWORD,
+    // PGSQL_DATABASE: process.env.PGSQL_DATABASE,
     
   },
 });
