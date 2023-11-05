@@ -12,6 +12,9 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ForecastMarker } from "./ForecastMarker";
 import { ClickHandler } from "./ClickHandler";
 import { MoveHandler } from "./MoveHandler";
+import TileComponent from "./TileSelector";
+
+
 
 export const GEOHASH_PRECISION = 8;
 
@@ -66,10 +69,8 @@ function ForecastMap() {
       zoom={7}
       closePopupOnClick={false}
     >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
+      <TileComponent 
+      selectedTile="esriWorldTopoMap" />
 
       {locations?.split(",").map((forecastLocation) => {
         const { lat, lon } = Geohash.decode(forecastLocation);

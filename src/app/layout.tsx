@@ -5,6 +5,7 @@ import { Inter } from "next/font/google";
 import { headers } from "next/headers";
 
 import { TRPCReactProvider } from "~/trpc/react";
+import ModalProvider from "~/common/providers/ModalProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -12,22 +13,27 @@ const inter = Inter({
 });
 
 export const metadata = {
-  title: "SnoWatch",
-  description: "Helping you find your next powder day.",
+  title: "SnoWatch | Find your next powder day.",
+  description:  "SnoWatch is here to help backcountry skiers and riders find the best snow conditions for their next adventure.",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 
-export default function RootLayout({
+
+export default function Layout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
     <html lang="en">
-      <body className={`font-sans ${inter.variable}`}>
+      <body  className={`font-sans ${inter.variable}`}>
         <TRPCReactProvider headers={headers()}>
           <NavBar />
-          {children}</TRPCReactProvider>
+          <main>
+          {children}
+          <ModalProvider />
+          </main>
+          </TRPCReactProvider>
       </body>
     </html>
   );

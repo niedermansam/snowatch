@@ -2,12 +2,12 @@
 import Link from "next/link";
 import { useState } from "react";
 
-export const DESKTOP_NAVBAR_HEIGHT = 64;
+export const DESKTOP_NAVBAR_HEIGHT = 50;
 
 export function NavBar() {
     const [isOpen, setIsOpen] = useState(false);
   return (
-      <nav className="flex flex-wrap items-center justify-between bg-gradient-to-r from-[#2e026d] to-[#15162c] px-6 py-3" style={{
+      <nav className="flex flex-wrap items-center justify-between bg-gradient-to-r  from-sw-indigo-700 to-sw-indigo-900 px-6 py-3" style={{
             height: DESKTOP_NAVBAR_HEIGHT,
       }}>
         <div className="mr-6 flex flex-shrink-0 items-center text-white">
