@@ -1,23 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import Geohash from "latlon-geohash";
-import React from "react";
-import { z } from "zod";
-
-const API_URL = "https://api.weather.gov/points/";
-
-const metadataUrl = (lat: number, lng: number) => `${API_URL}${lat},${lng}`;
-
-const validateMetadata = z.object({
-  properties: z.object({
-    forecast: z.string().url(),
-    forecastHourly: z.string().url(),
-  }),
-});
-
-type NoaaForecast = z.infer<typeof validateForecast>;
+import {
+  getForecastMetadata,
+} from "../server/getMetadata";
+import type { ValidForecastPeriod } from "../server/getForecast";
+import { getForecast } from "../server/getForecast";
 
 const parseSnowData = (
-  data: NoaaForecast["properties"]["periods"][number]
+  data: ValidForecastPeriod
 ): {
   low: number;
   high: number;
@@ -67,7 +57,7 @@ const parseSnowData = (
   return outputObject;
 };
 
-const parseWindData = (data: NoaaForecast["properties"]["periods"][number]) => {
+const parseWindData = (data: ValidForecastPeriod) => {
   const wind = data.windSpeed
     ?.split(" to ")
     .map((s) => parseInt(s.replace(" mph", "")));
@@ -88,52 +78,19 @@ const parseWindData = (data: NoaaForecast["properties"]["periods"][number]) => {
   return result;
 };
 
-const validateForecast = z.object({
-  geometry: z.object({
-    coordinates: z.array(z.array(z.array(z.number()))),
-  }),
-  properties: z.object({
-    elevation: z.object({
-      value: z.number(),
-      unitCode: z.string(),
-    }),
-    periods: z.array(
-      z.object({
-        name: z.string(),
-        shortForecast: z.string(),
-        detailedForecast: z.string(),
-        temperature: z.number(),
-        temperatureUnit: z.string(),
-        windSpeed: z.string().nullable(),
-        windDirection: z.string().nullable(),
-        icon: z.string().url(),
-        probabilityOfPrecipitation: z
-          .object({ value: z.number().nullable() })
-          .transform((val) => val.value),
-        relativeHumidity: z
-          .object({ value: z.number() })
-          .transform((val) => val.value),
-      })
-    ),
-  }),
-});
 
 function useForecast({ lat, lng }: { lat: number; lng: number }) {
   const geohash = Geohash.encode(lat, lng, 6);
 
-  const metadata = useQuery(["forecast metadata", geohash], async () => {
-    const res = await fetch(metadataUrl(lat, lng));
-    const data = (await res.json()) as unknown;
-    return validateMetadata.parse(data);
-  });
+  const metadata = useQuery(["forecast metadata", geohash], () =>
+    getForecastMetadata(lat, lng)
+  );
 
   const forecast = useQuery(
     ["forecast", geohash],
     async () => {
       if (!metadata.isSuccess) return;
-      const res = await fetch(metadata.data.properties.forecast);
-      const data = (await res.json()) as unknown;
-      return validateForecast.parse(data);
+      return getForecast(metadata.data.properties.forecast);
     },
     { enabled: metadata.isSuccess }
   );
@@ -184,7 +141,7 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
     totalSnowString = "No snow";
   }
 
-  totalSnowString = totalSnowString.replace('Up to 1"', "Up to 1 inch");
+
 
   return {
     ...forecast,
@@ -229,17 +186,17 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
     },
 
     wind: {
-        wind: forecast.data?.properties.periods.map(parseWindData) || [],
-        getWindiestPeriod: function() {
-            return this.wind.reduce(
-                (acc, curr) => {
-                    if (curr.high > acc.high) return curr;
-                    return acc;
-                },
-                { low: 0, high: 0, gusts: null, text: "", period: "" }
-            );
-        }
-    }
+      wind: forecast.data?.properties.periods.map(parseWindData) || [],
+      getWindiestPeriod: function () {
+        return this.wind.reduce(
+          (acc, curr) => {
+            if (curr.high > acc.high) return curr;
+            return acc;
+          },
+          { low: 0, high: 0, gusts: null, text: "", period: "" }
+        );
+      },
+    },
   };
 }
 
