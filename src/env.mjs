@@ -42,6 +42,7 @@ export const env = createEnv({
    */
   client: {
     // NEXT_PUBLIC_CLIENTVAR: z.string().min(1),
+    NEXT_PUBLIC_API_URL: z.string().url(),
   },
 
   /**
@@ -49,6 +50,7 @@ export const env = createEnv({
    * middlewares) or client-side so we need to destruct manually.
    */
   runtimeEnv: {
+
     DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
@@ -63,6 +65,8 @@ export const env = createEnv({
     // PGSQL_USER: process.env.PGSQL_USER,
     // PGSQL_PASSWORD: process.env.PGSQL_PASSWORD,
     // PGSQL_DATABASE: process.env.PGSQL_DATABASE,
+
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL,
     
   },
 });

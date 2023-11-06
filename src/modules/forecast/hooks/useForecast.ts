@@ -14,6 +14,7 @@ const parseSnowData = (
   text: string;
   period: string;
   temperature: number;
+  isDaytime: boolean;
 } => {
   const outputObject = {
     low: 0,
@@ -21,6 +22,7 @@ const parseSnowData = (
     text: "",
     period: data.name,
     temperature: data.temperature,
+    isDaytime: data.isDaytime,
   };
 
   const snowMatch = data.detailedForecast.match(
@@ -99,6 +101,7 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
     return {
       ...metadata,
       data: null,
+      geohash,
     };
   }
 
@@ -141,12 +144,22 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
     totalSnowString = "No snow";
   }
 
+  const nPeriods = snowData.length;
+
 
 
   return {
     ...forecast,
 
     elevation: forecast.data?.properties.elevation.value,
+    getElevation: (unit: "F" | "M" = "F") => {
+      if (!forecast.data?.properties.elevation.value) return null;
+      if (unit === "F") {
+        return Math.round(forecast.data?.properties.elevation.value * 3.28084);
+      }
+      return Math.round(forecast.data?.properties.elevation.value);
+    },
+    geohash,
     snow: {
       total: totalSnowString,
       data: snowData,
@@ -175,6 +188,14 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
           },
           { low: 0, high: 0, text: "", period: "", temperature: 0 }
         ),
+        getColdestDaytimePeriod: () =>
+        snowData.reduce(
+          (acc, curr) => {
+            if (curr.temperature < acc.temperature && curr.isDaytime) return curr;
+            return acc;
+          },
+          { low: 0, high: 0, text: "", period: "", temperature: 100 }
+        ),
       getColdestPeriod: () =>
         snowData.reduce(
           (acc, curr) => {
@@ -183,6 +204,14 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
           },
           { low: 0, high: 0, text: "", period: "", temperature: 100 }
         ),
+        averageDaytimeHigh: (forecast.data?.properties.periods.reduce((acc, curr) => {
+          if (curr.isDaytime && curr.temperature) {
+            acc += curr.temperature;
+          }
+          return acc;
+        }
+        , 0) || 0 )/ nPeriods,
+
     },
 
     wind: {

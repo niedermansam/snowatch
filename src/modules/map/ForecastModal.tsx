@@ -3,6 +3,7 @@ import React from "react";
 import { Forecast } from "~/modules/forecast/hooks/useForecast";
 import { METERS_TO_FEET } from "~/common/utils/units";
 import ReactModal from "react-modal";
+import { useNearbySnotel } from "../snotel/hooks/useSnotel";
 
 export function ForecastModal({ forecastData }: { forecastData: Forecast }) {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -21,12 +22,25 @@ export function ForecastModal({ forecastData }: { forecastData: Forecast }) {
     overlay: {
       zIndex: 11150,
     },
-  };
+  };  
+  
+  const snotels = useNearbySnotel({
+    enabled: forecastData.geohash !== undefined && isOpen,
+    geohash: forecastData.geohash,
+    
+  });
+
+
 
   if (forecastData.isLoading) return null;
   if (forecastData.isError) return null;
 
   const windiestPeriod = forecastData.wind.getWindiestPeriod();
+
+  const warmerstPeriod = forecastData.temperature.getHottestPeriod();
+
+  
+  const elevation = forecastData.getElevation('F')
 
   return (
     <>
@@ -41,13 +55,17 @@ export function ForecastModal({ forecastData }: { forecastData: Forecast }) {
         isOpen={isOpen}
         onRequestClose={() => setIsOpen(false)}
       >
-        {forecastData.snow.total} expected at{" "}
-        {forecastData.elevation || 0 * METERS_TO_FEET} meters
+        {forecastData.snow.total} of snow expected at{" "}
+        {elevation} ft.
         <div>
           {windiestPeriod.gusts ? "Gusts" : "Winds"} up to{" "}
-          {windiestPeriod.gusts || windiestPeriod.high} mph on{" "}
-          {windiestPeriod.period}
+          {windiestPeriod.gusts || windiestPeriod.high}mph{" "}
+          {windiestPeriod.period}.
         </div>
+        <div>
+         High temperature of {warmerstPeriod.temperature}&deg;F expected {warmerstPeriod.period.replace('This', 'this').replace('Afternoon', 'afternoon').replace('Evening', 'evening')}.
+        </div>
+
       </ReactModal>
     </>
   );

@@ -14,6 +14,19 @@ export const nearbySnotelMetadata = z
   })
   .array();
 
+export const snotelMetadata = z
+  .object({
+    id: z.string(),
+    name: z.string(),
+    elevation: z.number(),
+    lat: z.number(),
+    lon: z.number(),
+    state: z.string(),
+    county: z.string(),
+  })
+
+  export type SnotelMetadata = z.infer<typeof snotelMetadata>;
+
 
 export type SnotelData = {
   date: Date | null;

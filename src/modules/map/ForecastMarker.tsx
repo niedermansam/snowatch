@@ -52,6 +52,8 @@ export function ForecastMarker({ lat, lng }: { lat: number; lng: number }) {
 
   const isInBounds = map.getBounds().contains([lat, lng]);
 
+  
+
   React.useEffect(() => {
     if (isInBounds) {
       markerRef.current?.openPopup();
@@ -80,9 +82,12 @@ export function ForecastMarker({ lat, lng }: { lat: number; lng: number }) {
       </Marker>
     );
 
-  const elevationString = forecast.elevation
-    ? `at ${Math.round(forecast.elevation * METERS_TO_FEET)} ft`
+    const elevation = forecast.getElevation('F')
+
+  const elevationString = elevation && forecast.elevation
+    ? `at ${elevation} ft`
     : null;
+
 
   return (
     <Marker

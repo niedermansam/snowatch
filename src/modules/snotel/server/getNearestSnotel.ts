@@ -1,4 +1,5 @@
 'use server';
+import { env } from "~/env.mjs";
 import { nearbySnotelMetadata } from "../types";
 
 export async function getNearestSnotel(
@@ -7,7 +8,7 @@ export async function getNearestSnotel(
   minElevation = 0
 ) {
   const response = await fetch(
-    `/api/snotel/near/${geohash}/${n}?minElevation=${minElevation}`,
+    `${env.NEXT_PUBLIC_API_URL}/snotel/near/${geohash}/${n}?minElevation=${minElevation}`,
     {
       cache: "force-cache",
     }
