@@ -140,13 +140,13 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
     totalSnowString = `${lowSnowfallEstimateTotal} to ${highSnowfallEstimateTotal}"`;
   }
 
+  if (lowSnowfallEstimateTotal === highSnowfallEstimateTotal) {
+    totalSnowString = `Up to ${lowSnowfallEstimateTotal}"`;
+  }
   if (lowSnowfallEstimateTotal === 0 && highSnowfallEstimateTotal === 0) {
     totalSnowString = "No snow";
   }
 
-  if (lowSnowfallEstimateTotal === highSnowfallEstimateTotal) {
-    totalSnowString = `Up to ${lowSnowfallEstimateTotal}"`;
-  }
 
   const nPeriods = snowData.length;
 
