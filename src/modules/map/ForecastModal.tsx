@@ -20,7 +20,7 @@ export function ForecastModal({ forecastData }: { forecastData: Forecast }) {
       transform: "translate(-50%, -50%)",
     },
     overlay: {
-      zIndex: 11150,
+      zIndex: 1150,
     },
   };  
   
