@@ -5,7 +5,9 @@ import { getDisplayDates } from "../utils/getDisplayDates";
 import { BLUE } from "~/common/styles/ColorPalette";
 
 function uncapitalizePeriodLabel(period: string) {
-  const newPeriod = period.replace("Night", "night");
+  const newPeriod = period
+    .replace("Night", "night")
+    .replace("Tonight", "tonight");
   newPeriod.replace("This", "this");
   newPeriod.replace("Tonight", "tonight");
   newPeriod.replace("Today", "today");

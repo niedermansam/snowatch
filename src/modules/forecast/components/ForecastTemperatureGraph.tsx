@@ -1,54 +1,82 @@
 
 import React from 'react'
 import SChart from '~/common/components/SChart';
+import { GRAY, YELLOW, RED, INDIGO, BLUE, PURPLE } from '~/common/styles/ColorPalette';
 
 function ForecastTemperatureGraph({
-    lows,
-    highs,
+    temps,
     dates
 }: {
-    lows: number[];
-    highs: number[];
+    temps: number[];
     dates: string[];
 }) {
 
     const options = {
-        grid: { top: 8, right: 8, bottom: 20, left: 36 },
-        //  visualMap: {
-        //     show: false,
-        //     type: 'continuous',
-        //     min: 0,
-        //     max: 400
-        // },
-        xAxis: {
-            type: "category",
-            data: dates,
-            axisLabel: {
-                fontWeight: "bolder",
-                fontSize: 8,
+      grid: { top: 8, right: 8, bottom: 20, left: 36 },
+      tooltip: {
+        trigger: "axis",
+        formatter: (params:  {
+            name: string;
+            value: number;
+            marker: string;
+            axisValue: string;
+        }[]
+        ) => {
+            const tempParams = params[0]
+            if(!tempParams) return ''
+            return `${tempParams.marker} ${tempParams.value}°F on ${tempParams.axisValue}`;
             },
+      },
+      visualMap: {
+        show: false,
+        type: "continuous",
+        min: 0,
+        max: 32 * 4, // 128
+        inRange: {
+          color: [
+            INDIGO[800], // 0 - 8
+            INDIGO[500], //  8 - 16
+            INDIGO[300], // 16 -  24
+            INDIGO[300], //  24 - 32
+            PURPLE[500], // 32 - 40
+            PURPLE[600], // 40 - 48
+            PURPLE[500], // 48 - 56
+            RED[300], // 56 - 64
+            RED[400], // 64 - 72
+            RED[500], // 72 - 80
+            RED[600], // 80 - 88
+            RED[700], // 88 - 96
+            RED[700], // 96 - 104
+            RED[700], // 104 - 112
+            RED[700], // 112 - 120
+            RED[700], // 120 - 128
+          ],
         },
-        yAxis: {
-            type: "value",
-            axisLabel: {
-                fontWeight: "bolder",
-                fontSize: 8,
-            },
+      },
+      xAxis: {
+        type: "category",
+        data: dates,
+        axisLabel: {
+          fontWeight: "bolder",
+          fontSize: 8,
         },
-        series: [
-            {
-                name: "Low",
-                type: "line",
-                data: lows,
-                smooth: true,
-            },
-            {
-                name: "High",
-                type: "line",
-                data: highs,
-                smooth: true,
-            },
-        ],
+      },
+      yAxis: {
+        type: "value",
+        axisLabel: {
+          fontWeight: "bolder",
+          fontSize: 8,
+        },
+      },
+      series: [
+        {
+          name: "Low",
+          type: "line",
+          data: temps,
+          smooth: true,
+          showSymbol: false,
+        },
+      ],
     };
 
   return (

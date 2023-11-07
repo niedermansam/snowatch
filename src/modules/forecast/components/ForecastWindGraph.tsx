@@ -98,7 +98,7 @@ export const ForecastWindGraph = ({
 
         return `<div> 
             ${date}<br/>
-            ${windString}
+            ${highWindObj.marker} ${windString}
         </div>`;
       },
     },

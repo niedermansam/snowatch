@@ -57,9 +57,10 @@ export function ForecastModal({ forecastData }: { forecastData: Forecast }) {
         isOpen={isOpen}
         onRequestClose={() => setIsOpen(false)}
       >
-        {forecastData.snow.total} of snow expected at {elevation} ft.
+        {forecastData.snow.total} {forecastData.snow.total !== "No snow" && "of snow "}
+        expected at {elevation} ft.
         <ForecastSnowGraph
-          lowDaily={forecastData.snow.getLowSnow()}
+          lowDaily={forecastData.snow.getLowSnowArray()}
           highDaily={forecastData.snow.getHighSnow(true)}
           lowCumulative={forecastData.snow.getCumulativeLowSnow()}
           highCumulative={forecastData.snow.getCumulativeHighSnow()}
@@ -83,10 +84,10 @@ export function ForecastModal({ forecastData }: { forecastData: Forecast }) {
             .replace("Afternoon", "afternoon")
             .replace("Evening", "evening")}
           .
-          {/* <ForecastTemperatureGraph highs={
-            forecastData.temperature.getHighTemperatures()
-          } lows={forecastData.temperature.getLowTemperatures()} dates={forecastData.getDateLabels()
-          } /> */}
+          <ForecastTemperatureGraph
+            temps={forecastData.temperature.getTemperature()}
+            dates={forecastData.getDateLabels()}
+          />
         </div>
       </ReactModal>
     </>

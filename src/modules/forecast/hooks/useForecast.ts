@@ -164,8 +164,11 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
       total: totalSnowString,
       data: snowData,
       mostSnow,
-      getLowSnow: () => snowData.map((period) => period.low),
-      getHighSnow: (stacked = false) => snowData.map((period) => stacked ? period.high - period.low : period.high),
+      getLowSnowArray: () => snowData.map((period) => period.low),
+      getHighSnow: (stacked = false) =>
+        snowData.map((period) =>
+          stacked ? period.high - period.low : period.high
+        ),
       getCumulativeLowSnow: () => {
         let cumulativeLowSnow = 0;
 
@@ -218,13 +221,11 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
           }
           return acc;
         }, 0) || 0) / nPeriods,
-
     },
 
     wind: {
       wind: forecast.data?.properties.periods.map(parseWindData) || [],
-      getWindiestPeriod: function (gusts= true) {
-
+      getWindiestPeriod: function (gusts = true) {
         type WindPeriod = {
           low: number;
           high: number;
@@ -234,19 +235,15 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
           highest?: number;
         };
 
-        return this.wind.reduce< WindPeriod
-        >(
-          (acc, curr  ) => {
-            const current:WindPeriod = curr
-
-
+        return this.wind.reduce<WindPeriod>(
+          (acc, curr) => {
+            const current: WindPeriod = curr;
 
             if (!gusts && current.high > acc.high) return current;
             if (gusts) {
               current.highest = current.gusts || current.high || 0;
 
-              const accummulatorHighest =   acc.highest || 0;
-
+              const accummulatorHighest = acc.highest || 0;
 
               if (current.highest > accummulatorHighest) {
                 return current;
