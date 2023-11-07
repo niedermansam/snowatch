@@ -1,4 +1,4 @@
-'use server';
+
 import { z } from "zod";
 
 const API_URL = "https://api.weather.gov/points/";
