@@ -165,7 +165,7 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
       data: snowData,
       mostSnow,
       getLowSnow: () => snowData.map((period) => period.low),
-      getHighSnow: (stacked = true) => snowData.map((period) => stacked ? period.high - period.low : period.high),
+      getHighSnow: (stacked = false) => snowData.map((period) => stacked ? period.high - period.low : period.high),
       getCumulativeLowSnow: () => {
         let cumulativeLowSnow = 0;
 

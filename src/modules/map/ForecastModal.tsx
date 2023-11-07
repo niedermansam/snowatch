@@ -60,7 +60,7 @@ export function ForecastModal({ forecastData }: { forecastData: Forecast }) {
         {forecastData.snow.total} of snow expected at {elevation} ft.
         <ForecastSnowGraph
           lowDaily={forecastData.snow.getLowSnow()}
-          highDaily={forecastData.snow.getHighSnow()}
+          highDaily={forecastData.snow.getHighSnow(true)}
           lowCumulative={forecastData.snow.getCumulativeLowSnow()}
           highCumulative={forecastData.snow.getCumulativeHighSnow()}
           dates={forecastData.getDateLabels()}
