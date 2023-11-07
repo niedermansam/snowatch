@@ -1,4 +1,4 @@
-'use server';
+
 import { z } from "zod";
 
  const validateForecast = z.object({
