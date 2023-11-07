@@ -5,7 +5,7 @@ import { nearbySnotelMetadata } from "../types";
 export async function getNearestSnotel(
   geohash: string,
   n: number,
-  minElevation = 0
+  minElevation = 0,
 ) {
   const response = await fetch(
     `${env.NEXT_PUBLIC_API_URL}/snotel/near/${geohash}/${n}?minElevation=${minElevation}`,

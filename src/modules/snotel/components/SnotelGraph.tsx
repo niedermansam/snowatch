@@ -1,7 +1,10 @@
 "use client";
-import ReactECharts from "echarts-for-react";
-import { type } from "os";
-import { Snotel } from "../data";
+import dynamic from "next/dynamic";
+import type { Snotel } from "../data";
+
+const SChart = dynamic(() => import("~/common/components/SChart"), {
+  ssr: false,
+});
 
 type SnotelSnowGraphData = {
   xAxis: string[];
@@ -37,7 +40,7 @@ export function SnotelSnowGraph({
       trigger: "axis",
     },
   };
-  return  <ReactECharts option={options} />;
+  return <SChart option={options} />;
 }
 
 export function SnotelSnowGraphWithoutAxis({
@@ -75,13 +78,7 @@ export function SnotelSnowGraphWithoutAxis({
       trigger: "axis",
     },
   };
-  return (
-    <ReactECharts
-
-      option={options}
-
-    />
-  );
+  return <SChart option={options} />;
 }
 
   
@@ -133,7 +130,7 @@ export function SnotelTemperatureGraph({xAxis, high, low, avg}: TemperatureGraph
       trigger: "axis",
     },
   };
-  return  <ReactECharts option={options} />;
+  return <SChart option={options} />;
 }
 
 export function SnotelTemperatureGraphWithoutAxis({
@@ -186,7 +183,7 @@ export function SnotelTemperatureGraphWithoutAxis({
       trigger: "axis",
     },
   };
-  return  <ReactECharts  option={options} />;
+  return <SChart option={options} />;
 
 }
 
@@ -314,7 +311,7 @@ export function SnotelGraphSection({
   };
 
 
-  return <ReactECharts option={option} style={{
+  return <SChart option={option} style={{
     height: 600
   }} />;
 }

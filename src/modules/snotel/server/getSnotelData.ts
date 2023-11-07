@@ -1,4 +1,5 @@
 import { processSnotelCSV } from "../processSnotelCSV";
+import { SnotelMetadata } from "../types";
 
 function get30DayUrl(id: string) {
   return `https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customSingleStationReport/daily/${id}%7Cid=%22%22%7Cname/-30,0/WTEQ::value,WTEQ::delta,SNWD::value,SNWD::delta,TAVG::value,TMIN::value,TMAX::value,SNDN::value`;
@@ -39,7 +40,7 @@ function getDataUrl(id: string, dataType?: SnotelObservationLength) {
   }
 }
 
-export async function getSnotelData(id: string, dataType?: SnotelObservationLength) {
+export async function getSnotelData(id: string, dataType?: SnotelObservationLength, metadata?: SnotelMetadata) {
   const url = getDataUrl(id, dataType);
     const response = await fetch(url, {
         next: {
@@ -49,5 +50,5 @@ export async function getSnotelData(id: string, dataType?: SnotelObservationLeng
     const data = await response.text();
     const json = processSnotelCSV(data);
 
-    return json;
+    return {...metadata, id, data: json};
 }

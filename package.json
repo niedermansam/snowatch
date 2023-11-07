@@ -30,6 +30,7 @@
     "leaflet-defaulticon-compatibility": "^0.1.2",
     "next": "^14.0.1",
     "next-auth": "^4.24.4",
+    "next-transpile-modules": "^10.0.1",
     "pg": "^8.10.0",
     "react": "^18.2.0",
     "react-datepicker": "^4.16.0",

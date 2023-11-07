@@ -21,6 +21,8 @@ import {
 import { ElevationSelector } from "~/modules/snotel/components/ElevationSelector";
 import { Suspense } from "react";
 
+
+
 interface SnotelDistance extends QueryResultRow {
   id: string;
   name: string;
@@ -151,11 +153,11 @@ export default async function SnotelListPage({
   searchParams,
 }: {
   params: { geohash: string };
-  searchParams: { elev: number };
+  searchParams: { elev: string };
 }) {
   const { lat, lon } = Geohash.decode(decodeURI(params.geohash).trim());
 
-  const snotels = await getClosestSnotels(lat, lon, 5, searchParams?.elev || 0);
+  const snotels = await getClosestSnotels(lat, lon, 5, parseInt( searchParams?.elev) || 0);
 
   return (
     <div>

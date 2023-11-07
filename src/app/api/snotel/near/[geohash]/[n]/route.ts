@@ -12,7 +12,7 @@ export async function GET(
 ) {
   const geohash = context.params.geohash;
 
-  const n = parseInt(req.nextUrl.searchParams.get("n") || "5");
+  const n = parseInt(context.params.n || "5");
 
   const minElevation = parseInt(
     req.nextUrl.searchParams.get("minElevation") || "0"

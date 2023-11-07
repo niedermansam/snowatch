@@ -14,6 +14,7 @@ import { z } from "zod";
     periods: z.array(
       z.object({
         name: z.string(),
+        startTime: z.string().transform((val) => new Date(val)),
         shortForecast: z.string(),
         detailedForecast: z.string(),
         isDaytime: z.boolean(),

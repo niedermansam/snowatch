@@ -54,27 +54,27 @@ export default function BaseMap({ containerProps, children }: MapProps) {
   const [center, setCenter] = useState(containerProps.center);
   const [zoom] = useState(8);
   return (
-    <MapContainer
-      style={{
-        height: "300px",
-        width: "100vw",
-      }}
-      zoomAnimation={true}
-      {...containerProps}
-      center={center}
-      zoom={zoom}
-    >
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      <ClickHandler _setCenter={setCenter} />
-      <Marker position={center}>
-        <Popup>
-          Current Location
-        </Popup>
-      </Marker>
-      {children}
-    </MapContainer>
+    typeof window !== "undefined" && (
+      <MapContainer
+        style={{
+          height: "300px",
+          width: "100vw",
+        }}
+        zoomAnimation={true}
+        {...containerProps}
+        center={center}
+        zoom={zoom}
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        <ClickHandler _setCenter={setCenter} />
+        <Marker position={center}>
+          <Popup>Current Location</Popup>
+        </Marker>
+        {children}
+      </MapContainer>
+    )
   );
 }

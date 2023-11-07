@@ -1,7 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import { getSnotelData } from "../server/getSnotelData";
 import type { SnotelMetadata, snotelMetadata } from "../types";
 import { getNearestSnotel } from "../server/getNearestSnotel";
+import React, { useMemo } from "react";
 
 
 export function Snotel(
@@ -16,16 +17,16 @@ export function Snotel(
     return {
         ...monthData,
         ...metadata,
-        getSnowDepths: () => monthData.data?.map(d => d.snow.depth),
-        getSnowChanges: () => monthData.data?.map(d => d.snow.change),
-        getSnowDensities: () => monthData.data?.map(d => d.snow.density),
-        getTempAvgerages: () => monthData.data?.map(d => d.temp.avg),
-        getMinTemps: () => monthData.data?.map(d => d.temp.min),
-        getMaxTemps: () => monthData.data?.map(d => d.temp.max),
+        getSnowDepths: () => monthData.data?.data.map(d => d.snow.depth),
+        getSnowChanges: () => monthData.data?.data.map(d => d.snow.change),
+        getSnowDensities: () => monthData.data?.data.map(d => d.snow.density),
+        getTempAvgerages: () => monthData.data?.data.map(d => d.temp.avg),
+        getMinTemps: () => monthData.data?.data.map(d => d.temp.min),
+        getMaxTemps: () => monthData.data?.data.map(d => d.temp.max),
 
-        getSWEs: () => monthData.data?.map(d => d.swe.value),
-        getSWEChanges: () => monthData.data?.map(d => d.swe.change),
-        getDates: () => monthData.data?.map(d =>  d.date?.toLocaleDateString()),
+        getSWEs: () => monthData.data?.data.map(d => d.swe.value),
+        getSWEChanges: () => monthData.data?.data.map(d => d.swe.change),
+        getDates: () => monthData.data?.data.map(d =>  d.date?.toLocaleDateString()),
 
     }
 
@@ -38,7 +39,35 @@ export function useNearbySnotel({geohash, n = 3, enabled=true}: {geohash: string
         enabled: enabled
     });
 
+    const nearbySnotelData = useQueries(
+        {
+            queries: nearbySnotel.data?.map(snotel => {
+                return {
+                    queryKey: ['snotel', snotel.id],
+                    queryFn: () => getSnotelData(snotel.id, 'daily'),
+                    staleTime: Infinity,
+                    enabled:  nearbySnotel.isSuccess
+                }
+            
+            }) || []
+        }
+    )
 
-    return nearbySnotel;
+    const combinedData = useMemo(() => {
+        return nearbySnotelData.map((snotelData, i) => {
+            return {
+                ...snotelData,
+                data: {
+                ...snotelData.data,
+                ...nearbySnotel.data?.[i]},
+            }
+        }
+        )
+    }
+    , [nearbySnotelData, nearbySnotel.data])
+
+
+
+    return combinedData;
 
 }

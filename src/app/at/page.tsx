@@ -1,4 +1,4 @@
-import SnowForecastGraph from "~/modules/forecast/components/ForecastSnowGraph";
+import ForecastSnowGraph from "~/modules/forecast/components/ForecastSnowGraph";
 import Forecast, { type FullForecastInstance } from "~/modules/forecast";
 
 function ForecastDetailsItem({
@@ -37,7 +37,7 @@ export default async function LocationPage() {
           Cummulative: {noaa.forecast?.cumulativeSnow.low} to{" "}
           {noaa.forecast?.cumulativeSnow.high}
         </p>
-        <SnowForecastGraph
+        <ForecastSnowGraph
           dates={dates}
           lowDaily={lowDaily}
           highDaily={highDaily}
