@@ -1,18 +1,35 @@
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import SChart from '~/common/components/SChart';
-import { GRAY, YELLOW, RED, INDIGO, BLUE, PURPLE } from '~/common/styles/ColorPalette';
+import type ReactEChartsCore from "echarts-for-react/lib/core";
+import {  RED, INDIGO, PURPLE } from '~/common/styles/ColorPalette';
 
-function ForecastTemperatureGraph({
+type ForecastTemperatureGraphProps = {
+    temps: number[];
+    dates: string[];
+    group?: string;
+}
+
+const ForecastTemperatureGraph = React.forwardRef<ReactEChartsCore , ForecastTemperatureGraphProps >(function ForecastTemperatureGraph({
     temps,
-    dates
+    dates,
+    group
 }: {
     temps: number[];
     dates: string[];
-}) {
+    group?: string;
+}, ref) {
+
+  // const chartRef = React.useRef<ReactEChartsCore>(null);
+
+  // const [instance, setInstance] = React.useState<ECharts | null>(null);
+
+
+
 
     const options = {
       grid: { top: 8, right: 8, bottom: 20, left: 36 },
+      group: 'forecast',
       tooltip: {
         trigger: "axis",
         formatter: (params:  {
@@ -26,6 +43,10 @@ function ForecastTemperatureGraph({
             if(!tempParams) return ''
             return `${tempParams.marker} ${tempParams.value}°F on ${tempParams.axisValue}`;
             },
+            axisPointer: {
+              type: 'shadow'
+            }
+         
       },
       visualMap: {
         show: false,
@@ -80,8 +101,9 @@ function ForecastTemperatureGraph({
     };
 
   return (
-    <SChart option={options} style={{ height: 150 }} />
+    <SChart group={group} ref={ref} option={options} style={{ height: 150 }} onEvents={{
+    }} />
   )
-}
+})
 
 export default ForecastTemperatureGraph

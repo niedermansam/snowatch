@@ -7,9 +7,30 @@ import { useNearbySnotel } from "../snotel/hooks/useSnotel";
 import ForecastSnowGraph from "../forecast/components/ForecastSnowGraph";
 import { ForecastWindGraph } from "../forecast/components/ForecastWindGraph";
 import ForecastTemperatureGraph from "../forecast/components/ForecastTemperatureGraph";
+import type ReactEChartsCore from "echarts-for-react/lib/core";
+import * as echarts from "echarts/core";
 
 export function ForecastModal({ forecastData }: { forecastData: Forecast }) {
   const [isOpen, setIsOpen] = React.useState(false);
+
+  const temperatureRef = React.useRef<ReactEChartsCore>(null);
+  const snowRef = React.useRef<ReactEChartsCore>(null);
+
+
+  React.useEffect(() => {
+    console.log(temperatureRef);
+    const tempInstance = temperatureRef.current?.getEchartsInstance();
+    const snowInstance = snowRef.current?.getEchartsInstance();
+
+    if (tempInstance) tempInstance.group = "forecast";
+    if (snowInstance) snowInstance.group = "forecast";
+
+    echarts.connect("forecast");
+    
+
+    console.log(tempInstance);
+  }, [temperatureRef, temperatureRef.current]);
+  
 
   const customStyles = {
     content: {
@@ -65,6 +86,8 @@ export function ForecastModal({ forecastData }: { forecastData: Forecast }) {
           lowCumulative={forecastData.snow.getCumulativeLowSnow()}
           highCumulative={forecastData.snow.getCumulativeHighSnow()}
           dates={forecastData.getDateLabels()}
+          ref={snowRef}
+          group="forecast"
         />
         <div>
           {windiestPeriod.gusts ? "Gusts" : "Winds"} up to{" "}
@@ -85,6 +108,7 @@ export function ForecastModal({ forecastData }: { forecastData: Forecast }) {
             .replace("Evening", "evening")}
           .
           <ForecastTemperatureGraph
+            ref={temperatureRef}
             temps={forecastData.temperature.getTemperature()}
             dates={forecastData.getDateLabels()}
           />

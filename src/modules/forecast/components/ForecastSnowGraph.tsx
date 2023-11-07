@@ -1,8 +1,10 @@
 "use client";
-import React from "react";
-import SChart from "~/common/components/SChart";
+import React, { useRef } from "react";
+import SChart, { EChartEvents } from "~/common/components/SChart";
 import { getDisplayDates } from "../utils/getDisplayDates";
 import { BLUE } from "~/common/styles/ColorPalette";
+import { ECharts } from "echarts/core";
+import EChartsReactCore from "echarts-for-react/lib/core";
 
 function uncapitalizePeriodLabel(period: string) {
   const newPeriod = period
@@ -19,28 +21,32 @@ function uncapitalizePeriodLabel(period: string) {
   return newPeriod;
 }
 
-export const ForecastSnowGraph = ({
-  dates,
-  lowDaily,
-  highDaily,
-  lowCumulative,
-  highCumulative,
-}: {
+type ForecastSnowGraphProps = {
   lowDaily: number[] | undefined;
   highDaily: number[] | undefined;
   lowCumulative: number[] | undefined;
   highCumulative: number[] | undefined;
-} & (
-  | {
-      dates: Date[];
-    }
-  | {
-      dates: string[];
-    }
-  | {
-      dates: undefined;
-    }
-)) => {
+  onEvents?: EChartEvents;
+  dates: Date[] | string[] | undefined;
+  group?: string;
+};
+
+
+export const ForecastSnowGraph = React.forwardRef<
+  EChartsReactCore,
+  ForecastSnowGraphProps
+>(function ForecastSnowGraph(
+  {
+    dates,
+    lowDaily,
+    highDaily,
+    lowCumulative,
+    highCumulative,
+    onEvents,
+    group,
+  }: ForecastSnowGraphProps,
+  ref
+) {
   if (!dates || !lowDaily) return null;
 
   const options = {
@@ -51,6 +57,7 @@ export const ForecastSnowGraph = ({
     //     min: 0,
     //     max: 400
     // },
+    group: "forecast",
     xAxis: {
       type: "category",
       data: getDisplayDates(dates),
@@ -126,13 +133,13 @@ export const ForecastSnowGraph = ({
         const highCumulative = highCumulativeObj?.value;
 
         const dailyString =
-           highDaily === 0
+          highDaily === 0
             ? `<strong>${lowDaily}"</strong> expected ${uncapitalizePeriodLabel(
                 date
               )}`
-            : `<strong>${lowDaily}-${highDaily + lowDaily}"</strong> expected ${uncapitalizePeriodLabel(
-                date
-              )}`;
+            : `<strong>${lowDaily}-${
+                highDaily + lowDaily
+              }"</strong> expected ${uncapitalizePeriodLabel(date)}`;
 
         let cumulativeString = "";
 
@@ -157,8 +164,11 @@ export const ForecastSnowGraph = ({
       style={{
         height: 150,
       }}
+      onEvents={onEvents}
+      ref={ref}
+      group={group}
     />
   );
-};
+});
 
 export default ForecastSnowGraph;

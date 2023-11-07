@@ -80,28 +80,121 @@ echarts.use([
   CanvasRenderer,
 ]);
 
- const SChart = ({
-  option,
-  style,
-  theme,
-  ref
-}: {
+type MouseEventNames = 'click' | 'dblclick' | 'mousedown'  | 'mousemove' | 'mouseover' | 'mouseout' | 'globalout' | 'contextmenu';
+
+export type EchartMouseEventParams<T extends MouseEventNames> = {
+  componentType: string;
+  componentSubType: string;
+  seriesType: string;
+  seriesIndex: number;
+  seriesName: string;
+  name: string;
+  dataIndex: number;
+  data: number;
+  dataType?: string;
+  value: number | number[];
+  color: string;
+  info?: Record<string, unknown>;
+  event: React.MouseEvent<HTMLElement, MouseEvent>;
+}
+
+
+export type EchartMouseEvent= {
+  componentType: string;
+  componentSubType: string;
+  seriesType: string;
+  seriesIndex: number;
+  seriesName: string;
+  name: string;
+  dataIndex: number;
+  data: number;
+  dataType?: string;
+  value: number | number[];
+  color: string;
+  info?: Record<string, unknown>;
+  event: React.MouseEvent<HTMLElement, MouseEvent>;
+}
+
+
+type EChartMouseEvents<T extends MouseEventNames> = Record<T, (params: EchartMouseEventParams<T>) => void >
+
+
+type HighlightEventObj = {
+  type: 'highlight';
+  dataIndex?: number | number[];
+  seriesIndex?: number | number[];
+  seriesId?: string | string[];
+  seriesName?: string | string[];
+  name?: string | string[];
+}
+
+type HighlightEventParams = {
+  type: 'highlight';
+  batch: HighlightEventObj[];
+}
+
+
+
+export type EChartEvents= 
+  Partial<Record<MouseEventNames, (params: EchartMouseEvent) => void>> | 
+  Record<'highlight', (params: HighlightEventParams) => void>
+
+
+type SChartProps = {
   option: echarts.EChartsCoreOption;
   style?: React.CSSProperties;
   theme?: string;
-  ref?: React.MutableRefObject<ReactEChartsCore>;
-}) =>
-  typeof window !== "undefined" && (
+  onEvents?: EChartEvents;
+  actions?: any;
+  chartRef?: React.ForwardedRef<ReactEChartsCore>;
+  group?: string;
+};
+
+function SChartBase({
+  option,
+  style,
+  theme,
+  onEvents,
+  ref
+}:  SChartProps & {  ref?: React.ForwardedRef<ReactEChartsCore> }) {
+
+
+  return (
+    typeof window !== "undefined" && (
+      <ReactEChartsCore
+
+
+        echarts={echarts}
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+        option={option}
+        notMerge={true}
+        lazyUpdate={true}
+        theme={theme}
+        style={style}
+        ref={ref}
+        onEvents={onEvents}
+      />
+    )
+  );
+}
+
+const SChart = React.forwardRef<ReactEChartsCore, SChartProps>(function SChart (props, ref)  {
+  return (
     <ReactEChartsCore
       echarts={echarts}
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-      option={option}
-      notMerge={true}
-      lazyUpdate={true}
-      theme={theme}
-      style={style}
+      notMerge={false}
+      lazyUpdate={false}
+      onChartReady={(e: {
+        group: string | undefined;
+      }) => {
+        e.group = props.group;
+
+
+      }}
+      {...props}
       ref={ref}
     />
   );
+} );
 
-  export default SChart;
+export default SChart;
