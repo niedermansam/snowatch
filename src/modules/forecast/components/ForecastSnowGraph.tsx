@@ -124,11 +124,11 @@ export const ForecastSnowGraph = ({
         const highCumulative = highCumulativeObj?.value;
 
         const dailyString =
-          lowDaily === highDaily
+           highDaily === 0
             ? `<strong>${lowDaily}"</strong> expected ${uncapitalizePeriodLabel(
                 date
               )}`
-            : `<strong>${lowDaily}-${highDaily}"</strong> expected ${uncapitalizePeriodLabel(
+            : `<strong>${lowDaily}-${highDaily + lowDaily}"</strong> expected ${uncapitalizePeriodLabel(
                 date
               )}`;
 
