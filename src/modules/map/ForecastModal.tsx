@@ -7,6 +7,7 @@ import { useNearbySnotel } from "../snotel/hooks/useSnotel";
 import ForecastSnowGraph from "../forecast/components/ForecastSnowGraph";
 import { ForecastWindGraph } from "../forecast/components/ForecastWindGraph";
 import ForecastTemperatureGraph from "../forecast/components/ForecastTemperatureGraph";
+import { DESKTOP_NAVBAR_HEIGHT } from "~/common/components/NavBar";
 
 export function ForecastModal({ forecastData }: { forecastData: Forecast }) {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -17,12 +18,12 @@ export function ForecastModal({ forecastData }: { forecastData: Forecast }) {
       left: "50%",
       right: "auto",
       width: "80%",
-      height: "80%",
+      height: "85%",
       bottom: "auto",
       marginRight: "-50%",
-      transform: "translate(-50%, -50%)",
+      transform: `translate(-50%,  calc(-50% + ${DESKTOP_NAVBAR_HEIGHT/2}px))`,
       zIndex: 1200,
-      overflow: "show",
+      overflow: "visible",
     },
     overlay: {
       zIndex: 1150,
@@ -57,38 +58,54 @@ export function ForecastModal({ forecastData }: { forecastData: Forecast }) {
         isOpen={isOpen}
         onRequestClose={() => setIsOpen(false)}
       >
-        {forecastData.snow.total} {forecastData.snow.total !== "No snow" && "of snow "}
-        expected at {elevation} ft.
-        <ForecastSnowGraph
-          lowDaily={forecastData.snow.getLowSnowArray()}
-          highDaily={forecastData.snow.getHighSnow(true)}
-          lowCumulative={forecastData.snow.getCumulativeLowSnow()}
-          highCumulative={forecastData.snow.getCumulativeHighSnow()}
-          dates={forecastData.getDateLabels()}
-        />
-        <div>
-          {windiestPeriod.gusts ? "Gusts" : "Winds"} up to{" "}
-          {windiestPeriod.gusts || windiestPeriod.high}mph{" "}
-          {windiestPeriod.period}.
-          <ForecastWindGraph
-            dates={forecastData.getDateLabels()}
-            low={forecastData.wind.getLowWind()}
-            high={forecastData.wind.getHighWind()}
-            gusts={forecastData.wind.getGusts("stacked")}
-          />
-        </div>
-        <div>
-          High temperature of {warmerstPeriod.temperature}&deg;F expected{" "}
-          {warmerstPeriod.period
-            .replace("This", "this")
-            .replace("Afternoon", "afternoon")
-            .replace("Evening", "evening")}
-          .
-          <ForecastTemperatureGraph
-            temps={forecastData.temperature.getTemperature()}
-            dates={forecastData.getDateLabels()}
-          />
-        </div>
+        {isOpen && (
+          <div className="flex h-full flex-col gap-y-4 text-sw-gray-500">
+            <div className="h-1/4 pb-2">
+              <h3 className="text-sm font-bold leading-none">Snow</h3>
+              <p className="pb-1 text-[0.7rem] font-light text-sw-gray-700">
+                {forecastData.snow.total}{" "}
+                {forecastData.snow.total !== "No snow" && "of snow "}
+                expected at {elevation} ft.
+              </p>
+              <ForecastSnowGraph
+                lowDaily={forecastData.snow.getLowSnowArray()}
+                highDaily={forecastData.snow.getHighSnow(true)}
+                lowCumulative={forecastData.snow.getCumulativeLowSnow()}
+                highCumulative={forecastData.snow.getCumulativeHighSnow()}
+                dates={forecastData.getDateLabels()}
+              />
+            </div>
+            <div className="h-1/4 py-4">
+              <h3 className="text-sm font-bold leading-none">Wind</h3>
+              <p className="pb-1 text-[0.7rem] font-light text-sw-gray-700">
+                {windiestPeriod.gusts ? "Gusts" : "Winds"} up to{" "}
+                {windiestPeriod.gusts || windiestPeriod.high}mph{" "}
+                {windiestPeriod.period}.
+              </p>
+              <ForecastWindGraph
+                dates={forecastData.getDateLabels()}
+                low={forecastData.wind.getLowWind()}
+                high={forecastData.wind.getHighWind()}
+                gusts={forecastData.wind.getGusts("stacked")}
+              />
+            </div>
+            <div className="h-1/4 py-4">
+              <h3 className="text-sm font-bold">Temperature</h3>
+              <p className="pb-1 text-[0.7rem] font-light text-sw-gray-700">
+                High of {warmerstPeriod.temperature}&deg;F expected{" "}
+                {warmerstPeriod.period
+                  .replace("This", "this")
+                  .replace("Afternoon", "afternoon")
+                  .replace("Evening", "evening")}
+                .
+              </p>
+              <ForecastTemperatureGraph
+                temps={forecastData.temperature.getTemperature()}
+                dates={forecastData.getDateLabels()}
+              />
+            </div>
+          </div>
+        )}
       </ReactModal>
     </>
   );

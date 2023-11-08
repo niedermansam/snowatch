@@ -44,7 +44,7 @@ export const ForecastSnowGraph = ({
   if (!dates || !lowDaily) return null;
 
   const options = {
-    grid: { top: 8, right: 8, bottom: 20, left: 36 },
+    grid: { top: 8, right: 8, bottom: 20, left: 40 },
     //  visualMap: {
     //     show: false,
     //     type: 'continuous',
@@ -61,6 +61,9 @@ export const ForecastSnowGraph = ({
     },
     yAxis: {
       type: "value",
+      axisLabel: {
+      formatter: (value: number) => `${value}"`},
+      interval: 6
     },
     series: [
       {
@@ -98,9 +101,17 @@ export const ForecastSnowGraph = ({
         showSymbol: false,
         color: BLUE[500],
       },
+      {
+        data: [12],
+        type: 'bar',
+        color: 'transparent',
+      }
     ],
     tooltip: {
       trigger: "axis",
+      axisPointer: {
+        type: "shadow",
+      },
       formatter: (
         params: {
           name: string;
@@ -126,13 +137,13 @@ export const ForecastSnowGraph = ({
         const highCumulative = highCumulativeObj?.value;
 
         const dailyString =
-           highDaily === 0
+          highDaily === 0
             ? `<strong>${lowDaily}"</strong> expected ${uncapitalizePeriodLabel(
                 date
               )}`
-            : `<strong>${lowDaily}-${highDaily + lowDaily}"</strong> expected ${uncapitalizePeriodLabel(
-                date
-              )}`;
+            : `<strong>${lowDaily}-${
+                highDaily + lowDaily
+              }"</strong> expected ${uncapitalizePeriodLabel(date)}`;
 
         let cumulativeString = "";
 
@@ -151,14 +162,7 @@ export const ForecastSnowGraph = ({
     },
   };
 
-  return (
-    <SChart
-      option={options}
-      style={{
-        height: 150,
-      }}
-    />
-  );
+  return <SChart option={options} style={{ height: "100%" }} />;
 };
 
 export default ForecastSnowGraph;

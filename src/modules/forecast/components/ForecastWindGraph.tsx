@@ -16,7 +16,7 @@ export const ForecastWindGraph = ({
   if (!dates || !low) return null;
 
   const options: ECBasicOption = {
-    grid: { top: 8, right: 8, bottom: 20, left: 36 },
+    grid: { top: 8, right: 8, bottom: 17, left: 40 },
     visualMap: [
       {
         show: false,
@@ -69,9 +69,23 @@ export const ForecastWindGraph = ({
     },
     yAxis: {
       type: "value",
+      axisLabel: {
+        formatter: (value: number) => `${value}{a|mph}`,
+        rich: {
+          a: {
+            color: GRAY[500],
+            fontSize: 8,
+            fontWeight: "lighter",
+            verticalAlign: "bottom",
+          },
+        }
+      },
     },
     tooltip: {
       trigger: "axis",
+      axisPointer: {
+        type: "shadow",
+      },
       formatter: function (
         params: { name: string; value: number; marker: string }[]
       ) {
@@ -130,5 +144,5 @@ export const ForecastWindGraph = ({
     ],
   };
 
-  return <SChart option={options} style={{ height: 150 }} />;
+  return <SChart option={options} style={{ height: '100%' }} />;
 };
