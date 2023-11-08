@@ -63,6 +63,7 @@ import {
 } from "echarts/components";
 // Import renderer, note that introducing the CanvasRenderer or SVGRenderer is a required step
 import { CanvasRenderer, SVGRenderer } from "echarts/renderers";
+import { ECharts } from "echarts";
 
 // Register the required components
 echarts.use([
@@ -80,7 +81,15 @@ echarts.use([
   CanvasRenderer,
 ]);
 
-type MouseEventNames = 'click' | 'dblclick' | 'mousedown'  | 'mousemove' | 'mouseover' | 'mouseout' | 'globalout' | 'contextmenu';
+type MouseEventNames =
+  | "click"
+  | "dblclick"
+  | "mousedown"
+  | "mousemove"
+  | "mouseover"
+  | "mouseout"
+  | "globalout"
+  | "contextmenu";
 
 export type EchartMouseEventParams<T extends MouseEventNames> = {
   componentType: string;
@@ -96,10 +105,9 @@ export type EchartMouseEventParams<T extends MouseEventNames> = {
   color: string;
   info?: Record<string, unknown>;
   event: React.MouseEvent<HTMLElement, MouseEvent>;
-}
+};
 
-
-export type EchartMouseEvent= {
+export type EchartMouseEvent = {
   componentType: string;
   componentSubType: string;
   seriesType: string;
@@ -113,32 +121,31 @@ export type EchartMouseEvent= {
   color: string;
   info?: Record<string, unknown>;
   event: React.MouseEvent<HTMLElement, MouseEvent>;
-}
+};
 
-
-type EChartMouseEvents<T extends MouseEventNames> = Record<T, (params: EchartMouseEventParams<T>) => void >
-
+type EChartMouseEvents<T extends MouseEventNames> = Record<
+  T,
+  (params: EchartMouseEventParams<T>) => void
+>;
 
 type HighlightEventObj = {
-  type: 'highlight';
+  type: "highlight";
   dataIndex?: number | number[];
   seriesIndex?: number | number[];
   seriesId?: string | string[];
   seriesName?: string | string[];
   name?: string | string[];
-}
+};
 
 type HighlightEventParams = {
-  type: 'highlight';
+  type: "highlight";
   batch: HighlightEventObj[];
-}
+};
 
-
-
-export type EChartEvents= 
-  Partial<Record<MouseEventNames, (params: EchartMouseEvent) => void>> | 
-  Record<'highlight', (params: HighlightEventParams) => void>
-
+export type EChartEvents =
+  | Partial<Record<MouseEventNames, (params: EchartMouseEvent) => void>>
+  | Record<"highlight", (params: HighlightEventParams) => void>
+  | Record<"rendered", (params: { elapsedTime: number }) => void>;
 
 type SChartProps = {
   option: echarts.EChartsCoreOption;
@@ -147,6 +154,7 @@ type SChartProps = {
   onEvents?: EChartEvents;
   actions?: any;
   chartRef?: React.ForwardedRef<ReactEChartsCore>;
+  onChartReady?: (e: ECharts) => void;
   group?: string;
 };
 
@@ -155,15 +163,11 @@ function SChartBase({
   style,
   theme,
   onEvents,
-  ref
-}:  SChartProps & {  ref?: React.ForwardedRef<ReactEChartsCore> }) {
-
-
+  ref,
+}: SChartProps & { ref?: React.ForwardedRef<ReactEChartsCore> }) {
   return (
     typeof window !== "undefined" && (
       <ReactEChartsCore
-
-
         echarts={echarts}
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
         option={option}
@@ -178,23 +182,23 @@ function SChartBase({
   );
 }
 
-const SChart = React.forwardRef<ReactEChartsCore, SChartProps>(function SChart (props, ref)  {
+const SChart = React.forwardRef<ReactEChartsCore, SChartProps>(function SChart(
+  props,
+  ref
+) {
   return (
     <ReactEChartsCore
       echarts={echarts}
       notMerge={false}
       lazyUpdate={false}
-      onChartReady={(e: {
-        group: string | undefined;
-      }) => {
-        e.group = props.group;
-
-
-      }}
       {...props}
+      onChartReady={(e: ECharts) => {
+        if (props.group) e.group = props.group;
+        if (props.onChartReady) props.onChartReady(e);
+      }}
       ref={ref}
     />
   );
-} );
+});
 
 export default SChart;

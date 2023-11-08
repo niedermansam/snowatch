@@ -17,19 +17,6 @@ export function ForecastModal({ forecastData }: { forecastData: Forecast }) {
   const snowRef = React.useRef<ReactEChartsCore>(null);
 
 
-  React.useEffect(() => {
-    console.log(temperatureRef);
-    const tempInstance = temperatureRef.current?.getEchartsInstance();
-    const snowInstance = snowRef.current?.getEchartsInstance();
-
-    if (tempInstance) tempInstance.group = "forecast";
-    if (snowInstance) snowInstance.group = "forecast";
-
-    echarts.connect("forecast");
-    
-
-    console.log(tempInstance);
-  }, [temperatureRef, temperatureRef.current]);
   
 
   const customStyles = {
@@ -78,41 +65,46 @@ export function ForecastModal({ forecastData }: { forecastData: Forecast }) {
         isOpen={isOpen}
         onRequestClose={() => setIsOpen(false)}
       >
-        {forecastData.snow.total} {forecastData.snow.total !== "No snow" && "of snow "}
-        expected at {elevation} ft.
-        <ForecastSnowGraph
-          lowDaily={forecastData.snow.getLowSnowArray()}
-          highDaily={forecastData.snow.getHighSnow(true)}
-          lowCumulative={forecastData.snow.getCumulativeLowSnow()}
-          highCumulative={forecastData.snow.getCumulativeHighSnow()}
-          dates={forecastData.getDateLabels()}
-          ref={snowRef}
-          group="forecast"
-        />
-        <div>
-          {windiestPeriod.gusts ? "Gusts" : "Winds"} up to{" "}
-          {windiestPeriod.gusts || windiestPeriod.high}mph{" "}
-          {windiestPeriod.period}.
-          <ForecastWindGraph
+        {isOpen && <>
+          {forecastData.snow.total}{" "}
+          {forecastData.snow.total !== "No snow" && "of snow "}
+          expected at {elevation} ft.
+          <ForecastSnowGraph
+            lowDaily={forecastData.snow.getLowSnowArray()}
+            highDaily={forecastData.snow.getHighSnow(true)}
+            lowCumulative={forecastData.snow.getCumulativeLowSnow()}
+            highCumulative={forecastData.snow.getCumulativeHighSnow()}
             dates={forecastData.getDateLabels()}
-            low={forecastData.wind.getLowWind()}
-            high={forecastData.wind.getHighWind()}
-            gusts={forecastData.wind.getGusts("stacked")}
+            ref={snowRef}
+            group="forecast"
           />
-        </div>
-        <div>
-          High temperature of {warmerstPeriod.temperature}&deg;F expected{" "}
-          {warmerstPeriod.period
-            .replace("This", "this")
-            .replace("Afternoon", "afternoon")
-            .replace("Evening", "evening")}
-          .
-          <ForecastTemperatureGraph
-            ref={temperatureRef}
-            temps={forecastData.temperature.getTemperature()}
-            dates={forecastData.getDateLabels()}
-          />
-        </div>
+          <div>
+            {windiestPeriod.gusts ? "Gusts" : "Winds"} up to{" "}
+            {windiestPeriod.gusts || windiestPeriod.high}mph{" "}
+            {windiestPeriod.period}.
+            <ForecastWindGraph
+              dates={forecastData.getDateLabels()}
+              low={forecastData.wind.getLowWind()}
+              high={forecastData.wind.getHighWind()}
+              gusts={forecastData.wind.getGusts("stacked")}
+              group="forecast"
+            />
+          </div>
+          <div>
+            High temperature of {warmerstPeriod.temperature}&deg;F expected{" "}
+            {warmerstPeriod.period
+              .replace("This", "this")
+              .replace("Afternoon", "afternoon")
+              .replace("Evening", "evening")}
+            .
+            <ForecastTemperatureGraph
+              ref={temperatureRef}
+              temps={forecastData.temperature.getTemperature()}
+              dates={forecastData.getDateLabels()}
+              group="forecast"
+            />
+          </div>
+        </>}
       </ReactModal>
     </>
   );

@@ -8,10 +8,12 @@ export const ForecastWindGraph = ({
   low,
   high,
   gusts,
+  group
 }: {
   low: number[] | undefined;
   high: number[] | undefined;
   gusts: (number | null)[] | undefined;
+  group?: string;
 } & ({ dates: Date[] } | { dates: string[] } | { dates: undefined })) => {
   if (!dates || !low) return null;
 
@@ -72,6 +74,11 @@ export const ForecastWindGraph = ({
     },
     tooltip: {
       trigger: "axis",
+
+      axisPointer: {
+        type: "shadow",
+      },
+
       formatter: function (
         params: { name: string; value: number; marker: string }[]
       ) {
@@ -130,5 +137,5 @@ export const ForecastWindGraph = ({
     ],
   };
 
-  return <SChart option={options} style={{ height: 150 }} />;
+  return <SChart group={group} option={options} style={{ height: 150 }} />;
 };

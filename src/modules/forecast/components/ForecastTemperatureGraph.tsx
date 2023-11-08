@@ -3,6 +3,7 @@ import React, { useEffect } from 'react'
 import SChart from '~/common/components/SChart';
 import type ReactEChartsCore from "echarts-for-react/lib/core";
 import {  RED, INDIGO, PURPLE } from '~/common/styles/ColorPalette';
+import * as echarts from 'echarts/core';
 
 type ForecastTemperatureGraphProps = {
     temps: number[];
@@ -102,6 +103,9 @@ const ForecastTemperatureGraph = React.forwardRef<ReactEChartsCore , ForecastTem
 
   return (
     <SChart group={group} ref={ref} option={options} style={{ height: 150 }} onEvents={{
+      'rendered': () => {
+       if(group) echarts.connect(group)
+      }
     }} />
   )
 })

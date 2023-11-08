@@ -155,6 +155,9 @@ export const ForecastSnowGraph = React.forwardRef<
             ${(dataIndex !== 0 && "<br/>" + cumulativeString) || ""}
         </div>`;
       },
+      axisPointer: {
+        type: "shadow",
+      },
     },
   };
 
