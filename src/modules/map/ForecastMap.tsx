@@ -1,21 +1,20 @@
 "use client";
 
-import React, { ForwardRefExoticComponent, RefAttributes } from "react";
+import React from "react";
+import { MapContainer} from "react-leaflet";
+import TileComponent from "./components/TileSelector";
+import Geohash from "latlon-geohash";
+
 import "leaflet/dist/leaflet.css";
-import { Map, popup } from "leaflet";
-import { MapContainer, TileLayer, PopupProps, Tooltip } from "react-leaflet";
-import { DESKTOP_NAVBAR_HEIGHT } from "~/common/components/NavBar";
 import "leaflet-defaulticon-compatibility";
 import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility.css";
-import Geohash from "latlon-geohash";
+
 import { useRouter, useSearchParams } from "next/navigation";
-import { ForecastMarker } from "./ForecastMarker";
+import { ForecastMarker } from "./components/ForecastMarker";
 import { ClickHandler } from "./ClickHandler";
 import { MoveHandler } from "./MoveHandler";
-import TileComponent from "./TileSelector";
 
-
-
+import { DESKTOP_NAVBAR_HEIGHT } from "~/common/components/NavBar";
 export const GEOHASH_PRECISION = 8;
 
 export const createUrl = ({
@@ -69,8 +68,7 @@ function ForecastMap() {
       zoom={7}
       closePopupOnClick={false}
     >
-      <TileComponent 
-      selectedTile="esriWorldTopoMap" />
+      <TileComponent selectedTile="esriWorldTopoMap" />
 
       {locations?.split(",").map((forecastLocation) => {
         const { lat, lon } = Geohash.decode(forecastLocation);

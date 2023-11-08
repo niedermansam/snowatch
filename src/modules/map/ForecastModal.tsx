@@ -8,6 +8,7 @@ import ForecastSnowGraph from "../forecast/components/ForecastSnowGraph";
 import { ForecastWindGraph } from "../forecast/components/ForecastWindGraph";
 import ForecastTemperatureGraph from "../forecast/components/ForecastTemperatureGraph";
 import { DESKTOP_NAVBAR_HEIGHT } from "~/common/components/NavBar";
+import ModalMap from "./ModalMap";
 
 export function ForecastModal({ forecastData }: { forecastData: Forecast }) {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -21,7 +22,9 @@ export function ForecastModal({ forecastData }: { forecastData: Forecast }) {
       height: "85%",
       bottom: "auto",
       marginRight: "-50%",
-      transform: `translate(-50%,  calc(-50% + ${DESKTOP_NAVBAR_HEIGHT/2}px))`,
+      transform: `translate(-50%,  calc(-50% + ${
+        DESKTOP_NAVBAR_HEIGHT / 2
+      }px))`,
       zIndex: 1200,
       overflow: "visible",
     },
@@ -60,6 +63,12 @@ export function ForecastModal({ forecastData }: { forecastData: Forecast }) {
       >
         {isOpen && (
           <div className="flex h-full flex-col gap-y-4 text-sw-gray-500">
+            <div className="flex h-[20%] -mb-10 justify-between">
+              <h2 className="text-lg font-bold leading-none">Forecast</h2>
+              <div className="h-full w-1/3 rounded-md overflow-hidden hidden sm:block">
+                <ModalMap geohash={forecastData.geohash} />
+              </div>
+            </div>
             <div className="h-1/4 pb-2">
               <h3 className="text-sm font-bold leading-none">Snow</h3>
               <p className="pb-1 text-[0.7rem] font-light text-sw-gray-700">

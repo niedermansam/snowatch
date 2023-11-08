@@ -5,8 +5,8 @@ import Geohash from "latlon-geohash";
 import useForecast from "~/modules/forecast/hooks/useForecast";
 import { METERS_TO_FEET } from "~/common/utils/units";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { GEOHASH_PRECISION, createUrl } from "./ForecastMap";
-import { ForecastModal } from "./ForecastModal";
+import { GEOHASH_PRECISION, createUrl } from "../ForecastMap";
+import { ForecastModal } from "../ForecastModal";
 
 function RemoveMarkerButton({ onClick }: { onClick: () => void }) {
   return (
@@ -52,8 +52,6 @@ export function ForecastMarker({ lat, lng }: { lat: number; lng: number }) {
 
   const isInBounds = map.getBounds().contains([lat, lng]);
 
-  
-
   React.useEffect(() => {
     if (isInBounds) {
       markerRef.current?.openPopup();
@@ -82,12 +80,10 @@ export function ForecastMarker({ lat, lng }: { lat: number; lng: number }) {
       </Marker>
     );
 
-    const elevation = forecast.getElevation('F')
+  const elevation = forecast.getElevation("F");
 
-  const elevationString = elevation && forecast.elevation
-    ? `at ${elevation} ft`
-    : null;
-
+  const elevationString =
+    elevation && forecast.elevation ? `at ${elevation} ft` : null;
 
   return (
     <Marker

@@ -1,7 +1,7 @@
 import React from "react";
 import { TileLayer } from "react-leaflet";
 
-type OptionKeys = keyof typeof TileLayers
+type OptionKeys = keyof typeof tileLayers
 
 
 
@@ -14,7 +14,7 @@ export const TILE_OPTIONS: Record<OptionKeys, string> = {
 
 } as const;
 
-const TileLayers = {
+const tileLayers = {
   openTopoMap: (
     <TileLayer
       url="https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"
@@ -45,16 +45,53 @@ const TileLayers = {
   ),
 } as const;
 
+
+export const modalTileLayers = {
+  openTopoMap: (
+    <TileLayer
+      url="https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"
+      maxZoom={17}
+    />
+  ),
+  openStreetMap: (
+    <TileLayer
+      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      maxZoom={19}
+    />
+  ),
+  esriWorldImagery: (
+    <TileLayer
+      url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+      maxZoom={19}
+    />
+  ),
+  esriWorldTopoMap: (
+    <TileLayer
+      url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}"
+      maxZoom={19}
+    />
+  ),
+} as const;
+
 function TileComponent({
     selectedTile,
     }: {
-    selectedTile: keyof typeof TileLayers;
+    selectedTile: keyof typeof tileLayers;
 }) {
 
     
   return  (
-    TileLayers[selectedTile]
+    tileLayers[selectedTile]
   )
 }
+
+export function ModalTileComponent({
+  selectedTile,
+  }: {
+  selectedTile: keyof typeof modalTileLayers;
+}) {
+    return modalTileLayers[selectedTile]
+}
+
 
 export default TileComponent;
