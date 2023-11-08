@@ -69,6 +69,7 @@ export const ForecastWindGraph = ({
     },
     yAxis: {
       type: "value",
+      interval: 10,
       axisLabel: {
         formatter: (value: number) => `${value}{a|mph}`,
         rich: {

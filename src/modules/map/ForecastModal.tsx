@@ -27,9 +27,14 @@ export function ForecastModal({ forecastData }: { forecastData: Forecast }) {
       }px))`,
       zIndex: 1200,
       overflow: "visible",
+      cursor: 'auto',
+      borderRadius: "0.5rem",
     },
     overlay: {
       zIndex: 1150,
+      backdropFilter: "blur(1px)",
+      backgroundColor: "rgba(0,0,0,0.25)",
+      cursor: "pointer",
     },
   };
 
@@ -63,9 +68,15 @@ export function ForecastModal({ forecastData }: { forecastData: Forecast }) {
       >
         {isOpen && (
           <div className="flex h-full flex-col gap-y-4 text-sw-gray-500">
-            <div className="flex h-[20%] -mb-10 justify-between">
-              <h2 className="text-lg font-bold leading-none">Forecast</h2>
-              <div className="h-full w-1/3 rounded-md overflow-hidden hidden sm:block">
+            <div className="-mb-10 flex h-[20%] justify-between">
+              <div>
+              
+                <h2 className="text-lg font-bold leading-none">Forecast</h2>
+                <p className="text-xs font-light">
+                  {forecastData.metadata.getRelativeLocation()}
+                  </p>
+              </div>
+              <div className="hidden h-full w-1/3 overflow-hidden rounded-md sm:block">
                 <ModalMap geohash={forecastData.geohash} />
               </div>
             </div>
@@ -74,7 +85,7 @@ export function ForecastModal({ forecastData }: { forecastData: Forecast }) {
               <p className="pb-1 text-[0.7rem] font-light text-sw-gray-700">
                 {forecastData.snow.total}{" "}
                 {forecastData.snow.total !== "No snow" && "of snow "}
-                expected at {elevation} ft.
+                expected before {forecastData.metadata.getLastPeriodName()}
               </p>
               <ForecastSnowGraph
                 lowDaily={forecastData.snow.getLowSnowArray()}

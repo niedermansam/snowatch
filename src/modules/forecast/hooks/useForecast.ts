@@ -99,6 +99,14 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
     };
   }
 
+  if(!metadata.data) {
+    return {
+      ...metadata,
+      data: null,
+      geohash,
+    };
+  }
+
   // console.log(forecast.data)
 
   const snowData = forecast.data?.properties.periods.map(parseSnowData) || [];
@@ -143,17 +151,38 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
 
   const nPeriods = snowData.length;
 
+  const getElevation = (unit: "F" | "M" = "F") => {
+    if (!forecast.data?.properties.elevation.value) return null;
+    if (unit === "F") {
+      return Math.round(forecast.data?.properties.elevation.value * 3.28084);
+    }
+    return Math.round(forecast.data?.properties.elevation.value);
+  }
+
+  const getRelativeLocation = () => {
+    const { distance, bearing, city, state } = metadata.data?.properties.relativeLocation.properties;
+    return `${distance.toFixed(1)} miles ${bearing} of ${city}, ${state} at ${getElevation("F")?.toLocaleString() ||''} ft`;
+  }
+
+  const getLastPeriodName = () => {
+    const periods = forecast.data?.properties.periods;
+    if (!periods) return null;
+    const lastPeriod = periods[periods.length - 1];
+
+    if (!lastPeriod) return null;
+    return lastPeriod.name;
+  }
+
   return {
     ...forecast,
 
-    elevation: forecast.data?.properties.elevation.value,
-    getElevation: (unit: "F" | "M" = "F") => {
-      if (!forecast.data?.properties.elevation.value) return null;
-      if (unit === "F") {
-        return Math.round(forecast.data?.properties.elevation.value * 3.28084);
-      }
-      return Math.round(forecast.data?.properties.elevation.value);
+    metadata: {
+      ...metadata.data?.properties,
+      getRelativeLocation,
+      getLastPeriodName
     },
+    elevation: forecast.data?.properties.elevation.value,
+    getElevation: getElevation,
     getDates: () =>
       forecast.data?.properties.periods.map((period) => period.startTime) || [],
     getDateLabels: () =>

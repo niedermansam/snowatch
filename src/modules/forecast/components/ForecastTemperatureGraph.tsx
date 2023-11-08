@@ -74,8 +74,17 @@ function ForecastTemperatureGraph({
     },
     yAxis: {
       type: "value",
+      minInterval: 10,
       axisLabel: {
-        formatter: (value: number) => `${value}°`,
+        formatter: (value: number) => `${value}{a|°F}`,
+        rich: {
+          a: {
+            color: GRAY[500],
+            fontSize: 8,
+            fontWeight: "lighter",
+            verticalAlign: "bottom",
+          },
+        },
       },
     },
     series: [

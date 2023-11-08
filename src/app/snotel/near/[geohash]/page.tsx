@@ -20,8 +20,7 @@ import {
 } from "~/modules/snotel/components/SnotelGraph";
 import { ElevationSelector } from "~/modules/snotel/components/ElevationSelector";
 import { Suspense } from "react";
-
-
+import { translateBearing } from "../../../../common/utils/translateBearing";
 
 interface SnotelDistance extends QueryResultRow {
   id: string;
@@ -29,23 +28,6 @@ interface SnotelDistance extends QueryResultRow {
   dist: number;
   bearing: number;
   state: string;
-}
-
-function translateBearing(bearing: number) {
-  let positiveBearing: number = bearing;
-  if (bearing < 0) {
-    positiveBearing = bearing + 360;
-  }
-
-  if (positiveBearing > 337.5 || positiveBearing <= 22.5) return "N";
-  if (positiveBearing > 22.5 && positiveBearing <= 67.5) return "NE";
-  if (positiveBearing > 67.5 && positiveBearing <= 112.5) return "E";
-  if (positiveBearing > 112.5 && positiveBearing <= 157.5) return "SE";
-  if (positiveBearing > 157.5 && positiveBearing <= 202.5) return "S";
-  if (positiveBearing > 202.5 && positiveBearing <= 247.5) return "SW";
-  if (positiveBearing > 247.5 && positiveBearing <= 292.5) return "W";
-  if (positiveBearing > 292.5 && positiveBearing <= 337.5) return "NW";
-  return "N";
 }
 
 const getClosestSnotels = async (
@@ -76,41 +58,41 @@ async function SnotelLink({ snotel }: { snotel: SnotelDistance }) {
   const tempData = snotelData.getDailyTemperatureData();
 
   return (
-      <div className="my-6 flex min-h-fit">
-        <div className="flex flex-col p-2">
-          <Link key={snotel.id} href={`/snotel/${snotel.id}`}>
-            <h2>
-              {snotel.name}, {snotel.state}{" "}
-            </h2>
-          </Link>
-          <p>
-            {distanceInMiles} miles {translateBearing(snotel.bearing)}{" "}
-          </p>
-          <p>{Math.floor(snotel.elevation * METERS_TO_FEET)} ft.</p>
-          <Link
-            href={`/snotel/${snotel.id}`}
-            className=" mt-6 rounded bg-indigo-700 p-2 font-bold text-white"
-          >
-            More Info
-          </Link>
-        </div>
-        <div className="block " style={{ height: 200, width: "40%" }}>
-          <h3 className="px-3 pb-2 text-xs font-bold">Snow Depth</h3>
-          <SnotelSnowGraphWithoutAxis
-            snowDepth={snowData.snowDepth}
-            height={150}
-          />
-        </div>
-        <div className="block " style={{ height: 200, width: "40%" }}>
-          <h3 className="px-3 pb-2 text-xs font-bold">Temperature</h3>
-          <SnotelTemperatureGraphWithoutAxis
-            high={tempData.high}
-            low={tempData.low}
-            avg={tempData.avg}
-            height={150}
-          />
-        </div>
+    <div className="my-6 flex min-h-fit">
+      <div className="flex flex-col p-2">
+        <Link key={snotel.id} href={`/snotel/${snotel.id}`}>
+          <h2>
+            {snotel.name}, {snotel.state}{" "}
+          </h2>
+        </Link>
+        <p>
+          {distanceInMiles} miles {translateBearing(snotel.bearing)}{" "}
+        </p>
+        <p>{Math.floor(snotel.elevation * METERS_TO_FEET)} ft.</p>
+        <Link
+          href={`/snotel/${snotel.id}`}
+          className=" mt-6 rounded bg-indigo-700 p-2 font-bold text-white"
+        >
+          More Info
+        </Link>
       </div>
+      <div className="block " style={{ height: 200, width: "40%" }}>
+        <h3 className="px-3 pb-2 text-xs font-bold">Snow Depth</h3>
+        <SnotelSnowGraphWithoutAxis
+          snowDepth={snowData.snowDepth}
+          height={150}
+        />
+      </div>
+      <div className="block " style={{ height: 200, width: "40%" }}>
+        <h3 className="px-3 pb-2 text-xs font-bold">Temperature</h3>
+        <SnotelTemperatureGraphWithoutAxis
+          high={tempData.high}
+          low={tempData.low}
+          avg={tempData.avg}
+          height={150}
+        />
+      </div>
+    </div>
   );
 }
 
@@ -119,8 +101,8 @@ function SnotelLinkSection({ snotels }: { snotels: SnotelDistance[] }) {
     <div>
       {snotels.map((snotel) => (
         <div key={snotel.id}>
-    <Suspense fallback={<p>loading...</p>}>
-          <SnotelLink snotel={snotel} />
+          <Suspense fallback={<p>loading...</p>}>
+            <SnotelLink snotel={snotel} />
           </Suspense>
         </div>
       ))}
@@ -157,7 +139,12 @@ export default async function SnotelListPage({
 }) {
   const { lat, lon } = Geohash.decode(decodeURI(params.geohash).trim());
 
-  const snotels = await getClosestSnotels(lat, lon, 5, parseInt( searchParams?.elev) || 0);
+  const snotels = await getClosestSnotels(
+    lat,
+    lon,
+    5,
+    parseInt(searchParams?.elev) || 0
+  );
 
   return (
     <div>
@@ -172,7 +159,7 @@ export default async function SnotelListPage({
       </div>
       <Map containerProps={{ center: [lat, lon] }} />
       <ElevationSelector geohash={params.geohash} />
-        <SnotelLinkSection snotels={snotels} />
+      <SnotelLinkSection snotels={snotels} />
     </div>
   );
 }

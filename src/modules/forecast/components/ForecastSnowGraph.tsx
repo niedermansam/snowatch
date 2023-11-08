@@ -2,7 +2,7 @@
 import React from "react";
 import SChart from "~/common/components/SChart";
 import { getDisplayDates } from "../utils/getDisplayDates";
-import { BLUE } from "~/common/styles/ColorPalette";
+import { BLUE, GRAY } from "~/common/styles/ColorPalette";
 
 function uncapitalizePeriodLabel(period: string) {
   const newPeriod = period
@@ -62,8 +62,17 @@ export const ForecastSnowGraph = ({
     yAxis: {
       type: "value",
       axisLabel: {
-      formatter: (value: number) => `${value}"`},
-      interval: 6
+        formatter: (value: number) => `${value}{a| in.}`,
+        rich: {
+          a: {
+            color: GRAY[500],
+            fontSize: 8,
+            fontWeight: "lighter",
+            verticalAlign: "bottom",
+          },
+        },
+      },
+      interval: 6,
     },
     series: [
       {
@@ -103,9 +112,9 @@ export const ForecastSnowGraph = ({
       },
       {
         data: [12],
-        type: 'bar',
-        color: 'transparent',
-      }
+        type: "bar",
+        color: "transparent",
+      },
     ],
     tooltip: {
       trigger: "axis",
