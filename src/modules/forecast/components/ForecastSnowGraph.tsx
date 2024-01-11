@@ -3,6 +3,7 @@ import React from "react";
 import SChart from "~/common/components/SChart";
 import { getDisplayDates } from "../utils/getDisplayDates";
 import { BLUE, GRAY } from "~/common/styles/ColorPalette";
+import { MIN_GRAPH_HEIGHT } from "./utils";
 
 function uncapitalizePeriodLabel(period: string) {
   const newPeriod = period
@@ -171,7 +172,7 @@ export const ForecastSnowGraph = ({
     },
   };
 
-  return <SChart option={options} style={{ height: "100%" }} />;
+  return <SChart option={options} style={{ height: "100%", minHeight: MIN_GRAPH_HEIGHT }} />;
 };
 
 export default ForecastSnowGraph;

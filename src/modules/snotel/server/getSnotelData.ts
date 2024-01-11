@@ -1,5 +1,5 @@
 import { processSnotelCSV } from "../processSnotelCSV";
-import { SnotelMetadata } from "../types";
+import type { SnotelMetadata } from "../types";
 
 function get30DayUrl(id: string) {
   return `https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customSingleStationReport/daily/${id}%7Cid=%22%22%7Cname/-30,0/WTEQ::value,WTEQ::delta,SNWD::value,SNWD::delta,TAVG::value,TMIN::value,TMAX::value,SNDN::value`;

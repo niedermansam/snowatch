@@ -26,6 +26,7 @@ function ModalMap({geohash, className}: {geohash: string, className?: string}) {
         zIndex: 13000,
       }}
       zoomControl={false}
+      dragging={false}
     >
       <ModalTileComponent selectedTile="esriWorldTopoMap" />
 

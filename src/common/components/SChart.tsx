@@ -46,7 +46,7 @@ import {
   TitleComponent,
   // TimelineComponent,
   // MarkPointComponent,
-  // MarkLineComponent,
+  MarkLineComponent,
   // MarkAreaComponent,
   // LegendComponent,
   // LegendScrollComponent,
@@ -78,6 +78,7 @@ echarts.use([
   GridComponent,
   BarChart,
   CanvasRenderer,
+  MarkLineComponent,
 ]);
 
  const SChart = ({

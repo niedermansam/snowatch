@@ -2,6 +2,7 @@ import SChart from "~/common/components/SChart";
 import { getDisplayDates } from "../utils/getDisplayDates";
 import { GRAY, RED, YELLOW } from "~/common/styles/ColorPalette";
 import type { ECBasicOption } from "echarts/types/dist/shared";
+import { MIN_GRAPH_HEIGHT } from "./utils";
 
 export const ForecastWindGraph = ({
   dates,
@@ -88,7 +89,7 @@ export const ForecastWindGraph = ({
         type: "shadow",
       },
       formatter: function (
-        params: { name: string; value: number; marker: string }[]
+        params: { name: string; value: number; marker: string  }[]
       ) {
         const lowWindObj = params[0];
         const highWindObj = params[1];
@@ -145,5 +146,10 @@ export const ForecastWindGraph = ({
     ],
   };
 
-  return <SChart option={options} style={{ height: '100%' }} />;
+  return (
+    <SChart
+      option={options}
+      style={{ height: "100%", minHeight: MIN_GRAPH_HEIGHT }}
+    />
+  );
 };

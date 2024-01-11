@@ -30,7 +30,7 @@ export const createUrl = ({
 } = {}) => {
   const params = new URLSearchParams();
   if (center) params.set("center", center);
-  if (locations) params.set("locations", locations.join(","));
+  if (locations && locations.length > 0) params.set("locations", locations.join(","));
   if (zoom) params.set("zoom", zoom.toString());
   return `${currentPath}?${params.toString()}`;
 };
@@ -71,6 +71,7 @@ function ForecastMap() {
       <TileComponent selectedTile="esriWorldTopoMap" />
 
       {locations?.split(",").map((forecastLocation) => {
+        if(!forecastLocation) return;
         const { lat, lon } = Geohash.decode(forecastLocation);
         return <ForecastMarker lat={lat} lng={lon} key={forecastLocation} />;
       })}

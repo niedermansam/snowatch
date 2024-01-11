@@ -99,7 +99,7 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
     };
   }
 
-  if(!metadata.data) {
+  if (!metadata.data) {
     return {
       ...metadata,
       data: null,
@@ -157,12 +157,15 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
       return Math.round(forecast.data?.properties.elevation.value * 3.28084);
     }
     return Math.round(forecast.data?.properties.elevation.value);
-  }
+  };
 
   const getRelativeLocation = () => {
-    const { distance, bearing, city, state } = metadata.data?.properties.relativeLocation.properties;
-    return `${distance.toFixed(1)} miles ${bearing} of ${city}, ${state} at ${getElevation("F")?.toLocaleString() ||''} ft`;
-  }
+    const { distance, bearing, city, state } =
+      metadata.data?.properties.relativeLocation.properties;
+    return `${distance.toFixed(1)} miles ${bearing} of ${city}, ${state} at ${
+      getElevation("F")?.toLocaleString() || ""
+    } ft`;
+  };
 
   const getLastPeriodName = () => {
     const periods = forecast.data?.properties.periods;
@@ -171,140 +174,147 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
 
     if (!lastPeriod) return null;
     return lastPeriod.name;
-  }
+  };
 
   return {
     ...forecast,
-
-    metadata: {
-      ...metadata.data?.properties,
-      getRelativeLocation,
-      getLastPeriodName
-    },
-    elevation: forecast.data?.properties.elevation.value,
-    getElevation: getElevation,
-    getDates: () =>
-      forecast.data?.properties.periods.map((period) => period.startTime) || [],
-    getDateLabels: () =>
-      forecast.data?.properties.periods.map((period) => period.name) || [],
-
-    geohash,
-    snow: {
-      total: totalSnowString,
-      data: snowData,
-      mostSnow,
-      getLowSnowArray: () => snowData.map((period) => period.low),
-      getHighSnow: (stacked = false) =>
-        snowData.map((period) =>
-          stacked ? period.high - period.low : period.high
-        ),
-      getCumulativeLowSnow: () => {
-        let cumulativeLowSnow = 0;
-
-        return snowData.map((period) => {
-          cumulativeLowSnow += period.low;
-          return cumulativeLowSnow;
-        });
+    data: {
+      ...forecast.data,
+        office: metadata.data.properties.gridId,
+      metadata: {
+        ...metadata.data?.properties,
+        getRelativeLocation,
+        getLastPeriodName,
       },
-      getCumulativeHighSnow: () => {
-        let cumulativeHighSnow = 0;
+      elevation: forecast.data?.properties.elevation.value,
+      getElevation: getElevation,
+      getDates: () =>
+        forecast.data?.properties.periods.map((period) => period.startTime) ||
+        [],
+      getDateLabels: () =>
+        forecast.data?.properties.periods.map((period) => period.name) || [],
 
-        return snowData.map((period) => {
-          cumulativeHighSnow += period.high;
-          return cumulativeHighSnow;
-        });
+      geohash,
+      snow: {
+        total: totalSnowString,
+        data: snowData,
+        mostSnow,
+        getLowSnowArray: () => snowData.map((period) => period.low),
+        getHighSnow: (stacked = false) =>
+          snowData.map((period) =>
+            stacked ? period.high - period.low : period.high
+          ),
+        getCumulativeLowSnow: () => {
+          let cumulativeLowSnow = 0;
+
+          return snowData.map((period) => {
+            cumulativeLowSnow += period.low;
+            return cumulativeLowSnow;
+          });
+        },
+        getCumulativeHighSnow: () => {
+          let cumulativeHighSnow = 0;
+
+          return snowData.map((period) => {
+            cumulativeHighSnow += period.high;
+            return cumulativeHighSnow;
+          });
+        },
+        getDateLabels: () => snowData.map((period) => period.period),
       },
-      getDateLabels: () => snowData.map((period) => period.period),
-    },
-    temperature: {
-      getTemperature: () => snowData.map((period) => period.temperature),
-      getHottestPeriod: () =>
-        snowData.reduce(
-          (acc, curr) => {
-            if (curr.temperature > acc.temperature) return curr;
-            return acc;
-          },
-          { low: 0, high: 0, text: "", period: "", temperature: 0 }
-        ),
-      getColdestDaytimePeriod: () =>
-        snowData.reduce(
-          (acc, curr) => {
-            if (curr.temperature < acc.temperature && curr.isDaytime)
-              return curr;
-            return acc;
-          },
-          { low: 0, high: 0, text: "", period: "", temperature: 100 }
-        ),
-      getColdestPeriod: () =>
-        snowData.reduce(
-          (acc, curr) => {
-            if (curr.temperature < acc.temperature) return curr;
-            return acc;
-          },
-          { low: 0, high: 0, text: "", period: "", temperature: 100 }
-        ),
-      averageDaytimeHigh:
-        (forecast.data?.properties.periods.reduce((acc, curr) => {
-          if (curr.isDaytime && curr.temperature) {
-            acc += curr.temperature;
-          }
-          return acc;
-        }, 0) || 0) / nPeriods,
-    },
-
-    wind: {
-      wind: forecast.data?.properties.periods.map(parseWindData) || [],
-      getWindiestPeriod: function (gusts = true) {
-        type WindPeriod = {
-          low: number;
-          high: number;
-          gusts: number | null;
-          text: string | null;
-          period: string;
-          highest?: number;
-        };
-
-        return this.wind.reduce<WindPeriod>(
-          (acc, curr) => {
-            const current: WindPeriod = curr;
-
-            if (!gusts && current.high > acc.high) return current;
-            if (gusts) {
-              current.highest = current.gusts || current.high || 0;
-
-              const accummulatorHighest = acc.highest || 0;
-
-              if (current.highest > accummulatorHighest) {
-                return current;
-              }
+      temperature: {
+        getTemperature: () => snowData.map((period) => period.temperature),
+        getHottestPeriod: () =>
+          snowData.reduce(
+            (acc, curr) => {
+              if (curr.temperature > acc.temperature) return curr;
+              return acc;
+            },
+            { low: 0, high: 0, text: "", period: "", temperature: 0 }
+          ),
+        getColdestDaytimePeriod: () =>
+          snowData.reduce(
+            (acc, curr) => {
+              if (curr.temperature < acc.temperature && curr.isDaytime)
+                return curr;
+              return acc;
+            },
+            { low: 0, high: 0, text: "", period: "", temperature: 100 }
+          ),
+        getColdestPeriod: () =>
+          snowData.reduce(
+            (acc, curr) => {
+              if (curr.temperature < acc.temperature) return curr;
+              return acc;
+            },
+            { low: 0, high: 0, text: "", period: "", temperature: 100 }
+          ),
+        averageDaytimeHigh:
+          (forecast.data?.properties.periods.reduce((acc, curr) => {
+            if (curr.isDaytime && curr.temperature) {
+              acc += curr.temperature;
             }
             return acc;
-          },
-          { low: 0, high: 0, gusts: 0, text: "", period: "", highest: 0 }
-        );
+          }, 0) || 0) / nPeriods,
       },
 
-      getLowWind: function () {
-        return this.wind.map((period) => period.low);
-      },
-      getHighWind: function () {
-        return this.wind.map((period) => period.high);
-      },
+      wind: {
+        wind: forecast.data?.properties.periods.map(parseWindData) || [],
+        getWindiestPeriod: function (gusts = true) {
+          type WindPeriod = {
+            low: number;
+            high: number;
+            gusts: number | null;
+            text: string | null;
+            period: string;
+            highest?: number;
+          };
 
-      getGusts: function (option?: "value" | "stacked") {
-        if (option === "value" || option === undefined)
-          return this.wind.map((period) => period.gusts);
-        if (option === "stacked") {
-          return this.wind.map((period) => {
-            if (period.gusts === null) return 0;
-            return period.gusts - period.high;
-          });
-        }
+          return this.wind.reduce<WindPeriod>(
+            (acc, curr) => {
+              const current: WindPeriod = curr;
+
+              if (!gusts && current.high > acc.high) return current;
+              if (gusts) {
+                current.highest = current.gusts || current.high || 0;
+
+                const accummulatorHighest = acc.highest || 0;
+
+                if (current.highest > accummulatorHighest) {
+                  return current;
+                }
+              }
+              return acc;
+            },
+            { low: 0, high: 0, gusts: 0, text: "", period: "", highest: 0 }
+          );
+        },
+
+        getLowWind: function () {
+          return this.wind.map((period) => period.low);
+        },
+        getHighWind: function () {
+          return this.wind.map((period) => period.high);
+        },
+
+        getGusts: function (option?: "value" | "stacked") {
+          if (option === "value" || option === undefined)
+            return this.wind.map((period) => period.gusts);
+          if (option === "stacked") {
+            return this.wind.map((period) => {
+              if (period.gusts === null) return 0;
+              return period.gusts - period.high;
+            });
+          }
+        },
       },
     },
+
   };
 }
 
-export type Forecast = ReturnType<typeof useForecast>;
+export type UseForecastReturn = ReturnType<typeof useForecast>;
+
+export type UseForecastData = UseForecastReturn['data'];
 
 export default useForecast;

@@ -1,4 +1,5 @@
 
+'use server'
 import { z } from "zod";
 import { translateBearing } from "~/common/utils/translateBearing";
 import { METERS_TO_MILES } from "~/common/utils/units";
@@ -10,6 +11,7 @@ const API_URL = "https://api.weather.gov/points/";
 
  const validateMetadata = z.object({
    properties: z.object({
+    gridId: z.string(),
      forecast: z.string().url(),
      forecastHourly: z.string().url(),
    relativeLocation: z.object({
@@ -38,6 +40,7 @@ export async function  getForecastMetadata(lat: number, lng: number) {
         cache: 'force-cache'
     });
     const data = (await res.json()) as unknown;
+
     return validateMetadata.parse(data);
 }
 

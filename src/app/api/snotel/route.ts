@@ -1,4 +1,3 @@
-import Geohash from "latlon-geohash";
 import {type NextRequest, NextResponse } from "next/server";
 import { FEET_TO_METERS } from "~/common/utils/units";
 import { db } from "~/server/db";

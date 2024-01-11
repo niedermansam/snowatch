@@ -3,7 +3,6 @@ import React from "react";
 import { Marker, Popup, useMap } from "react-leaflet";
 import Geohash from "latlon-geohash";
 import useForecast from "~/modules/forecast/hooks/useForecast";
-import { METERS_TO_FEET } from "~/common/utils/units";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { GEOHASH_PRECISION, createUrl } from "../ForecastMap";
 import { ForecastModal } from "../ForecastModal";
@@ -80,10 +79,10 @@ export function ForecastMarker({ lat, lng }: { lat: number; lng: number }) {
       </Marker>
     );
 
-  const elevation = forecast.getElevation("F");
+  const elevation = forecast.data.getElevation("F");
 
   const elevationString =
-    elevation && forecast.elevation ? `at ${elevation} ft` : null;
+    elevation && forecast.data.elevation ? `at ${elevation} ft` : null;
 
   return (
     <Marker
@@ -108,7 +107,7 @@ export function ForecastMarker({ lat, lng }: { lat: number; lng: number }) {
         }}
       >
         <div className="-m-1 text-xs hover:z-[10000]">
-          <span> {forecast.snow.total}</span> &nbsp;
+          <span> {forecast.data.snow.total}</span> &nbsp;
           <span className="font-light">{elevationString}</span>
           <div className="flex w-full justify-between gap-x-3 pt-1">
             <ForecastModal forecastData={forecast} />

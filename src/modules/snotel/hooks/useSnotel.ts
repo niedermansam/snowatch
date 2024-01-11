@@ -1,8 +1,8 @@
 import { useQueries, useQuery } from "@tanstack/react-query";
 import { getSnotelData } from "../server/getSnotelData";
-import type { SnotelMetadata, snotelMetadata } from "../types";
+import type { SnotelMetadata } from "../types";
 import { getNearestSnotel } from "../server/getNearestSnotel";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 
 
 export function Snotel(

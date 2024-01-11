@@ -2,12 +2,11 @@ import React from "react";
 import SChart from "~/common/components/SChart";
 import {
   GRAY,
-  YELLOW,
   RED,
   INDIGO,
-  BLUE,
   PURPLE,
 } from "~/common/styles/ColorPalette";
+import { MIN_GRAPH_HEIGHT } from "./utils";
 
 function ForecastTemperatureGraph({
   temps,
@@ -94,11 +93,48 @@ function ForecastTemperatureGraph({
         data: temps,
         smooth: true,
         showSymbol: false,
+        markLine: {
+                animationDelay: 1000,
+          data: [
+            {
+              name: "Freezing",
+              yAxis: 32,
+                label: {
+                  position: 'insideEndTop'
+                },
+              lineStyle: {
+                color: PURPLE[500],
+                type: "dashed",
+              },
+            },
+          
+          ]
+        }
       },
+      {
+        type: "markLine",
+        data: [
+          {
+            name: "Freezing",
+            yAxis: 32,
+            lineStyle: {
+              color: GRAY[500],
+              type: "dashed",
+            },
+          },
+        
+        ]
+
+      }
     ],
   };
 
-  return <SChart option={options} style={{ height: "100%" }} />;
+  return (
+    <SChart
+      option={options}
+      style={{ height: "100%", minHeight: MIN_GRAPH_HEIGHT }}
+    />
+  );
 }
 
 export default ForecastTemperatureGraph;

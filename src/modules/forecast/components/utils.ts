@@ -1,0 +1,1 @@
+export const MIN_GRAPH_HEIGHT = 170;

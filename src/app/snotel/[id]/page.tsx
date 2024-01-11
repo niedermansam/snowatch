@@ -1,8 +1,5 @@
-import { SnotelDatePicker } from "~/common/components/DateRangePicker";
 import {
   SnotelGraphSection,
-  SnotelSnowGraph,
-  SnotelTemperatureGraph,
 } from "~/modules/snotel/components/SnotelGraph";
 import { Snotel } from "~/modules/snotel/data";
 
@@ -17,7 +14,7 @@ export default async function SnotelPage({
   await snotel.getCalendarYearDailyData();
 
   const snowData = snotel.getDailySnowGraphData();
-  const temperatureData = snotel.getDailyTemperatureData();
+  // const temperatureData = snotel.getDailyTemperatureData();
 
 
   const hasSnow = !!snowData.snowDepth.length && Math.max(...snowData.snowDepth) > 0;
