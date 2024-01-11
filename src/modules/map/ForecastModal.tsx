@@ -16,6 +16,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ForecastDiscussionSection } from "../forecast/components/ForecastDiscussionSection";
 import { ForecastDetails } from "../forecast/components/ForecastDetails";
 import { translateBearing } from "~/common/utils/translateBearing";
+import { METERS_TO_FEET } from "~/common/utils/units";
 
 export function ForecastModal({
   forecastData,
@@ -171,7 +172,7 @@ function ModalForecastBody({
 }
 
 function SnotelSection({ geohash }: { geohash: string }) {
-  const snotel = useNearbySnotel({ geohash });
+  const snotel = useNearbySnotel({ geohash, n: 6 });
 
   console.log(snotel);
 
@@ -192,18 +193,20 @@ function SnotelSection({ geohash }: { geohash: string }) {
   );
 }
 
-function SnotelSummary({ snotel }: { snotel: NearbySnotel }) {
-  if (snotel.isLoading) return null;
-  if (snotel.isError) return null;
+function SnotelSummary({ snotel }: { snotel: NearbySnotel }) { 
+
+  console.log(snotel)
+  
 
   return (
-    <div className="grid grid-cols-2 gap-2">
-      <h3 className=" font-bold">{snotel.data.name}</h3>
+    <div className=" ">
       <div className="flex flex-col gap-2 text-sm">
+      <h3 className=" font-bold text-base">{snotel.data.name}</h3>
         {snotel.data.distance} miles{" "}
         {snotel.data.bearing !== undefined &&
-          translateBearing(snotel.data.bearing)} at {snotel.data.elevation} ft.
+          translateBearing(snotel.data.bearing)} at {snotel.data.elevation || 0 * METERS_TO_FEET} ft.
       </div>
+      {snotel.data.data && <div>{snotel.data?.data[0]?.snow.depth}</div>}
     </div>
   );
 }

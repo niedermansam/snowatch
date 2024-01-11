@@ -2,7 +2,7 @@ import { useQueries, useQuery } from "@tanstack/react-query";
 import { getSnotelData } from "../server/getSnotelData";
 import type { SnotelMetadata } from "../types";
 import { getNearestSnotel } from "../server/getNearestSnotel";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 
 export function Snotel(
@@ -53,7 +53,7 @@ export function useNearbySnotel({geohash, n = 3, enabled=true}: {geohash: string
         }
     )
 
-    const combinedData = useMemo(() => {
+    const combinedData = useCallback(() => {
         return nearbySnotelData.map((snotelData, i) => {
             return {
                 ...snotelData,
@@ -68,7 +68,7 @@ export function useNearbySnotel({geohash, n = 3, enabled=true}: {geohash: string
 
 
 
-    return combinedData;
+    return combinedData();
 
 }
 

@@ -10,8 +10,8 @@ export function ForecastDetails({ forecast }: { forecast: UseForecastReturn }) {
   if (forecast.isError) return null;
 
   return (
-    <div className="flex flex-col">
-      <h3 className="pb-14 text-lg font-bold">Detailed Forecast</h3>
+    <div className="flex flex-col mt-8">
+      <h3 className="text-lg font-bold">Detailed Forecast</h3>
       {forecast.data.snow.data.map((period) => {
         return (
           <div key={period.startTime.toISOString()}>
