@@ -4,23 +4,20 @@ import { getForecastMetadata } from "../server/getMetadata";
 import type { ValidForecastPeriod } from "../server/getForecast";
 import { getForecast } from "../server/getForecast";
 
-const parseSnowData = (
-  data: ValidForecastPeriod
-): {
-  low: number;
-  high: number;
-  text: string;
-  period: string;
-  temperature: number;
-  isDaytime: boolean;
-} => {
+const captureWindSpeed = /(?<low>[0-9]+)( to (?<high>[0-9]+))?( )?mph/;
+
+const parseSnowData = (data: ValidForecastPeriod) => {
+  const gustMatch = parseGusts(data);
+
   const outputObject = {
-    low: 0,
-    high: 0,
-    text: "",
+    ...data,
+    lowSnow: 0,
+    highSnow: 0,
+    snowText: "",
     period: data.name,
     temperature: data.temperature,
     isDaytime: data.isDaytime,
+    gusts: gustMatch,
   };
 
   const snowMatch = data.detailedForecast.match(
@@ -46,18 +43,23 @@ const parseSnowData = (
     snowText = snowText.replace(/.*around two/, "2 to 2");
   }
 
-  outputObject.text = snowText;
+  outputObject.snowText = snowText;
   const snowAmountMatch = snowText.match(/([\d|\.]+) to ([\d|\.]+)/i);
 
   if (!snowAmountMatch) return outputObject;
 
-  outputObject.low = parseFloat(snowAmountMatch[1] || "0");
-  outputObject.high = parseFloat(snowAmountMatch[2] || "0");
+  outputObject.lowSnow = parseFloat(snowAmountMatch[1] || "0");
+  outputObject.highSnow = parseFloat(snowAmountMatch[2] || "0");
 
-  return outputObject;
+  return { ...outputObject };
 };
 
-const captureWindSpeed = /(?<low>[0-9]+)( to (?<high>[0-9]+))?( )?mph/;
+const parseGusts = (data: ValidForecastPeriod) => {
+  const gusts = data.detailedForecast.match(
+    /gust(s?) as high as (?<gusts>.\d+) mph/i
+  );
+  return parseInt(gusts?.groups?.gusts || "0") || null;
+};
 
 const parseWindData = (data: ValidForecastPeriod) => {
   const windMatch = data.windSpeed?.match(captureWindSpeed);
@@ -65,8 +67,10 @@ const parseWindData = (data: ValidForecastPeriod) => {
     /gust(s?) as high as (?<gusts>.\d+) mph/i
   );
   const result = {
-    low: parseInt(windMatch?.groups?.low || "0"),
-    high: parseInt(windMatch?.groups?.high || windMatch?.groups?.low || "0"),
+    lowSnow: parseInt(windMatch?.groups?.low || "0"),
+    highSnow: parseInt(
+      windMatch?.groups?.high || windMatch?.groups?.low || "0"
+    ),
     gusts: parseInt(gusts?.groups?.gusts || "0") || null,
     text: data.windSpeed,
     period: data.name,
@@ -113,16 +117,16 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
 
   const mostSnow = snowData.reduce(
     (acc, curr) => {
-      if (curr.high > acc.high) return curr;
+      if (curr.highSnow > acc.highSnow) return curr;
       return acc;
     },
-    { low: 0, high: 0, text: "", period: "" }
+    { lowSnow: 0, highSnow: 0, snowText: "", period: "" }
   );
 
   const lowSnowfallEstimateTotal =
-    snowData.reduce((acc, curr) => acc + curr.low, 0) || 0;
+    snowData.reduce((acc, curr) => acc + curr.lowSnow, 0) || 0;
   const highSnowfallEstimateTotal =
-    snowData.reduce((acc, curr) => acc + curr.high, 0) || 0;
+    snowData.reduce((acc, curr) => acc + curr.highSnow, 0) || 0;
 
   let totalSnowString = "";
 
@@ -180,7 +184,7 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
     ...forecast,
     data: {
       ...forecast.data,
-        office: metadata.data.properties.gridId,
+      office: metadata.data.properties.gridId,
       metadata: {
         ...metadata.data?.properties,
         getRelativeLocation,
@@ -199,16 +203,16 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
         total: totalSnowString,
         data: snowData,
         mostSnow,
-        getLowSnowArray: () => snowData.map((period) => period.low),
+        getLowSnowArray: () => snowData.map((period) => period.lowSnow),
         getHighSnow: (stacked = false) =>
           snowData.map((period) =>
-            stacked ? period.high - period.low : period.high
+            stacked ? period.highSnow - period.lowSnow : period.highSnow
           ),
         getCumulativeLowSnow: () => {
           let cumulativeLowSnow = 0;
 
           return snowData.map((period) => {
-            cumulativeLowSnow += period.low;
+            cumulativeLowSnow += period.lowSnow;
             return cumulativeLowSnow;
           });
         },
@@ -216,7 +220,7 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
           let cumulativeHighSnow = 0;
 
           return snowData.map((period) => {
-            cumulativeHighSnow += period.high;
+            cumulativeHighSnow += period.highSnow;
             return cumulativeHighSnow;
           });
         },
@@ -230,7 +234,7 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
               if (curr.temperature > acc.temperature) return curr;
               return acc;
             },
-            { low: 0, high: 0, text: "", period: "", temperature: 0 }
+            { lowSnow: 0, highSnow: 0, snowText: "", period: "", temperature: 0 }
           ),
         getColdestDaytimePeriod: () =>
           snowData.reduce(
@@ -239,7 +243,7 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
                 return curr;
               return acc;
             },
-            { low: 0, high: 0, text: "", period: "", temperature: 100 }
+            { lowSnow: 0, highSnow: 0, snowText: "", period: "", temperature: 100 }
           ),
         getColdestPeriod: () =>
           snowData.reduce(
@@ -247,7 +251,7 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
               if (curr.temperature < acc.temperature) return curr;
               return acc;
             },
-            { low: 0, high: 0, text: "", period: "", temperature: 100 }
+            { lowSnow: 0, highSnow: 0, snowText: "", period: "", temperature: 100 }
           ),
         averageDaytimeHigh:
           (forecast.data?.properties.periods.reduce((acc, curr) => {
@@ -262,8 +266,8 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
         wind: forecast.data?.properties.periods.map(parseWindData) || [],
         getWindiestPeriod: function (gusts = true) {
           type WindPeriod = {
-            low: number;
-            high: number;
+            lowSnow: number;
+            highSnow: number;
             gusts: number | null;
             text: string | null;
             period: string;
@@ -274,9 +278,9 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
             (acc, curr) => {
               const current: WindPeriod = curr;
 
-              if (!gusts && current.high > acc.high) return current;
+              if (!gusts && current.highSnow > acc.highSnow) return current;
               if (gusts) {
-                current.highest = current.gusts || current.high || 0;
+                current.highest = current.gusts || current.highSnow || 0;
 
                 const accummulatorHighest = acc.highest || 0;
 
@@ -286,15 +290,22 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
               }
               return acc;
             },
-            { low: 0, high: 0, gusts: 0, text: "", period: "", highest: 0 }
+            {
+              lowSnow: 0,
+              highSnow: 0,
+              gusts: 0,
+              text: "",
+              period: "",
+              highest: 0,
+            }
           );
         },
 
         getLowWind: function () {
-          return this.wind.map((period) => period.low);
+          return this.wind.map((period) => period.lowSnow);
         },
         getHighWind: function () {
-          return this.wind.map((period) => period.high);
+          return this.wind.map((period) => period.highSnow);
         },
 
         getGusts: function (option?: "value" | "stacked") {
@@ -303,18 +314,17 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
           if (option === "stacked") {
             return this.wind.map((period) => {
               if (period.gusts === null) return 0;
-              return period.gusts - period.high;
+              return period.gusts - period.highSnow;
             });
           }
         },
       },
     },
-
   };
 }
 
 export type UseForecastReturn = ReturnType<typeof useForecast>;
 
-export type UseForecastData = UseForecastReturn['data'];
+export type UseForecastData = UseForecastReturn["data"];
 
 export default useForecast;

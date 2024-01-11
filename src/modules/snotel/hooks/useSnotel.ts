@@ -71,3 +71,5 @@ export function useNearbySnotel({geohash, n = 3, enabled=true}: {geohash: string
     return combinedData;
 
 }
+
+export type NearbySnotel = ReturnType<typeof useNearbySnotel>[number] ;

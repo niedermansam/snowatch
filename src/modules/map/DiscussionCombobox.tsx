@@ -18,8 +18,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 
-
-
 function displayDate(date: string | undefined) {
   if (!date) return "Loading...";
   const foo = new Date(date);
@@ -31,9 +29,9 @@ function displayDate(date: string | undefined) {
     minute: "numeric",
     hour12: true,
     weekday: "long",
-  }); 
+  });
 
-  return displayDate.replace(',','');
+  return displayDate.replace(",", "");
 }
 
 export function DiscussionCombobox({
@@ -60,7 +58,7 @@ export function DiscussionCombobox({
   }));
 
   return (
-    <Popover  open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -68,10 +66,7 @@ export function DiscussionCombobox({
           aria-expanded={open}
           className="w-[250px] justify-between"
         >
-          {value
-            ? 
-              values.find((x) => x.id === value)?.label
-            : "Loading..."}
+          {value ? values.find((x) => x.id === value)?.label : "Loading..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -87,8 +82,8 @@ export function DiscussionCombobox({
                   value={discussion.label}
                   onSelect={(currentValue) => {
                     const currentId = values.find(
-                        (x) => x.label.toLowerCase() === currentValue
-                        )?.id;
+                      (x) => x.label.toLowerCase() === currentValue
+                    )?.id;
                     setValue(currentId || "");
                     setOpen(false);
                   }}

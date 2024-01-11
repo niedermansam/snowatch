@@ -7,6 +7,7 @@ import {
   PURPLE,
 } from "~/common/styles/ColorPalette";
 import { MIN_GRAPH_HEIGHT } from "./utils";
+import { TOOLTIP_POSITION } from "./ForecastSnowGraph";
 
 function ForecastTemperatureGraph({
   temps,
@@ -23,7 +24,10 @@ function ForecastTemperatureGraph({
       axisPointer: {
         type: "shadow",
       },
-
+      position: {
+        top: -50,
+        right: 0,
+      },
       formatter: (
         params: {
           name: string;
@@ -34,7 +38,8 @@ function ForecastTemperatureGraph({
       ) => {
         const tempParams = params[0];
         if (!tempParams) return "";
-        return `${tempParams.marker} ${tempParams.value}°F on ${tempParams.axisValue}`;
+
+        return `<div style="width:220px;">${tempParams.marker} ${tempParams.value}°F on ${tempParams.axisValue}</div>`;
       },
     },
     visualMap: {
@@ -94,22 +99,21 @@ function ForecastTemperatureGraph({
         smooth: true,
         showSymbol: false,
         markLine: {
-                animationDelay: 1000,
+          animationDelay: 1000,
           data: [
             {
               name: "Freezing",
               yAxis: 32,
-                label: {
-                  position: 'insideEndTop'
-                },
+              label: {
+                position: "insideEndTop",
+              },
               lineStyle: {
                 color: PURPLE[500],
                 type: "dashed",
               },
             },
-          
-          ]
-        }
+          ],
+        },
       },
       {
         type: "markLine",
@@ -122,10 +126,8 @@ function ForecastTemperatureGraph({
               type: "dashed",
             },
           },
-        
-        ]
-
-      }
+        ],
+      },
     ],
   };
 

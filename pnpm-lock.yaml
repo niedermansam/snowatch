@@ -125,6 +125,9 @@ dependencies:
   tailwindcss-animate:
     specifier: ^1.0.7
     version: 1.0.7(tailwindcss@3.4.1)
+  weather-icons-react:
+    specifier: ^1.2.0
+    version: 1.2.0
   zod:
     specifier: ^3.21.4
     version: 3.22.2
@@ -4344,6 +4347,10 @@ packages:
     dependencies:
       glob-to-regexp: 0.4.1
       graceful-fs: 4.2.11
+    dev: false
+
+  /weather-icons-react@1.2.0:
+    resolution: {integrity: sha512-VlLyZb9rb0Ir/NvC6T3YOcnftzUMg8hDYMb9xf1pzzM5z5wKogL6q1wZeqE5e+oHSw0CVcTFtYCbSa1ZEwnDZQ==}
     dev: false
 
   /which-boxed-primitive@1.0.2:

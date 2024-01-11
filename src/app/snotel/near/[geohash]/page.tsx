@@ -1,5 +1,4 @@
 import Link from "next/link";
-import type { QueryResultRow } from "pg";
 import dynamic from "next/dynamic";
 import { db } from "~/server/db";
 
@@ -21,14 +20,7 @@ import {
 import { ElevationSelector } from "~/modules/snotel/components/ElevationSelector";
 import { Suspense } from "react";
 import { translateBearing } from "../../../../common/utils/translateBearing";
-
-interface SnotelDistance extends QueryResultRow {
-  id: string;
-  name: string;
-  dist: number;
-  bearing: number;
-  state: string;
-}
+import { SnotelDistance } from "./SnotelDistance";
 
 const getClosestSnotels = async (
   lat: number,

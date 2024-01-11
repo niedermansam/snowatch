@@ -3,6 +3,7 @@ import { getDisplayDates } from "../utils/getDisplayDates";
 import { GRAY, RED, YELLOW } from "~/common/styles/ColorPalette";
 import type { ECBasicOption } from "echarts/types/dist/shared";
 import { MIN_GRAPH_HEIGHT } from "./utils";
+import { TOOLTIP_POSITION } from "./ForecastSnowGraph";
 
 export const ForecastWindGraph = ({
   dates,
@@ -88,6 +89,7 @@ export const ForecastWindGraph = ({
       axisPointer: {
         type: "shadow",
       },
+      position: TOOLTIP_POSITION,
       formatter: function (
         params: { name: string; value: number; marker: string  }[]
       ) {
@@ -112,7 +114,7 @@ export const ForecastWindGraph = ({
             gusts + highWind
           } mph</strong>`;
 
-        return `<div> 
+        return `<div style="width:220px;">
             ${date}<br/>
             ${highWindObj.marker} ${windString}
         </div>`;

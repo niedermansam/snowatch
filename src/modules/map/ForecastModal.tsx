@@ -5,7 +5,7 @@ import type {
   UseForecastReturn,
 } from "~/modules/forecast/hooks/useForecast";
 import ReactModal from "react-modal";
-import { useNearbySnotel } from "../snotel/hooks/useSnotel";
+import { NearbySnotel, useNearbySnotel } from "../snotel/hooks/useSnotel";
 import ForecastSnowGraph from "../forecast/components/ForecastSnowGraph";
 import { ForecastWindGraph } from "../forecast/components/ForecastWindGraph";
 import ForecastTemperatureGraph from "../forecast/components/ForecastTemperatureGraph";
@@ -13,12 +13,9 @@ import { DESKTOP_NAVBAR_HEIGHT } from "~/common/components/NavBar";
 import ModalMap from "./ModalMap";
 import Forecast from "../forecast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  UseForecastDiscussion,
-  useForecastDiscussion,
-} from "../forecast/hooks/useForecastDiscussion";
-import { DiscussionCombobox } from "./DiscussionCombobox";
-import { Button } from "@/components/ui/button";
+import { ForecastDiscussionSection } from "../forecast/components/ForecastDiscussionSection";
+import { ForecastDetails } from "../forecast/components/ForecastDetails";
+import { translateBearing } from "~/common/utils/translateBearing";
 
 export function ForecastModal({
   forecastData,
@@ -28,29 +25,26 @@ export function ForecastModal({
   const [isOpen, setIsOpen] = React.useState(false);
 
   const customStyles = {
-    content: {
-      top: "50%",
-      left: "50%",
-      right: "auto",
+    content: { 
       width: "80%",
-      height: "85%",
-      bottom: "auto",
-      marginRight: "-50%",
-      transform: `translate(-50%,  calc(-50% + ${
-        DESKTOP_NAVBAR_HEIGHT / 2
-      }px))`,
+      height: "85%",  
       zIndex: 1200,
-      overflow: "scroll",
+      
       cursor: "auto",
       borderRadius: "0.5rem",
+      margin: "auto",
     },
     overlay: {
-      zIndex: 1150,
-      backdropFilter: "blur(1px)",
+      zIndex: 1050,
+      // backdropFilter: "blur(1px)",
       backgroundColor: "rgba(0,0,0,0.25)",
-      cursor: "pointer",
+      cursor: "pointer", 
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      top: DESKTOP_NAVBAR_HEIGHT,
     },
-  };
+  } satisfies ReactModal.Styles; 
 
   if (forecastData.isLoading) return null;
   if (forecastData.isError) return null;
@@ -75,12 +69,21 @@ export function ForecastModal({
               <TabsList>
                 <TabsTrigger value="forecast">Graphs</TabsTrigger>
                 <TabsTrigger value="discussion">Details</TabsTrigger>
+                <TabsTrigger value="snotel">Snotel</TabsTrigger>
               </TabsList>
               <TabsContent value="forecast">
                 <ModalForecastBody data={forecastData.data} />
               </TabsContent>
               <TabsContent value="discussion">
-                <ForecastDiscussionSection office={forecastData.data.office} />
+                <div className="grid grid-cols-2 gap-4">
+                  <ForecastDiscussionSection
+                    office={forecastData.data.office}
+                  />
+                  <ForecastDetails forecast={forecastData} />
+                </div>
+              </TabsContent>
+              <TabsContent value="snotel">
+                <SnotelSection geohash={forecastData.data.geohash} />
               </TabsContent>
             </Tabs>
           </div>
@@ -103,7 +106,7 @@ function ModalHeader({
           {data.metadata.getRelativeLocation()}
         </p>
       </div>
-      <div className="hidden h-full w-1/3 overflow-hidden rounded-md sm:block">
+      <div className="hidden w-1/3 lg:w-1/2 overflow-hidden rounded-md sm:block -mb-12">
         <ModalMap geohash={data.geohash} />
       </div>
     </div>
@@ -138,7 +141,7 @@ function ModalForecastBody({
         <h3 className="text-sm font-bold leading-none">Wind</h3>
         <p className="pb-1 text-[0.7rem] font-light text-sw-gray-700">
           {windiestPeriod.gusts ? "Gusts" : "Winds"} up to{" "}
-          {windiestPeriod.gusts || windiestPeriod.high}mph{" "}
+          {windiestPeriod.gusts || windiestPeriod.highSnow}mph{" "}
           {windiestPeriod.period}.
         </p>
         <ForecastWindGraph
@@ -167,99 +170,40 @@ function ModalForecastBody({
   );
 }
 
-function ForecastDiscussionSection({ office }: { office: string }) {
-  const discussion = useForecastDiscussion(office);
-  return (
-    <div
-      style={{
-        whiteSpace: "pre-wrap",
-      }}
-    >
-      <ForecastDiscussionText
-        text={
-          discussion.discussions.filter(
-            (x) => x.data?.id === discussion.selectedId
-          )[0]?.data?.productText
-        }
-      >
-        <ForecastDiscussionSelector data={discussion} />
-      </ForecastDiscussionText>
-    </div>
-  );
-}
+function SnotelSection({ geohash }: { geohash: string }) {
+  const snotel = useNearbySnotel({ geohash });
 
-function ForecastDiscussionSelector({ data }: { data: UseForecastDiscussion }) {
-
-  const currentIndex = data.metadata?.findIndex((x) => x.id === data.selectedId);
-
-  const goToNext = () => {
-    if (currentIndex === undefined) return;
-    if (currentIndex === 0) return;
-    data.setSelectedId(data.metadata?.[currentIndex - 1]?.id);
-  }
-
-  const goToPrevious = () => {
-    if (currentIndex === undefined) return;
-    if(!data.metadata) return;
-    if (currentIndex === data.metadata.length - 1) return;
-    data.setSelectedId(data.metadata?.[currentIndex + 1]?.id);
-  }
+  console.log(snotel);
 
   return (
-    <div className="flex flex-col items-center gap-2 pb-4">
-      <h3 className="col-span-2">Choose Forecast Discussion</h3>
-      <div className="col-span-2">
-        <DiscussionCombobox
-          value={data.selectedId}
-          setValue={data.setSelectedId}
-          options={data.metadata}
-        />
-      </div>
-      <div className="flex gap-4">
-        <Button variant="secondary" className="w-24 " onClick={goToPrevious} disabled={
-          currentIndex === undefined || !data.metadata || currentIndex === data.metadata.length - 1
-        }>
-          Previous
-        </Button>
-        <Button variant="secondary" className="w-24 " onClick={goToNext} disabled={
-          currentIndex === undefined || currentIndex === 0
-        }>
-          Next
-        </Button>
+    <div className="flex flex-col gap-2">
+      <h3 className="text-lg font-bold">Nearby Snotel</h3>
+      <div className="flex flex-col gap-2">
+        {snotel.map((x) => {
+          return (
+            <SnotelSummary
+              key={x.data.id || "" + Math.random().toString()}
+              snotel={x}
+            />
+          );
+        })}
       </div>
     </div>
   );
 }
 
-function ForecastDiscussionText({
-  text,
-  children,
-}: {
-  text: string | undefined;
-  children?: React.ReactNode;
-}) {
-  // const [meta, discussion] = text?.split(".DISCUSSION") || ["", ""];
+function SnotelSummary({ snotel }: { snotel: NearbySnotel }) {
+  if (snotel.isLoading) return null;
+  if (snotel.isError) return null;
 
-  // const [_, _2, warnings] = meta?.split("\n\n") || ["", ""];
-
-  // console.log(warnings);
-
-  // console.log(discussion)
   return (
-    <div
-      className="max-w-xl"
-      style={{
-        whiteSpace: "pre-wrap",
-      }}
-    >
-      {children}
-      <p className="col-span-2">
-        {text
-          ?.replaceAll(/(^|\n)(?!\n)/g, " ")
-          .replaceAll(/\n+/g, "\n\n")
-          .replaceAll(/ +/g, " ")
-          .replaceAll(/\n /g, "\n")}
-      </p>
+    <div className="grid grid-cols-2 gap-2">
+      <h3 className=" font-bold">{snotel.data.name}</h3>
+      <div className="flex flex-col gap-2 text-sm">
+        {snotel.data.distance} miles{" "}
+        {snotel.data.bearing !== undefined &&
+          translateBearing(snotel.data.bearing)} at {snotel.data.elevation} ft.
+      </div>
     </div>
   );
 }

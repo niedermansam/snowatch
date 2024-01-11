@@ -4,6 +4,12 @@ import SChart from "~/common/components/SChart";
 import { getDisplayDates } from "../utils/getDisplayDates";
 import { BLUE, GRAY } from "~/common/styles/ColorPalette";
 import { MIN_GRAPH_HEIGHT } from "./utils";
+import { ECBasicOption } from "echarts/types/dist/shared";
+
+export const TOOLTIP_POSITION = {
+  top: "100%",
+  right: 0,
+};
 
 function uncapitalizePeriodLabel(period: string) {
   const newPeriod = period
@@ -122,6 +128,10 @@ export const ForecastSnowGraph = ({
       axisPointer: {
         type: "shadow",
       },
+      position:   {
+        top: '100%',
+        right: 0,
+      },
       formatter: (
         params: {
           name: string;
@@ -164,15 +174,15 @@ export const ForecastSnowGraph = ({
               : `<strong>${lowCumulative}-${highCumulative}"</strong> cumulative snowfall`;
         }
 
-        return `<div>
+        return `<div style="width:220px;">
             ${dailyString}
             ${(dataIndex !== 0 && "<br/>" + cumulativeString) || ""}
         </div>`;
       },
     },
-  };
+  } satisfies ECBasicOption;
 
-  return <SChart option={options} style={{ height: "100%", minHeight: MIN_GRAPH_HEIGHT }} />;
+  return <SChart option={options} style={{ height: "100%", minHeight: MIN_GRAPH_HEIGHT, zIndex: 1200 }} />;
 };
 
 export default ForecastSnowGraph;
