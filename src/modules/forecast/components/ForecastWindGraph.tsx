@@ -114,7 +114,7 @@ export const ForecastWindGraph = ({
             gusts + highWind
           } mph</strong>`;
 
-        return `<div style="width:220px;">
+        return `<div style="width:50vw; max-width:400px">
             ${date}<br/>
             ${highWindObj.marker} ${windString}
         </div>`;

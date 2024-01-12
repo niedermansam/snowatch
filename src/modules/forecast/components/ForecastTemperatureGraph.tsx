@@ -39,7 +39,8 @@ function ForecastTemperatureGraph({
         const tempParams = params[0];
         if (!tempParams) return "";
 
-        return `<div style="width:220px;">${tempParams.marker} ${tempParams.value}°F on ${tempParams.axisValue}</div>`;
+        return `<div style="width:50vw; max-width:400px">
+       ${tempParams.marker} ${tempParams.value}°F on ${tempParams.axisValue}</div>`;
       },
     },
     visualMap: {

@@ -174,7 +174,7 @@ export const ForecastSnowGraph = ({
               : `<strong>${lowCumulative}-${highCumulative}"</strong> cumulative snowfall`;
         }
 
-        return `<div style="width:220px;">
+        return `<div style="width:50vw; max-width:400px">
             ${dailyString}
             ${(dataIndex !== 0 && "<br/>" + cumulativeString) || ""}
         </div>`;

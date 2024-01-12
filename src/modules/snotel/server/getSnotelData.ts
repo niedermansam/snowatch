@@ -14,7 +14,7 @@ function getHourlyUrl(id: string) {
 }
 
 function getCalendarYearDailyUrl(id: string) {
-  return `https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customSingleStationReport/daily/start_of_period/${id}%7Cid=%22%22%7Cname/CurrentCY,CurrentCYEnd/WTEQ::value,WTEQ::median_1991,WTEQ::pctOfMedian_1991,SNWD::value,PREC::value,PREC::median_1991,PREC::pctOfMedian_1991,TMAX::value,TMIN::value,TAVG::value?fitToScreen=false`;
+  return `https://wcc.sc.egov.usda.gov/reportGenerator/view_csv/customSingleStationReport/daily/end_of_period/${id}%7Cid=%22%22%7Cname/CurrentCY,CurrentCYEnd/WTEQ::value,WTEQ::median_1991,WTEQ::pctOfMedian_1991,SNWD::value,PREC::value,PREC::median_1991,PREC::pctOfMedian_1991,TMAX::value,TMIN::value,TAVG::value?fitToScreen=false`;
 }
 
 type SnotelObservationLength =
