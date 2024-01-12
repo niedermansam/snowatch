@@ -6,6 +6,7 @@ import { headers } from "next/headers";
 
 import { TRPCReactProvider } from "~/trpc/react";
 import ModalProvider from "~/common/providers/ModalProvider";
+import MyQueryParamProvider from "~/common/providers/QueryParamProvider";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -27,6 +28,7 @@ export default function Layout({
   return (
     <html lang="en">
       <body  className={`font-sans ${inter.variable}`}>
+        <MyQueryParamProvider>
         <TRPCReactProvider headers={headers()}>
           <NavBar />
           <main>
@@ -34,6 +36,7 @@ export default function Layout({
           <ModalProvider />
           </main>
           </TRPCReactProvider>
+        </MyQueryParamProvider>
       </body>
     </html>
   );

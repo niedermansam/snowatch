@@ -17,13 +17,13 @@ export function MoveHandler() {
         GEOHASH_PRECISION
       );
       const locations = query.get("locations") || undefined;
-      router.replace(
-        createUrl({
-          center: centerGeoHash,
-          zoom,
-          locations: locations?.split(",") || undefined,
-        })
-      );
+      // router.replace(
+      //   createUrl({
+      //     center: centerGeoHash,
+      //     zoom,
+      //     locations: locations?.split(",") || undefined,
+      //   })
+      // );
     },
   });
   return null;

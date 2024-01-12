@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { MapContainer} from "react-leaflet";
+import { MapContainer } from "react-leaflet";
 import TileComponent from "./components/TileSelector";
 import Geohash from "latlon-geohash";
 
@@ -15,6 +15,7 @@ import { ClickHandler } from "./ClickHandler";
 import { MoveHandler } from "./MoveHandler";
 
 import { DESKTOP_NAVBAR_HEIGHT } from "~/common/components/NavBar";
+import { useMapStore } from "../forecast/forecastStore";
 export const GEOHASH_PRECISION = 8;
 
 export const createUrl = ({
@@ -30,7 +31,8 @@ export const createUrl = ({
 } = {}) => {
   const params = new URLSearchParams();
   if (center) params.set("center", center);
-  if (locations && locations.length > 0) params.set("locations", locations.join(","));
+  if (locations && locations.length > 0)
+    params.set("locations", locations.join(","));
   if (zoom) params.set("zoom", zoom.toString());
   return `${currentPath}?${params.toString()}`;
 };
@@ -38,27 +40,35 @@ export const createUrl = ({
 function ForecastMap() {
   const query = useSearchParams();
   const router = useRouter();
+  const mapStore = useMapStore();
 
   const center = Geohash.decode(
     query.get("center") || Geohash.encode(44, -114, GEOHASH_PRECISION)
   );
 
-  const zoom = parseInt( query.get("zoom") || '') || 7;
+  const zoom = parseInt(query.get("zoom") || "") || 7;
 
   const locations = query.get("locations");
 
-  const setForecasts = (forecastLocations: string[]) => {
+  const addForecasts = (forecastLocations: string[]) => {
     const centerGeoHash = query.get("center") || undefined;
     const zoomString = query.get("zoom");
     const zoom = zoomString ? parseInt(zoomString) : undefined;
 
-    router.replace(
-      createUrl({
-        locations: forecastLocations,
-        center: centerGeoHash,
-        zoom: zoom,
-      })
-    );
+    // forecastStore.setForecasts(forecastLocations);
+
+    mapStore.forecastDispatch({
+      type: "SET",
+      payload: forecastLocations,
+    });
+
+    // router.replace(
+    //   createUrl({
+    //     locations: forecastLocations,
+    //     center: centerGeoHash,
+    //     zoom: zoom,
+    //   })
+    // );
   };
 
   return (
@@ -73,14 +83,14 @@ function ForecastMap() {
     >
       <TileComponent selectedTile="esriWorldTopoMap" />
 
-      {locations?.split(",").map((forecastLocation) => {
-        if(!forecastLocation) return;
+      {mapStore.forecasts.map((forecastLocation) => {
+        if (!forecastLocation) return;
         const { lat, lon } = Geohash.decode(forecastLocation);
         return <ForecastMarker lat={lat} lng={lon} key={forecastLocation} />;
       })}
       <ClickHandler
-        forecastLocations={locations?.split(",") || []}
-        setForecasts={setForecasts}
+        forecastLocations={mapStore.forecasts || []}
+        setForecasts={addForecasts}
       />
       <MoveHandler />
     </MapContainer>

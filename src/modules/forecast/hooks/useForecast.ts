@@ -1,8 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Geohash from "latlon-geohash";
 import { getForecastMetadata } from "../server/getMetadata";
 import type { ValidForecastPeriod } from "../server/getForecast";
 import { getForecast } from "../server/getForecast";
+import { useEffect } from "react";
 
 const captureWindSpeed = /(?<low>[0-9]+)( to (?<high>[0-9]+))?( )?mph/;
 
@@ -81,19 +82,33 @@ const parseWindData = (data: ValidForecastPeriod) => {
 
 function useForecast({ lat, lng }: { lat: number; lng: number }) {
   const geohash = Geohash.encode(lat, lng, 6);
+  const queryClient= useQueryClient()
 
   const metadata = useQuery(["forecast metadata", geohash], () =>
     getForecastMetadata(lat, lng)
   );
-
+ 
   const forecast = useQuery(
     ["forecast", geohash],
     async () => {
-      if (!metadata.isSuccess) return;
+      if (!metadata.isSuccess || !metadata.data) return;
       return getForecast(metadata.data.properties.forecast);
     },
-    { enabled: metadata.isSuccess }
+    { enabled: metadata.isSuccess && !!metadata.data  }
   );
+
+  useEffect(() => {
+    setTimeout( () => {
+      if(!metadata.isLoading) return;
+      console.log("try again")
+      queryClient.invalidateQueries(["forecast metadata", geohash]).catch(e => console.log(e))
+
+    }, 1000)
+    // setTimeout(() => {
+    //   forecast.refetch();
+    // }
+    // , 1000)
+  }, [metadata, forecast])
 
   if (metadata.isError) {
     return {
@@ -164,6 +179,7 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
   };
 
   const getRelativeLocation = () => {
+    if(!metadata.data?.properties.relativeLocation) return null;
     const { distance, bearing, city, state } =
       metadata.data?.properties.relativeLocation.properties;
     return `${distance.toFixed(1)} miles ${bearing} of ${city}, ${state} at ${

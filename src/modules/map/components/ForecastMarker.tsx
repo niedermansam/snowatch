@@ -6,8 +6,9 @@ import useForecast from "~/modules/forecast/hooks/useForecast";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { GEOHASH_PRECISION, createUrl } from "../ForecastMap";
 import { ForecastModal } from "../ForecastModal";
+import { useMapStore } from "~/modules/forecast/forecastStore";
 
-function RemoveMarkerButton({ onClick }: { onClick: () => void }) {
+function RemoveMarkerButton({ onClick }: { onClick:React.MouseEventHandler<HTMLButtonElement>  }) {
   return (
     <button
       className=" rounded border border-solid border-sw-red-400 bg-sw-red-50 px-1 text-xs text-sw-red-400 hover:bg-sw-red-400 hover:text-white"
@@ -20,6 +21,7 @@ function RemoveMarkerButton({ onClick }: { onClick: () => void }) {
 
 export function ForecastMarker({ lat, lng }: { lat: number; lng: number }) {
   const map = useMap();
+  const forecastStore = useMapStore();
 
   const forecast = useForecast({ lat, lng });
   const router = useRouter();
@@ -40,13 +42,19 @@ export function ForecastMarker({ lat, lng }: { lat: number; lng: number }) {
     const zoomString = searchParams.get("zoom");
     const zoom = zoomString ? parseInt(zoomString) : undefined;
 
-    const url = createUrl({
-      locations: newLocations,
-      center,
-      zoom,
-      currentPath,
+    // const url = createUrl({
+    //   locations: newLocations,
+    //   center,
+    //   zoom,
+    //   currentPath,
+    // });
+    // router.replace(url);
+
+    // forecastStore.setForecasts(newLocations);
+    forecastStore.forecastDispatch({
+      type: "REMOVE",
+      payload: Geohash.encode(lat, lng, GEOHASH_PRECISION),
     });
-    router.replace(url);
   };
 
   const isInBounds = map.getBounds().contains([lat, lng]);
@@ -64,7 +72,13 @@ export function ForecastMarker({ lat, lng }: { lat: number; lng: number }) {
       <Marker position={[lat, lng]} ref={markerRef} autoPan={false}>
         <Popup autoPan={false} autoClose={false} ref={popupRef}>
           Loading...
-          <RemoveMarkerButton onClick={handleClose} />
+          <RemoveMarkerButton onClick={
+            (e) => { 
+                e.preventDefault();
+                e.stopPropagation();
+                handleClose();
+            }
+          } />
         </Popup>
       </Marker>
     );
@@ -79,10 +93,10 @@ export function ForecastMarker({ lat, lng }: { lat: number; lng: number }) {
       </Marker>
     );
 
-  const elevation = forecast.data.getElevation("F");
+  const elevation = forecast.data?.getElevation("F");
 
   const elevationString =
-    elevation && forecast.data.elevation ? `at ${elevation} ft` : null;
+    elevation && forecast.data?.elevation ? `at ${elevation} ft` : null;
 
   return (
     <Marker
@@ -107,11 +121,17 @@ export function ForecastMarker({ lat, lng }: { lat: number; lng: number }) {
         }}
       >
         <div className="-m-1 text-xs hover:z-[10000]">
-          <span> {forecast.data.snow.total}</span> &nbsp;
+          <span> {forecast.data?.snow.total}</span> &nbsp;
           <span className="font-light">{elevationString}</span>
           <div className="flex w-full justify-between gap-x-3 pt-1">
             <ForecastModal forecastData={forecast} />
-            <RemoveMarkerButton onClick={handleClose} />
+            <RemoveMarkerButton
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleClose();
+              }}
+            />
           </div>
         </div>
       </Popup>
