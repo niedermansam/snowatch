@@ -42,6 +42,9 @@ function ForecastMap() {
   const center = Geohash.decode(
     query.get("center") || Geohash.encode(44, -114, GEOHASH_PRECISION)
   );
+
+  const zoom = parseInt( query.get("zoom") || '') || 7;
+
   const locations = query.get("locations");
 
   const setForecasts = (forecastLocations: string[]) => {
@@ -65,7 +68,7 @@ function ForecastMap() {
         height: `calc(100dvh - ${DESKTOP_NAVBAR_HEIGHT}px)`,
       }}
       center={[center.lat, center.lon]}
-      zoom={7}
+      zoom={zoom}
       closePopupOnClick={false}
     >
       <TileComponent selectedTile="esriWorldTopoMap" />
