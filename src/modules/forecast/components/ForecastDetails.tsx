@@ -12,27 +12,33 @@ export function ForecastDetails({ forecast }: { forecast: UseForecastReturn }) {
   return (
     <div className="flex flex-col mt-8">
       <h3 className="text-lg font-bold">Detailed Forecast</h3>
-      {forecast.data.snow.data.map((period) => {
+      {forecast.data?.snow.data.map((period) => {
         return (
           <div key={period.startTime.toISOString()}>
             <div className="grid grid-cols-[1fr_20%] gap-2">
               <div className="flex flex-col">
-                <div className=" flex justify-between pr-6 font-bold">
+                <div className=" grid grid-cols-2 justify-between sm:pr-6 font-bold ">
                   {" "}
                   <p>{period.name}</p>
-                  <div className="flex gap-x-1 ">
+                  <div className="flex gap-x-1 place-self-end">
                     {period.lowSnow > 0 ? (
                       <span className="flex gap-x-1">
                         <Image
                           src={SnowflakeIcon}
                           alt="snow"
                           width={24}
+                          height={24}
+                          style={{
+                            filter: "drop-shadow( 3px 3px 2px rgba(0, 0, 0, .15))",
+                            maxHeight: "24px",
+                          }}
                           fill={false}
+                          className="inline  h-[24px]!"
                         />
                         {period.lowSnow}
                         {period.highSnow &&
-                          period.highSnow !== period.lowSnow &&
-                          ` - ${period.highSnow}"`}
+                          period.highSnow !== period.lowSnow ?
+                          ` - ${period.highSnow}"` : '"'}
                       </span>
                     ) : (
                       <span className="text-gray-200 opacity-10">

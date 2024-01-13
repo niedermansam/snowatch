@@ -1,9 +1,12 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useIsFetching, useQuery, useQueryClient } from "@tanstack/react-query";
 import Geohash from "latlon-geohash";
 import { getForecastMetadata } from "../server/getMetadata";
 import type { ValidForecastPeriod } from "../server/getForecast";
 import { getForecast } from "../server/getForecast";
 import { useEffect } from "react";
+import { useMapStore, useMapUrl } from "../forecastStore";
+import { useRouter } from "next/navigation";
+import { createUrl } from "~/modules/map/ForecastMap";
 
 const captureWindSpeed = /(?<low>[0-9]+)( to (?<high>[0-9]+))?( )?mph/;
 
@@ -82,33 +85,60 @@ const parseWindData = (data: ValidForecastPeriod) => {
 
 function useForecast({ lat, lng }: { lat: number; lng: number }) {
   const geohash = Geohash.encode(lat, lng, 6);
-  const queryClient= useQueryClient()
+  const loadingQueries = useIsFetching();
+  const forecastStore = useMapStore();
+  const router = useRouter();
 
-  const metadata = useQuery(["forecast metadata", geohash], () =>
-    getForecastMetadata(lat, lng)
+  const metadata = useQuery(
+    ["forecast metadata", geohash],
+    () => getForecastMetadata(lat, lng),
+    {
+      staleTime: Infinity,
+    }
   );
- 
-  const forecast = useQuery(
-    ["forecast", geohash],
-    async () => {
-      if (!metadata.isSuccess || !metadata.data) return;
-      return getForecast(metadata.data.properties.forecast);
+
+  const forecastUrl = metadata.data?.properties.forecast;
+
+  const forecast = useQuery({
+    queryKey: ["forecast", geohash],
+    enabled: !!forecastUrl,
+    queryFn: () => {
+      if (!forecastUrl) throw new Error("No forecast url");
+      return getForecast(forecastUrl);
     },
-    { enabled: metadata.isSuccess && !!metadata.data  }
-  );
+    staleTime: 15 * 60 * 1000,
+  });
 
   useEffect(() => {
-    setTimeout( () => {
-      if(!metadata.isLoading) return;
-      console.log("try again")
-      queryClient.invalidateQueries(["forecast metadata", geohash]).catch(e => console.log(e))
+    if (loadingQueries === 0) {
+      // update url with new forecasts
+      const currentUrl = new URL(window.location.href);
 
-    }, 1000)
-    // setTimeout(() => {
-    //   forecast.refetch();
-    // }
-    // , 1000)
-  }, [metadata, forecast])
+      const zoom = currentUrl.searchParams.get("zoom");
+      const center = currentUrl.searchParams.get("center");
+
+      const newUrl = createUrl({
+        locations: forecastStore.forecasts,
+        zoom: zoom ? parseInt(zoom) : undefined,
+        center: center || undefined,
+      });
+
+      router.replace(newUrl);
+    }
+  }, [loadingQueries, forecastStore.forecasts]);
+
+  // cancel query if metadata hasn't loaded in 5 seconds
+  useEffect(() => {
+    const timeout = setTimeout( () => {
+       if (metadata.status === "loading") {
+         metadata.remove();
+      }
+    }, 5000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [metadata.status]);
 
   if (metadata.isError) {
     return {
@@ -126,6 +156,7 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
     };
   }
 
+ 
   // console.log(forecast.data)
 
   const snowData = forecast.data?.properties.periods.map(parseSnowData) || [];
@@ -179,7 +210,7 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
   };
 
   const getRelativeLocation = () => {
-    if(!metadata.data?.properties.relativeLocation) return null;
+    if (!metadata.data?.properties.relativeLocation) return null;
     const { distance, bearing, city, state } =
       metadata.data?.properties.relativeLocation.properties;
     return `${distance.toFixed(1)} miles ${bearing} of ${city}, ${state} at ${
@@ -250,7 +281,13 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
               if (curr.temperature > acc.temperature) return curr;
               return acc;
             },
-            { lowSnow: 0, highSnow: 0, snowText: "", period: "", temperature: 0 }
+            {
+              lowSnow: 0,
+              highSnow: 0,
+              snowText: "",
+              period: "",
+              temperature: 0,
+            }
           ),
         getColdestDaytimePeriod: () =>
           snowData.reduce(
@@ -259,7 +296,13 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
                 return curr;
               return acc;
             },
-            { lowSnow: 0, highSnow: 0, snowText: "", period: "", temperature: 100 }
+            {
+              lowSnow: 0,
+              highSnow: 0,
+              snowText: "",
+              period: "",
+              temperature: 100,
+            }
           ),
         getColdestPeriod: () =>
           snowData.reduce(
@@ -267,7 +310,13 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
               if (curr.temperature < acc.temperature) return curr;
               return acc;
             },
-            { lowSnow: 0, highSnow: 0, snowText: "", period: "", temperature: 100 }
+            {
+              lowSnow: 0,
+              highSnow: 0,
+              snowText: "",
+              period: "",
+              temperature: 100,
+            }
           ),
         averageDaytimeHigh:
           (forecast.data?.properties.periods.reduce((acc, curr) => {

@@ -150,10 +150,7 @@ class ForecastDiscussionList {
   constructor(data: NoaaForecastDiscussionMetadata) {
     this.discussionMetadata = data["@graph"];
 
-    this.getDiscussion(0)
-      .then((discussion) => {
-        console.log(discussion);
-      })
+    this.getDiscussion(0) 
       .catch((error) => {
         console.error(error);
       });

@@ -47,6 +47,7 @@ export function ForecastModal({
 
   if (forecastData.isLoading) return null;
   if (forecastData.isError) return null;
+  if (!forecastData.data) return null;
 
   return (
     <>

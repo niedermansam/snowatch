@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { MapContainer } from "react-leaflet";
 import TileComponent from "./components/TileSelector";
 import Geohash from "latlon-geohash";
@@ -41,6 +41,18 @@ function ForecastMap() {
   const query = useSearchParams();
   const router = useRouter();
   const mapStore = useMapStore();
+  const forecastStore = useMapStore();
+
+  useEffect(() => {
+    const locations = query.get("locations")?.split(",") || [];
+    mapStore.forecastDispatch({
+      type: "SET",
+      payload: locations,
+    });
+   }
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  ,[])
 
   const center = Geohash.decode(
     query.get("center") || Geohash.encode(44, -114, GEOHASH_PRECISION)

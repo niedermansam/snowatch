@@ -43,18 +43,18 @@ export type ValidForecastPeriod = z.infer<
 
 export async function getForecast(url: string) {
   try {
-    const res = await fetch(url, {
+     const res = await fetch(url, {
         next: {
             revalidate:  60, // once a minute
         }
     });
-    const data = (await res.json()) as unknown;
+
+     const data = (await res.json()) as unknown;
     const safeData= validateForecast.parse(data);
 
     return safeData;
   } catch (error) {
     console.log("ERROR FETCHING FORECAST DATA")
-    console.error(error);
-    return null;
+    console.error(error); 
   }
 }
