@@ -128,8 +128,8 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
   }, [loadingQueries, forecastStore.forecasts]);
 
   // cancel query if metadata hasn't loaded in 5 seconds
-  useEffect(() => {
-    const timeout = setTimeout( () => {
+  useEffect(() => { 
+     const timeout = setTimeout( () => {
        if (metadata.status === "loading") {
          metadata.remove();
       }
@@ -138,7 +138,7 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
     return () => {
       clearTimeout(timeout);
     };
-  }, [metadata.status]);
+  }, [metadata]);
 
   if (metadata.isError) {
     return {

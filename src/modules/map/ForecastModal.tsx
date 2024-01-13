@@ -15,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ForecastDiscussionSection } from "../forecast/components/ForecastDiscussionSection";
 import { ForecastDetails } from "../forecast/components/ForecastDetails";
 import { SnotelSection } from "./SnotelSection";
+import { Button } from "@/components/ui/button";
 
 export function ForecastModal({
   forecastData,
@@ -51,12 +52,14 @@ export function ForecastModal({
 
   return (
     <>
-      <button
-        className=" rounded border border-solid  border-sw-indigo-300 bg-sw-indigo-50 px-1 text-xs text-sw-indigo-400 hover:bg-sw-indigo-400 hover:text-white"
+      <Button
+        // className=" rounded border border-solid  border-sw-indigo-300 bg-sw-indigo-50 px-1 text-xs text-sw-indigo-400 hover:bg-sw-indigo-400 hover:text-white"
+        size={"xs"}
+        variant={"indigo"}
         onClick={() => setIsOpen(true)}
       >
         details
-      </button>
+      </Button>
       <ReactModal
         style={customStyles}
         isOpen={isOpen}

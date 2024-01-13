@@ -64,13 +64,13 @@ export function DiscussionCombobox({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-[250px] justify-between"
+          className="sm:w-[250px] justify-between"
         >
           {value ? values.find((x) => x.id === value)?.label : "Loading..."}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="z-[10000] w-[250px] p-0">
+      <PopoverContent className="z-[10000] sm:w-[250px] p-0">
         <Command>
           <CommandInput placeholder="Select issuance date..." />
           <CommandEmpty>No discussion found</CommandEmpty>

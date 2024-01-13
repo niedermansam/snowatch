@@ -8,22 +8,29 @@ import { GEOHASH_PRECISION, createUrl } from "../ForecastMap";
 import { ForecastModal } from "../ForecastModal";
 import { useMapStore } from "~/modules/forecast/forecastStore";
 import { useIsFetching, useQueryClient } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
 
-function RemoveMarkerButton({ onClick }: { onClick:React.MouseEventHandler<HTMLButtonElement>  }) {
+function RemoveMarkerButton({
+  onClick,
+}: {
+  onClick: React.MouseEventHandler<HTMLButtonElement>;
+}) {
   return (
-    <button
-      className=" rounded border border-solid border-sw-red-400 bg-sw-red-50 px-1 text-xs text-sw-red-400 hover:bg-sw-red-400 hover:text-white"
+    <Button
+      // className=" rounded border border-solid border-sw-red-400 bg-sw-red-50 px-1 text-xs text-sw-red-400 hover:bg-sw-red-400 hover:text-white"
+      size="xs"
+      variant={"destructive-outline"}
       onClick={onClick}
     >
       remove
-    </button>
+    </Button>
   );
 }
 
 export function ForecastMarker({ lat, lng }: { lat: number; lng: number }) {
   const map = useMap();
   const forecastStore = useMapStore();
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   const forecast = useForecast({ lat, lng });
   const router = useRouter();
@@ -55,7 +62,6 @@ export function ForecastMarker({ lat, lng }: { lat: number; lng: number }) {
 
     // forecastStore.setForecasts(newLocations);
 
-
     forecastStore.forecastDispatch({
       type: "REMOVE",
       payload: Geohash.encode(lat, lng, GEOHASH_PRECISION),
@@ -64,6 +70,15 @@ export function ForecastMarker({ lat, lng }: { lat: number; lng: number }) {
 
   const isInBounds = map.getBounds().contains([lat, lng]);
 
+  const resetQuery = () => {
+    forecast.remove();
+    forecast.refetch().catch((e) => {
+      console.error(e);
+
+    });
+
+  }
+
   React.useEffect(() => {
     if (isInBounds) {
       markerRef.current?.openPopup();
@@ -71,20 +86,19 @@ export function ForecastMarker({ lat, lng }: { lat: number; lng: number }) {
       markerRef.current?.closePopup();
     }
   }, [isInBounds]);
- 
 
   if (forecast.isLoading)
     return (
       <Marker position={[lat, lng]} ref={markerRef} autoPan={false}>
         <Popup autoPan={false} autoClose={false} ref={popupRef}>
           Loading...
-          <RemoveMarkerButton onClick={
-            (e) => { 
-                e.preventDefault();
-                e.stopPropagation();
-                removeForecast();
-            }
-          } />
+          <RemoveMarkerButton
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              removeForecast();
+            }}
+          />
         </Popup>
       </Marker>
     );
@@ -93,14 +107,25 @@ export function ForecastMarker({ lat, lng }: { lat: number; lng: number }) {
     return (
       <Marker position={[lat, lng]} ref={markerRef} autoPan={false}>
         <Popup autoPan={false} autoClose={false}>
-          Error loading forecast
-          <RemoveMarkerButton
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              removeForecast();
-            }}
-          />
+          <div className="flex flex-col">
+            <span>Error loading forecast</span>
+            <div className="flex justify-between">
+              <Button size="xs" variant="secondary" onClick={
+                (e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  resetQuery();
+                }
+              }>Reload</Button>
+              <RemoveMarkerButton
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  removeForecast();
+                }}
+              />
+            </div>
+          </div>
         </Popup>
       </Marker>
     );
