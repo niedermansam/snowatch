@@ -6,8 +6,7 @@ import dynamic from 'next/dynamic';
 
 const ForecastMap = dynamic(() => import('~/modules/map/ForecastMap'), { ssr: false })
 
-export const runtime = "edge"
-
+ 
 function MapPage() {
 
   return (

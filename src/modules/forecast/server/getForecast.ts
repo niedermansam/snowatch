@@ -55,6 +55,6 @@ export async function getForecast(url: string) {
     return safeData;
   } catch (error) {
     console.log("ERROR FETCHING FORECAST DATA")
-    console.error(error); 
+    console.log(error); 
   }
 }
