@@ -12,8 +12,7 @@ export function useForecastDiscussion(office: string) {
     ? forecastDiscussionList.data["@graph"][0]
     : undefined;
 
-  console.log(mostRecentDiscussionMetadata);
-
+ 
   const [selectedId, setSelectedId] = useState(
     mostRecentDiscussionMetadata?.id
   );

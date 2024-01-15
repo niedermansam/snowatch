@@ -35,7 +35,6 @@ export async function getDiscussion(url:string) {
     });
     const data = (await res.json()) as unknown;
 
-    console.log(data)
-
+ 
     return forecastDiscussionValidator.parse(data)
 }

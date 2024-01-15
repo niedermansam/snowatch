@@ -23,8 +23,7 @@ export default async function SnotelPage({
 
   const dateRange = [new Date(), defaultEndDate];
 
-  console.log(dateRange)
-
+ 
 
   return (
     <div>

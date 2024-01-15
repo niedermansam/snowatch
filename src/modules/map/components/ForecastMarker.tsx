@@ -94,17 +94,9 @@ export function ForecastMarker({ lat, lng }: { lat: number; lng: number }) {
         <Popup
           autoPan={false}
           autoClose={false}
-          ref={popupRef}
-          eventHandlers={{
-            mouseover: (e) => {
-              console.log(e);
-            },
-          }}
+          ref={popupRef} 
         >
-          <div
-            onMouseOver={(e) => {
-              console.log(e);
-            }}
+          <div 
             className="  -m-1 grid w-32   grid-cols-2 place-items-center gap-x-6"
           >
             <span
@@ -185,21 +177,12 @@ export function ForecastMarker({ lat, lng }: { lat: number; lng: number }) {
       ref={markerRef}
       autoPan={false}
       riseOnHover={true}
-      riseOffset={100}
-      eventHandlers={{
-        click: (e) => {
-          console.log(e);
-        },
-      }}
+      riseOffset={100} 
     >
       <Popup
         autoPan={false}
         autoClose={false}
-        eventHandlers={{
-          click: (e) => {
-            console.log(e);
-          },
-        }}
+        
       >
         <div className="-m-1 text-xs hover:z-[10000]">
           <span> {forecast.data?.snow.total}</span> &nbsp;
