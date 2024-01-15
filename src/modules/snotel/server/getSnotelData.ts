@@ -1,31 +1,31 @@
 import { processSnotelCSV } from "../processSnotelCSV";
 import type { SnotelMetadata } from "../types";
-function getUrl({
-  beginDate,
-  endDate,
-  duration,
-  elements,
-  stationTriplets,
-}: Partial<{
-  beginDate: string;
-  endDate: string;
-  duration:
-    | "DAILY"
-    | "HOURLY"
-    | "SEMIMONTHLY"
-    | "MONTHLY"
-    | "WATER_YEAR"
-    | "CALENDAR_YEAR";
-  elements: (keyof typeof SnotelElementCodes)[];
-}> & {
-  stationTriplets: string;
-}) {
-  //https://wcc.sc.egov.usda.gov/awdbRestApi/services/v1/data?beginDate=2024-01-01&centralTendencyType=AVERAGE&duration=DAILY&elements=TAVG&endDate=2024-01-14&periodRef=END&returnFlags=false&returnOriginalValues=false&returnSuspectData=false&stationTriplets=916%3AMT%3ASNTL
+// function getUrl({
+//   beginDate,
+//   endDate,
+//   duration,
+//   elements,
+//   stationTriplets,
+// }: Partial<{
+//   beginDate: string;
+//   endDate: string;
+//   duration:
+//     | "DAILY"
+//     | "HOURLY"
+//     | "SEMIMONTHLY"
+//     | "MONTHLY"
+//     | "WATER_YEAR"
+//     | "CALENDAR_YEAR";
+//   elements: (keyof typeof SnotelElementCodes)[];
+// }> & {
+//   stationTriplets: string;
+// }) {
+//   //https://wcc.sc.egov.usda.gov/awdbRestApi/services/v1/data?beginDate=2024-01-01&centralTendencyType=AVERAGE&duration=DAILY&elements=TAVG&endDate=2024-01-14&periodRef=END&returnFlags=false&returnOriginalValues=false&returnSuspectData=false&stationTriplets=916%3AMT%3ASNTL
 
-  return `https://wcc.sc.egov.usda.gov/awdbRestApi/services/v1/data?beginDate=${beginDate}&centralTendencyType=AVERAGE&duration=${duration}&elements=${elements?.join(
-    "%2C"
-  )}&endDate=${endDate}&periodRef=END&returnFlags=false&returnOriginalValues=false&returnSuspectData=false&stationTriplets=${stationTriplets}`;
-}
+//   return `https://wcc.sc.egov.usda.gov/awdbRestApi/services/v1/data?beginDate=${beginDate}&centralTendencyType=AVERAGE&duration=${duration}&elements=${elements?.join(
+//     "%2C"
+//   )}&endDate=${endDate}&periodRef=END&returnFlags=false&returnOriginalValues=false&returnSuspectData=false&stationTriplets=${stationTriplets}`;
+// }
 
 const SnotelElementCodes = {
   WTEQ: "Snow Water Equivalent",
@@ -42,23 +42,23 @@ const SnotelElementCodes = {
 };
 
 
-export function getSnotelData ({
+// export function getSnotelData ({
 
-}) {
-  const url = getUrl({
-    beginDate: "2021-01-01",
-    endDate: "2021-01-14",
-    duration: "DAILY",
-    elements: ["WTEQ", "SNWD", "TAVG", "TMIN", "TMAX", "SNDN"],
-    stationTriplets: "916:MT:SNTL",
-  });
+// }) {
+//   const url = getUrl({
+//     beginDate: "2021-01-01",
+//     endDate: "2021-01-14",
+//     duration: "DAILY",
+//     elements: ["WTEQ", "SNWD", "TAVG", "TMIN", "TMAX", "SNDN"],
+//     stationTriplets: "916:MT:SNTL",
+//   });
 
-  fetch(url)
-    .then((res) => res.json())
-    .then((data) => {
-      console.log(data);
-    });
-}
+//   fetch(url)
+//     .then((res) => res.json())
+//     .then((data) => {
+//       console.log(data);
+//     });
+// }
 
 
 function get30DayUrl(id: string) {

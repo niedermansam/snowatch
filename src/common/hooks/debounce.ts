@@ -33,13 +33,4 @@ export function useDebounce<Func extends SomeFunction>(
   return debouncedFunction;
 }
 
-export function debounce <Func extends SomeFunction>(func: Func, delay = 1000,) {
-  let timer: Timer;
-
-  return (...args: any[]) => {
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      func(...args);
-    }, delay);
-  };
-}
+ 

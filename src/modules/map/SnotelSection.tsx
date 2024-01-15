@@ -1,47 +1,68 @@
 "use client";
 import React from "react";
-import { NearbySnotel, Snotel, useNearbySnotel } from "../snotel/hooks/useSnotel";
+import {
+  NearbySnotel,
+  Snotel,
+  useNearbySnotel,
+} from "../snotel/hooks/useSnotel";
 import { translateBearing } from "~/common/utils/translateBearing";
 import { METERS_TO_FEET } from "~/common/utils/units";
-import { SnowIcon } from "~/app/test/page";
+import { SnowIcon } from "~/app/test/SnowIcon";
 import { twMerge } from "tailwind-merge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const N_SNOTEL = 6;
 
-function SnotelCard({children, className}: {children: React.ReactNode, className?: string}) {
+function SnotelCard({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
-    <div className={twMerge(" flex min-h-48 w-full flex-col items-center  rounded p-4 text-center text-xl font-bold shadow")}>
+    <div
+      className={twMerge(
+        " min-h-48 flex w-full flex-col items-center  rounded p-4 text-center text-xl font-bold shadow"
+      )}
+    >
       {children}
     </div>
   );
 }
 
-function LoadingCard({data}: {
+function LoadingCard({
+  data,
+}: {
   data?: {
     id?: string;
     name?: string;
     distance?: number;
     bearing?: number;
     elevation?: number;
-  }
+  };
 }) {
-  const showHeader = data?.name !== undefined && data?.distance !== undefined && data?.bearing !== undefined && data?.elevation !== undefined;
+  const showHeader =
+    data?.name !== undefined &&
+    data?.distance !== undefined &&
+    data?.bearing !== undefined &&
+    data?.elevation !== undefined;
   return (
     <SnotelCard className="opacity-70">
-      
-        <h3 className=" pb-2 text-lg font-bold">
-         {showHeader && ( <>{data.name}{" "}
-          <span className="text-sm font-light">
-            {data.distance} miles{" "}
-            {data.bearing !== undefined &&
-              translateBearing(data.bearing)}{" "}
-            at {((data.elevation || 0) * METERS_TO_FEET).toFixed(0)} ft.
-          </span></>
-      )}
-        </h3>
+      <h3 className=" pb-2 text-lg font-bold">
+        {showHeader && (
+          <>
+            {data.name}{" "}
+            <span className="text-sm font-light">
+              {data.distance} miles{" "}
+              {data.bearing !== undefined && translateBearing(data.bearing)} at{" "}
+              {((data.elevation || 0) * METERS_TO_FEET).toFixed(0)} ft.
+            </span>
+          </>
+        )}
+      </h3>
       <SnowIcon size="lg" className="size-16" loading />
-      Loading {showHeader ? 'Snotel' : "Data"}...
+      Loading {showHeader ? "Snotel" : "Data"}...
     </SnotelCard>
   );
 }
@@ -57,7 +78,6 @@ export function SnotelSection({ geohash }: { geohash: string }) {
           .fill(null)
           .map((x, i) => (
             <LoadingCard key={i} />
-          
           ))}
       </div>
     );
@@ -177,7 +197,7 @@ function SnotelSummary({ snotel }: { snotel: NearbySnotel }) {
 function SnowDepthSection({ data }: { data: NearbySnotel["data"]["data"] }) {
   if (!data) return null;
   return (
-    <div className="grid  grid-cols-3 gap-x-2 text-center text-sm w-48">
+    <div className="grid  w-48 grid-cols-3 gap-x-2 text-center text-sm">
       <p className="col-span-2 w-full text-left text-base font-bold">
         Snow Depth:
       </p>
@@ -207,7 +227,7 @@ function SweSection({ data }: { data: NearbySnotel["data"]["data"] }) {
   const lastValue = data[data.length - 1]?.swe.value;
 
   return (
-    <div className="grid grid-cols-3 gap-x-2 text-center text-sm w-48">
+    <div className="grid w-48 grid-cols-3 gap-x-2 text-center text-sm">
       <p className="w-full text-left text-base  font-bold">SWE:</p>
       <p className="col-span-2 w-full text-right text-base  font-bold">
         {data[data.length - 1]?.swe.value}&quot;

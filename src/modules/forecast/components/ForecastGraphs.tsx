@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import React, { useRef } from "react";
 import type { UseForecastReturn } from "../hooks/useForecast";
 import SChart from "~/common/components/SChart";
@@ -11,8 +13,7 @@ import {
   RED,
   YELLOW,
 } from "~/common/styles/ColorPalette";
-import { EChartsOption } from "echarts";
-import { debounce } from "~/common/hooks/debounce";
+import { EChartsOption } from "echarts"; 
 import { parse } from "path";
 //  data: NonNullable<UseForecastReturn["data"]>;
 
@@ -96,7 +97,7 @@ export function ForecastGraphs({
         align: "left",
         formatter: (params) => {
           const value = Number(params.value);
-          return (value as number) > 0 ? value.toString() + " mph" : "";
+          return (value ) > 0 ? value.toString() + " mph" : "";
         },
         position: "bottom",
       },
@@ -116,28 +117,31 @@ export function ForecastGraphs({
         show: true,
         formatter: (params) => {
           const currentPeriod =
-            data.properties?.periods[params.dataIndex as number];
+            data.properties?.periods[params.dataIndex];
 
           const highLowIsSame =
-            data.wind.getLowWind()[params.dataIndex as number] ===
-            data.wind.getHighWind()[params.dataIndex as number];
+            data.wind.getLowWind()[params.dataIndex ] ===
+            data.wind.getHighWind()[params.dataIndex ];
 
           if (highLowIsSame) return "";
 
-          const gusts = data.wind.getGusts()![params.dataIndex as number];
+          const gusts = data.wind.getGusts()
+
+          const gustData = gusts? gusts[params.dataIndex ] : 0;
           const value = Number(params.value);
           const outString =
-            (value as number) > 0 ? value.toString() + " mph" : "";
-          return (gusts ? "   " : "") + outString;
+            value > 0 ? value.toString() + " mph" : "";
+          return (gustData ? "   " : "") + outString;
         },
       },
       emphasis: {
         disabled: true,
       },
       labelLayout: (params) => {
-        const gusts = data.wind.getGusts()![params.dataIndex as number];
+        const gusts = data.wind.getGusts()
+        const currentGusts = gusts ? gusts[params.dataIndex || 0 ] : 0;
         return { 
-          dy: !gusts ? 0 : 25,
+          dy: !currentGusts ? 0 : 25,
         };
       }
     },
@@ -246,19 +250,22 @@ export function ForecastGraphs({
       axisPointer: {
         type: "shadow",
       },
-      formatter: function (params) {
-        //  console.log(params[0].dataIndex);
-        if (params === undefined || params === null) return "";
-        if (Array.isArray(params) === false) return "";
-        if (params[0] === undefined || params[0] === null) return "";
+      formatter: function (foo) {
+        //  console.log(params[0].dataIndex); 
+        const params = foo as unknown
 
-        if (
+        if(!Array.isArray(params)) return "";
+        
+         if (
           typeof params[0] !== "object" ||
           "dataIndex" in params[0] === false ||
+
+          // es-lint-disable @typescript-eslint/no-unsafe-member-access
           typeof params[0].dataIndex !== "number"
         )
           return "";
 
+          // es-lint-disable @typescript-eslint/no-unsafe-member-access
         if (selectedPeriod === params[0].dataIndex) return "";
 
         setSelectedPeriod(params[0].dataIndex);
@@ -297,7 +304,7 @@ export function ForecastGraphs({
           show: true,
           formatter: (params) => {
             const value = Number(params.value);
-            return (value as number) > 0 ? value.toString() + '"' : "";
+            return value > 0 ? value.toString() + '"' : "";
           },
         },
         emphasis: {
@@ -316,7 +323,7 @@ export function ForecastGraphs({
           show: true,
           formatter: (params) => {
             const value = Number(params.value);
-            return (value as number) > 0 ? value.toString() + '"' : "";
+            return value > 0 ? value.toString() + '"' : "";
           },
         },
         color: INDIGO[300],
@@ -347,7 +354,7 @@ export function ForecastGraphs({
 
             if (!lowSnowHasChanged) return "";
             const value = Number(params.value);
-            return (value as number) > 0 ? value.toString() + '"' : "";
+            return value > 0 ? value.toString() + '"' : "";
           },
         },
         symbolSize: 0,
@@ -378,7 +385,7 @@ export function ForecastGraphs({
             if (!highSnowHasChanged) return "";
 
             const value = Number(params.value);
-            return (value as number) > 0 ? value.toString() + '"' : "";
+            return value > 0 ? value.toString() + '"' : "";
           },
         },
       },

@@ -9,7 +9,7 @@ import { ForecastModal } from "../ForecastModal";
 import { useMapStore } from "~/modules/forecast/forecastStore";
 import { useIsFetching, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
-import { SnowIcon } from "~/app/test/page";
+import { SnowIcon } from "~/app/test/SnowIcon";
 import { AlertTriangle } from "lucide-react";
 import { ReloadIcon } from "@radix-ui/react-icons";
 
@@ -122,7 +122,7 @@ export function ForecastMarker({ lat, lng }: { lat: number; lng: number }) {
                 e.stopPropagation();
                 resetQuery();
               }}
-            > 
+            >
               <ReloadIcon
                 className="size-3 mr-1 stroke-[4]"
                 strokeWidth={2.75}

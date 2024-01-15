@@ -6,7 +6,7 @@ import {
 } from "../hooks/useForecastDiscussion";
 import { DiscussionCombobox } from "../../map/DiscussionCombobox";
 import { Button } from "@/components/ui/button";
-import { SnowIcon } from "~/app/test/page";
+import { SnowIcon } from "~/app/test/SnowIcon";
 
 export function ForecastDiscussionSection({ office }: { office: string }) {
   const discussion = useForecastDiscussion(office);
@@ -97,7 +97,9 @@ function ForecastDiscussionText({
       <div className="flex animate-pulse flex-col items-center justify-center  pt-24  font-black text-slate-500">
         <SnowIcon size="lg" className=" grayscale-[.4]" />
         <p className="text-6xl">Loading</p>
-        <p className="text-3xl font-normal tracking-tighter">Forecast Discussion</p>
+        <p className="text-3xl font-normal tracking-tighter">
+          Forecast Discussion
+        </p>
       </div>
     );
 
