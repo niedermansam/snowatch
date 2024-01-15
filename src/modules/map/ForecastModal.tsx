@@ -16,6 +16,7 @@ import { ForecastDiscussionSection } from "../forecast/components/ForecastDiscus
 import { ForecastDetails } from "../forecast/components/ForecastDetails";
 import { SnotelSection } from "./SnotelSection";
 import { Button } from "@/components/ui/button";
+import { ForecastGraphs } from "../forecast/components/ForecastGraphs";
 
 export function ForecastModal({
   forecastData,
@@ -75,7 +76,9 @@ export function ForecastModal({
                 <TabsTrigger value="snotel">Snotel</TabsTrigger>
               </TabsList>
               <TabsContent value="forecast">
-                <ModalForecastBody data={forecastData.data} />
+                
+                <ForecastGraphs  data={forecastData.data}/>
+                {/* <ModalForecastBody data={forecastData.data} /> */}
               </TabsContent>
               <TabsContent value="discussion">
                 <div className="grid lg:grid-cols-2 gap-4">

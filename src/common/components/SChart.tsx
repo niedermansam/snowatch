@@ -85,12 +85,14 @@ echarts.use([
   option,
   style,
   theme,
-  ref
+  ref,
+  onEvents,
 }: {
   option: echarts.EChartsCoreOption;
   style?: React.CSSProperties;
   theme?: string;
-  ref?: React.MutableRefObject<ReactEChartsCore>;
+  ref?: React.MutableRefObject<ReactEChartsCore | null> | null;
+  onEvents?: Record<string, (params: any) => void>;
 }) =>
   typeof window !== "undefined" && (
     <ReactEChartsCore
@@ -102,6 +104,7 @@ echarts.use([
       theme={theme}
       style={style}
       ref={ref}
+      onEvents={onEvents}
     />
   );
 

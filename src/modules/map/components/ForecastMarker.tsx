@@ -9,6 +9,9 @@ import { ForecastModal } from "../ForecastModal";
 import { useMapStore } from "~/modules/forecast/forecastStore";
 import { useIsFetching, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
+import { SnowIcon } from "~/app/test/page";
+import { AlertTriangle } from "lucide-react";
+import { ReloadIcon } from "@radix-ui/react-icons";
 
 function RemoveMarkerButton({
   onClick,
@@ -74,10 +77,8 @@ export function ForecastMarker({ lat, lng }: { lat: number; lng: number }) {
     forecast.remove();
     forecast.refetch().catch((e) => {
       console.error(e);
-
     });
-
-  }
+  };
 
   React.useEffect(() => {
     if (isInBounds) {
@@ -90,15 +91,52 @@ export function ForecastMarker({ lat, lng }: { lat: number; lng: number }) {
   if (forecast.isLoading)
     return (
       <Marker position={[lat, lng]} ref={markerRef} autoPan={false}>
-        <Popup autoPan={false} autoClose={false} ref={popupRef}>
-          Loading...
-          <RemoveMarkerButton
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              removeForecast();
+        <Popup
+          autoPan={false}
+          autoClose={false}
+          ref={popupRef}
+          eventHandlers={{
+            mouseover: (e) => {
+              console.log(e);
+            },
+          }}
+        >
+          <div
+            onMouseOver={(e) => {
+              console.log(e);
             }}
-          />
+            className="  -m-1 grid w-32   grid-cols-2 place-items-center gap-x-6"
+          >
+            <span
+              className="my-0! col-span-2 flex w-full animate-pulse items-end gap-x-1 pb-2 text-xs font-bold text-slate-400"
+              style={{ margin: 0 }}
+            >
+              <SnowIcon />
+              Loading&nbsp;Forecast
+            </span>
+            <Button
+              size="xs"
+              variant="secondary"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                resetQuery();
+              }}
+            > 
+              <ReloadIcon
+                className="size-3 mr-1 stroke-[4]"
+                strokeWidth={2.75}
+              />{" "}
+              reload
+            </Button>
+            <RemoveMarkerButton
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                removeForecast();
+              }}
+            />
+          </div>
         </Popup>
       </Marker>
     );
@@ -108,15 +146,21 @@ export function ForecastMarker({ lat, lng }: { lat: number; lng: number }) {
       <Marker position={[lat, lng]} ref={markerRef} autoPan={false}>
         <Popup autoPan={false} autoClose={false}>
           <div className="flex flex-col">
-            <span>Error loading forecast</span>
+            <span className="flex items-end gap-x-1 pb-1 text-xs font-bold text-sw-red-600">
+              <AlertTriangle className="size-4 mb-0.5" /> Error loading forecast
+            </span>
             <div className="flex justify-between">
-              <Button size="xs" variant="secondary" onClick={
-                (e) => {
+              <Button
+                size="xs"
+                variant="secondary"
+                onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
                   resetQuery();
-                }
-              }>Reload</Button>
+                }}
+              >
+                reload
+              </Button>
               <RemoveMarkerButton
                 onClick={(e) => {
                   e.preventDefault();

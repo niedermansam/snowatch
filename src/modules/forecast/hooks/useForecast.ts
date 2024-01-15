@@ -13,6 +13,8 @@ const captureWindSpeed = /(?<low>[0-9]+)( to (?<high>[0-9]+))?( )?mph/;
 const parseSnowData = (data: ValidForecastPeriod) => {
   const gustMatch = parseGusts(data);
 
+  console.log(gustMatch)
+
   const outputObject = {
     ...data,
     lowSnow: 0,
@@ -62,6 +64,9 @@ const parseGusts = (data: ValidForecastPeriod) => {
   const gusts = data.detailedForecast.match(
     /gust(s?) as high as (?<gusts>.\d+) mph/i
   );
+
+ 
+
   return parseInt(gusts?.groups?.gusts || "0") || null;
 };
 
@@ -375,7 +380,7 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
 
         getGusts: function (option?: "value" | "stacked") {
           if (option === "value" || option === undefined)
-            return this.wind.map((period) => period.gusts);
+            return this.wind.map((period) => period.gusts || 0);
           if (option === "stacked") {
             return this.wind.map((period) => {
               if (period.gusts === null) return 0;
