@@ -13,8 +13,7 @@ const captureWindSpeed = /(?<low>[0-9]+)( to (?<high>[0-9]+))?( )?mph/;
 const parseSnowData = (data: ValidForecastPeriod) => {
   const gustMatch = parseGusts(data);
 
-  console.log(gustMatch)
-
+ 
   const outputObject = {
     ...data,
     lowSnow: 0,
@@ -104,6 +103,7 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
 
   const forecastUrl = metadata.data?.properties.forecast;
 
+ 
   const forecast = useQuery({
     queryKey: ["forecast", geohash],
     enabled: !!forecastUrl,
@@ -137,6 +137,9 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
      const timeout = setTimeout( () => {
        if (metadata.status === "loading") {
          metadata.remove();
+         metadata.refetch().catch(() => {
+            // do nothing
+         });
       }
     }, 5000);
 

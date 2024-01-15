@@ -5,7 +5,7 @@ import { z } from "zod";
  const validateForecast = z.object({
   geometry: z.object({
     coordinates: z.array(z.array(z.array(z.number()))),
-  }),
+  }).optional(),
   properties: z.object({
     generatedAt: z.string().transform((val) =>  new Date(val)),
     elevation: z.object({

@@ -14,6 +14,7 @@ const discussionListValidator = z.object({
 
 
 export async function getDiscussionList(station:string){
+    try {
     const res = await  fetch("https://api.weather.gov/products/types/AFD/locations/" + station, {
         next: {
             revalidate: 60*5
@@ -22,6 +23,9 @@ export async function getDiscussionList(station:string){
     const data = (await res.json()) as unknown;
 
     return discussionListValidator.parse(data)
+} catch (error) {
+    console.error(error)
+}
 }
 
 const forecastDiscussionValidator = z.object({

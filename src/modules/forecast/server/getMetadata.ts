@@ -1,39 +1,5 @@
 "use server";
-import { z } from "zod";
-import { translateBearing } from "~/common/utils/translateBearing";
-import { METERS_TO_MILES } from "~/common/utils/units";
-
-const API_URL = "https://api.weather.gov/points/";
-
-const metadataUrl = (lat: number, lng: number) => `${API_URL}${lat},${lng}`;
-
-const validateMetadata = z.object({
-  properties: z.object({
-    gridId: z.string(),
-    forecast: z.string().url(),
-    forecastHourly: z.string().url(),
-    relativeLocation: z.object({
-      properties: z.object({
-        city: z.string(),
-        state: z.string(),
-        distance: z
-          .object({
-            value: z.number(),
-            unitCode: z.string(),
-          })
-          .transform((data) => data.value * METERS_TO_MILES),
-        bearing: z
-          .object({
-            value: z.number(),
-            unitCode: z.string(),
-          })
-          .transform((data) => translateBearing(data.value)),
-      }),
-    }),
-  }),
-});
-
-export type NoaaMetadata = z.infer<typeof validateMetadata>;
+import { metadataUrl, validateMetadata } from "./metadataUrl";
 
 export async function getForecastMetadata(lat: number, lng: number) {
   try {
@@ -41,17 +7,16 @@ export async function getForecastMetadata(lat: number, lng: number) {
       cache: "force-cache",
     });
 
-    if(!res.ok) throw new Error("Error fetching metadata");
+    if (!res.ok) throw new Error("Error fetching metadata");
     const data = (await res.json()) as unknown;
 
- 
     const parsed = validateMetadata.parse(data, {
-      errorMap: () => ({message: "Error parsing metadata"}),
+      errorMap: () => ({ message: "Error parsing metadata" }),
     });
 
-     return validateMetadata.parse(data);
+    return validateMetadata.parse(data);
   } catch (error) {
     console.log("ERROR FETCHING METADATA");
-    console.error(error); 
+    console.error(error);
   }
 }
