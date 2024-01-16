@@ -1,6 +1,7 @@
 
 'use server'
 import { z } from "zod";
+import { USER_AGENT } from "../utils/userAgents";
 
  const validateForecast = z.object({
   geometry: z.object({
@@ -46,15 +47,20 @@ export async function getForecast(url: string) {
      const res = await fetch(url, {
         next: {
             revalidate:  60, // once a minute
+        },
+        headers: {
+          'User-Agent': USER_AGENT
         }
     });
-
+ 
      const data = (await res.json()) as unknown;
+
+ 
     const safeData= validateForecast.parse(data);
 
     return safeData;
   } catch (error) {
     console.log("ERROR FETCHING FORECAST DATA")
-    console.log(error); 
+    console.log(error);  
   }
 }

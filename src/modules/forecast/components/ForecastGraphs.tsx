@@ -13,7 +13,7 @@ import {
   RED,
   YELLOW,
 } from "~/common/styles/ColorPalette";
-import { EChartsOption } from "echarts"; 
+import { EChartsOption } from "echarts";
 import { parse } from "path";
 //  data: NonNullable<UseForecastReturn["data"]>;
 
@@ -97,7 +97,7 @@ export function ForecastGraphs({
         align: "left",
         formatter: (params) => {
           const value = Number(params.value);
-          return (value ) > 0 ? value.toString() + " mph" : "";
+          return value > 0 ? value.toString() + " mph" : "";
         },
         position: "bottom",
       },
@@ -116,21 +116,19 @@ export function ForecastGraphs({
       label: {
         show: true,
         formatter: (params) => {
-          const currentPeriod =
-            data.properties?.periods[params.dataIndex];
+          const currentPeriod = data.properties?.periods[params.dataIndex];
 
           const highLowIsSame =
-            data.wind.getLowWind()[params.dataIndex ] ===
-            data.wind.getHighWind()[params.dataIndex ];
+            data.wind.getLowWind()[params.dataIndex] ===
+            data.wind.getHighWind()[params.dataIndex];
 
           if (highLowIsSame) return "";
 
-          const gusts = data.wind.getGusts()
+          const gusts = data.wind.getGusts();
 
-          const gustData = gusts? gusts[params.dataIndex ] : 0;
+          const gustData = gusts ? gusts[params.dataIndex] : 0;
           const value = Number(params.value);
-          const outString =
-            value > 0 ? value.toString() + " mph" : "";
+          const outString = value > 0 ? value.toString() + " mph" : "";
           return (gustData ? "   " : "") + outString;
         },
       },
@@ -138,12 +136,12 @@ export function ForecastGraphs({
         disabled: true,
       },
       labelLayout: (params) => {
-        const gusts = data.wind.getGusts()
-        const currentGusts = gusts ? gusts[params.dataIndex || 0 ] : 0;
-        return { 
+        const gusts = data.wind.getGusts();
+        const currentGusts = gusts ? gusts[params.dataIndex || 0] : 0;
+        return {
           dy: !currentGusts ? 0 : 25,
         };
-      }
+      },
     },
     {
       data: data.wind.getGusts("stacked") as number[],
@@ -251,21 +249,20 @@ export function ForecastGraphs({
         type: "shadow",
       },
       formatter: function (foo) {
-        //  console.log(params[0].dataIndex); 
-        const params = foo as unknown
+        //  console.log(params[0].dataIndex);
+        const params = foo as unknown;
 
-        if(!Array.isArray(params)) return "";
-        
-         if (
+        if (!Array.isArray(params)) return "";
+
+        if (
           typeof params[0] !== "object" ||
           "dataIndex" in params[0] === false ||
-
           // es-lint-disable @typescript-eslint/no-unsafe-member-access
           typeof params[0].dataIndex !== "number"
         )
           return "";
 
-          // es-lint-disable @typescript-eslint/no-unsafe-member-access
+        // es-lint-disable @typescript-eslint/no-unsafe-member-access
         if (selectedPeriod === params[0].dataIndex) return "";
 
         setSelectedPeriod(params[0].dataIndex);
@@ -307,6 +304,16 @@ export function ForecastGraphs({
             return value > 0 ? value.toString() + '"' : "";
           },
         },
+        labelLayout: (params) => {
+          const currentPeriod =
+            data.properties?.periods[params.dataIndex as number];
+
+          const lowSnowExists = data.snow.data[params.dataIndex as number]?.lowSnow;
+
+          return {
+            dy: !lowSnowExists ? -30 : 0,
+          }
+        },
         emphasis: {
           disabled: true,
         },
@@ -317,13 +324,14 @@ export function ForecastGraphs({
         stack: "daily",
         xAxisIndex: 0,
         yAxisIndex: 0,
-        data: data.snow.getHighSnow(),
+        data: data.snow.getHighSnow(true),
 
         label: {
           show: true,
           formatter: (params) => {
             const value = Number(params.value);
-            return value > 0 ? value.toString() + '"' : "";
+            const lowValue = data.snow.getLowSnowArray()[params.dataIndex] || 0;
+            return  value > 0 ? (value + lowValue).toString() + '"' : "";
           },
         },
         color: INDIGO[300],

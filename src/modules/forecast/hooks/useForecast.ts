@@ -13,7 +13,6 @@ const captureWindSpeed = /(?<low>[0-9]+)( to (?<high>[0-9]+))?( )?mph/;
 const parseSnowData = (data: ValidForecastPeriod) => {
   const gustMatch = parseGusts(data);
 
- 
   const outputObject = {
     ...data,
     lowSnow: 0,
@@ -64,8 +63,6 @@ const parseGusts = (data: ValidForecastPeriod) => {
     /gust(s?) as high as (?<gusts>.\d+) mph/i
   );
 
- 
-
   return parseInt(gusts?.groups?.gusts || "0") || null;
 };
 
@@ -93,17 +90,14 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
   const forecastStore = useMapStore();
   const router = useRouter();
 
-  const metadata = useQuery(
-    ["forecast metadata", geohash],
-    () => getForecastMetadata(lat, lng),
-    {
-      staleTime: Infinity,
-    }
-  );
+  const metadata = useQuery({
+    queryKey: ["forecast metadata", geohash],
+    queryFn: () => getForecastMetadata(lat, lng),
+    staleTime: Infinity,
+  });
 
   const forecastUrl = metadata.data?.properties.forecast;
 
- 
   const forecast = useQuery({
     queryKey: ["forecast", geohash],
     enabled: !!forecastUrl,
@@ -130,31 +124,32 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
 
       router.replace(newUrl);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadingQueries, forecastStore.forecasts]);
 
   // cancel query if metadata hasn't loaded in 5 seconds
-  useEffect(() => { 
-     const timeout = setTimeout( () => {
-      console.log(" still loading... metadata status: ", metadata.status)
-       if (metadata.status === "loading") {
-         metadata.remove();
-         metadata.refetch().catch(() => {
-            // do nothing
-         });
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      console.log(" still loading... metadata status: ", metadata.status);
+      if (metadata.status === "loading") {
+        metadata.remove();
+        metadata.refetch().catch(() => {
+          // do nothing
+        });
       }
-      if(forecast.status === "loading") {
-        console.log(" still loading... forecast status: ", forecast.status)
+      if (forecast.status === "loading") {
+        console.log(" still loading... forecast status: ", forecast.status);
         forecast.remove();
         // forecast.refetch().catch(() => {
         //   // do nothing
         // });
       }
-    }, 5000);
+    }, 3000);
 
     return () => {
       clearTimeout(timeout);
     };
-  }, [metadata]);
+  }, [metadata, forecast]);
 
   if (metadata.isError) {
     return {
@@ -172,7 +167,6 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
     };
   }
 
- 
   // console.log(forecast.data)
 
   const snowData = forecast.data?.properties.periods.map(parseSnowData) || [];
