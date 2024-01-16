@@ -20,9 +20,11 @@ import {
 
 function displayDate(date: string | undefined) {
   if (!date) return "Loading...";
+    
   const foo = new Date(date);
 
-  const displayDate = foo.toLocaleString("en-US", {
+ 
+   const displayDate = foo.toLocaleString("en-US", {
     month: "short",
     day: "numeric",
     hour: "numeric",
@@ -31,7 +33,8 @@ function displayDate(date: string | undefined) {
     weekday: "long",
   });
 
-  return displayDate.replace(",", "");
+ 
+  return displayDate === "Invalid Date" ? date : displayDate.replace(",", "");
 }
 
 export function DiscussionCombobox({
@@ -94,7 +97,7 @@ export function DiscussionCombobox({
                       value === discussion.id ? "opacity-100" : "opacity-0"
                     )}
                   />
-                  {displayDate(discussion.label)}
+                  {displayDate(discussion.label) }
                 </CommandItem>
               );
             })}
