@@ -135,11 +135,19 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
   // cancel query if metadata hasn't loaded in 5 seconds
   useEffect(() => { 
      const timeout = setTimeout( () => {
+      console.log(" still loading... metadata status: ", metadata.status)
        if (metadata.status === "loading") {
          metadata.remove();
          metadata.refetch().catch(() => {
             // do nothing
          });
+      }
+      if(forecast.status === "loading") {
+        console.log(" still loading... forecast status: ", forecast.status)
+        forecast.remove();
+        // forecast.refetch().catch(() => {
+        //   // do nothing
+        // });
       }
     }, 5000);
 
