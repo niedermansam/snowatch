@@ -8,6 +8,7 @@ import { TRPCReactProvider } from "~/trpc/react";
 import ModalProvider from "~/common/providers/ModalProvider";
 import MyQueryParamProvider from "~/common/providers/QueryParamProvider";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { env } from "~/env.mjs";
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -38,7 +39,7 @@ export default function Layout({
           </TRPCReactProvider>
         </MyQueryParamProvider>
       </body>
-      <GoogleAnalytics gaId="G-VH6C7CNZTX" />
+      {env.NODE_ENV === "production" && <GoogleAnalytics gaId="G-VH6C7CNZTX" />}
     </html>
   );
 }

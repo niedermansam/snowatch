@@ -8,6 +8,7 @@ export function processSnotelCSV(csv: string) {
   //console.log(csv)
   // remove lines that start with #
   const lines = csv.split("\n").filter((line) => !line.startsWith("#"));
+ 
 
   let result: SnotelData[] = [];
 
@@ -31,6 +32,7 @@ export function processSnotelCSV(csv: string) {
         avg: null,
         min: null,
         max: null,
+        obs: null,
       },
     };
 
@@ -63,7 +65,13 @@ export function processSnotelCSV(csv: string) {
           if (currentHeader.startsWith("Air Temperature Maximum"))
             obj.temp.max = processSnotelDatum(datum);
 
+          if(currentHeader.startsWith("Air Temperature Observed"))
+          console.log(currentHeader, datum)
+            obj.temp.obs = processSnotelDatum(datum);
+
           // obj[currentHeader] = datum;
+        } else {
+          console.log( currentHeader, datum);
         }
       }
       result = [...result, obj];

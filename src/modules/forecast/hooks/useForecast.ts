@@ -105,7 +105,7 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
       if (!forecastUrl) throw new Error("No forecast url");
       return getForecast(forecastUrl);
     },
-    staleTime: 15 * 60 * 1000,
+    staleTime: 15 * 60 * 1000, // 15 minutes
   });
 
   useEffect(() => {
@@ -130,16 +130,14 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
   // cancel query if metadata hasn't loaded in 5 seconds
   useEffect(() => {
     const timeout = setTimeout(() => {
-      console.log(" still loading... metadata status: ", metadata.status);
-      if (metadata.status === "loading") {
+       if (metadata.status === "loading") {
         metadata.remove();
         metadata.refetch().catch(() => {
           // do nothing
         });
       }
       if (forecast.status === "loading") {
-        console.log(" still loading... forecast status: ", forecast.status);
-        forecast.remove();
+         forecast.remove();
         // forecast.refetch().catch(() => {
         //   // do nothing
         // });
@@ -236,6 +234,8 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
     if (!lastPeriod) return null;
     return lastPeriod.name;
   };
+
+  
 
   return {
     ...forecast,

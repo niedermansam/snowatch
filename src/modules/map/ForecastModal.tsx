@@ -17,6 +17,7 @@ import { ForecastDetails } from "../forecast/components/ForecastDetails";
 import { SnotelSection } from "./SnotelSection";
 import { Button } from "@/components/ui/button";
 import { ForecastGraphs } from "../forecast/components/ForecastGraphs";
+import { RefreshCcw } from "lucide-react";
 
 export function ForecastModal({
   forecastData,
@@ -68,7 +69,14 @@ export function ForecastModal({
       >
         {isOpen && (
           <div className="flex h-full flex-col gap-y-4 text-sw-gray-500">
-            <ModalHeader data={forecastData.data} />
+            <ModalHeader
+              data={forecastData.data}
+              refresh={() => { 
+                forecastData.refetch().catch((e) => {
+                  console.error(e);
+                });
+              }}
+            />
             <Tabs defaultValue="forecast" className="h-full w-full">
               <TabsList>
                 <TabsTrigger value="forecast">Graphs</TabsTrigger>
@@ -76,12 +84,11 @@ export function ForecastModal({
                 <TabsTrigger value="snotel">Snotel</TabsTrigger>
               </TabsList>
               <TabsContent value="forecast">
-                
-                <ForecastGraphs  data={forecastData.data}/>
+                <ForecastGraphs data={forecastData.data} />
                 {/* <ModalForecastBody data={forecastData.data} /> */}
               </TabsContent>
               <TabsContent value="discussion">
-                <div className="grid lg:grid-cols-2 gap-4">
+                <div className="grid gap-4 lg:grid-cols-2">
                   <ForecastDiscussionSection
                     office={forecastData.data.office}
                   />
@@ -101,13 +108,35 @@ export function ForecastModal({
 
 function ModalHeader({
   data,
+  refresh,
 }: {
   data: NonNullable<UseForecastReturn["data"]>;
+  refresh: () => void;
 }) {
+  const generatedAtString = data.properties?.generatedAt.toLocaleString(
+    "en-US",
+    {
+      day: "numeric",
+
+      weekday: "long",
+      month: "long",
+
+      hour12: true,
+      hour: "numeric",
+      minute: "numeric",
+    }
+  );
+
   return (
     <div className="-mb-10 flex h-[100px] min-h-[100px] justify-between">
       <div>
-        <h2 className="text-lg font-bold leading-none">Forecast</h2>
+        <h2 className="text-lg font-bold leading-none">
+          Forecast{" "}
+          {/* <Button size="icon" variant="secondary" onClick={() => refresh()}>
+            <RefreshCcw size={16} />
+          </Button> */}
+        </h2>
+        <p className="text-xs font-light "> {generatedAtString}</p>
         <p className="text-xs font-light">
           {data.metadata.getRelativeLocation()}
         </p>

@@ -29,7 +29,7 @@ export const snotelMetadata = z
 
 
 export type SnotelData = {
-  date: Date | null;
+  date: Date ;
   swe: {
     value: number | null;
     change: number | null;
@@ -43,5 +43,6 @@ export type SnotelData = {
     avg: number | null;
     min: number | null;
     max: number | null;
+    obs: number | null;
   };
 }
