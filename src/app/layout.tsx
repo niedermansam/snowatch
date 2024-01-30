@@ -7,7 +7,7 @@ import { headers } from "next/headers";
 import { TRPCReactProvider } from "~/trpc/react";
 import ModalProvider from "~/common/providers/ModalProvider";
 import MyQueryParamProvider from "~/common/providers/QueryParamProvider";
-
+import { GoogleAnalytics } from "@next/third-parties/google";
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -27,17 +27,18 @@ export default function Layout({
 }) {
   return (
     <html lang="en">
-      <body  className={`font-sans ${inter.variable}`}>
+      <body className={`font-sans ${inter.variable}`}>
         <MyQueryParamProvider>
-        <TRPCReactProvider headers={headers()}>
-          <NavBar />
-          <main>
-          {children}
-          <ModalProvider />
-          </main>
+          <TRPCReactProvider headers={headers()}>
+            <NavBar />
+            <main>
+              {children}
+              <ModalProvider />
+            </main>
           </TRPCReactProvider>
         </MyQueryParamProvider>
       </body>
+      <GoogleAnalytics gaId="G-RDD3X2GMEZ" />
     </html>
   );
 }
