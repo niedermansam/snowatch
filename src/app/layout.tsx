@@ -38,7 +38,7 @@ export default function Layout({
           </TRPCReactProvider>
         </MyQueryParamProvider>
       </body>
-      <GoogleAnalytics gaId="G-RDD3X2GMEZ" />
+      <GoogleAnalytics gaId="G-VH6C7CNZTX" />
     </html>
   );
 }
