@@ -4,6 +4,7 @@ import Geohash from "latlon-geohash";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createUrl } from "./ForecastMap";
 import { useMapStore, useMapUrl } from "../forecast/forecastStore";
+import { sendGAEvent } from "@next/third-parties/google";
 
 const MAX_LOCATIONS = 5;
 
@@ -28,6 +29,11 @@ export function ClickHandler({
       while (newLocationArray.length > MAX_LOCATIONS) {
         newLocationArray.pop();
       }
+
+      sendGAEvent({
+        event: 'forecast_request',
+        location: newLocation,
+      });
 
       const center = query.get("center") || undefined;
       const zoomString = query.get("zoom");
