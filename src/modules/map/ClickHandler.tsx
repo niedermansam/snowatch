@@ -32,7 +32,7 @@ export function ClickHandler({
 
       sendGAEvent({
         event: 'forecast_request',
-        location: newLocation,
+        value: newLocation,
       });
 
       const center = query.get("center") || undefined;
