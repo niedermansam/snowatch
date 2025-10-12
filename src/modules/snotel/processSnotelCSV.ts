@@ -18,7 +18,7 @@ export function processSnotelCSV(csv: string) {
   for (let i = 1; i < lines.length; i++) {
     const currentLine = lines[i];
     const obj: SnotelData = {
-      date: null,
+      date:  new Date(),
       swe: {
         value: null,
         change: null,
