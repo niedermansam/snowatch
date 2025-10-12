@@ -1,11 +1,6 @@
 import React from "react";
-import SChart from "~/common/components/SChart";
-import {
-  GRAY,
-  RED,
-  INDIGO,
-  PURPLE,
-} from "~/common/styles/ColorPalette";
+import SChart from "~/common/ui/components/SChart";
+import { GRAY, RED, INDIGO, PURPLE } from "~/common/styles/ColorPalette";
 import { MIN_GRAPH_HEIGHT } from "./utils";
 import { TOOLTIP_POSITION } from "./ForecastSnowGraph";
 

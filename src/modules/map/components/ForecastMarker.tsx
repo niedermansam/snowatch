@@ -8,10 +8,13 @@ import { GEOHASH_PRECISION, createUrl } from "../ForecastMap";
 import { ForecastModal } from "../ForecastModal";
 import { useMapStore } from "~/modules/forecast/forecastStore";
 import { useIsFetching, useQueryClient } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/ui/button";
 import { SnowIcon } from "~/app/test/SnowIcon";
 import { AlertTriangle } from "lucide-react";
 import { ReloadIcon } from "@radix-ui/react-icons";
+
+// Dynamically import Leaflet to avoid SSR issues 
+
 
 function RemoveMarkerButton({
   onClick,

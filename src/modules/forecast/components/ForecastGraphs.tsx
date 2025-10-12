@@ -1,10 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import React, { useRef } from "react";
+import React from "react";
 import type { UseForecastReturn } from "../hooks/useForecast";
-import SChart from "~/common/components/SChart";
-import { ECBasicOption } from "echarts/types/dist/shared";
-import EChartsReactCore from "echarts-for-react/lib/core";
+import SChart from "~/common/ui/components/SChart";
 import {
   BLUE,
   GRAY,
@@ -14,7 +12,6 @@ import {
   YELLOW,
 } from "~/common/styles/ColorPalette";
 import { EChartsOption } from "echarts";
-import { parse } from "path";
 //  data: NonNullable<UseForecastReturn["data"]>;
 
 const fourSquares = [
@@ -39,11 +36,10 @@ export function ForecastGraphs({
   const [selectedPeriod, setSelectedPeriod] = React.useState(0);
   const cumulativeHighForecast = data.snow.getCumulativeHighSnow();
 
-  const totalSnowExpected = cumulativeHighForecast[
-    cumulativeHighForecast.length - 1
-  ] ?? 0; 
+  const totalSnowExpected =
+    cumulativeHighForecast[cumulativeHighForecast.length - 1] ?? 0;
 
-  const snowInForecast =  totalSnowExpected> 0;
+  const snowInForecast = totalSnowExpected > 0;
 
   const tempSeries = [
     {
@@ -217,7 +213,7 @@ export function ForecastGraphs({
       type: "continuous",
       min: 0,
       max: 60,
-      seriesIndex: snowInForecast ? [5, 6] : [1,2], // Wind Graph
+      seriesIndex: snowInForecast ? [5, 6] : [1, 2], // Wind Graph
       inRange: {
         color: [
           GRAY[100],
@@ -234,7 +230,7 @@ export function ForecastGraphs({
     },
   ] satisfies EChartsOption["visualMap"];
 
-  const dailySnowSeries =   [
+  const dailySnowSeries = [
     {
       name: "Low Snow Daily",
       type: "bar",
@@ -286,7 +282,7 @@ export function ForecastGraphs({
         disabled: true,
       },
     },
-  ] satisfies EChartsOption["series"]  
+  ] satisfies EChartsOption["series"];
 
   const cummulativeSnowSeries = [
     {
@@ -526,19 +522,17 @@ export function ForecastGraphs({
     series: [...tempSeries, ...windSeries],
   } satisfies EChartsOption;
 
-  return (  
-
- 
-    <div className="grid min-h-screen grid-cols-[1fr_200px]">
+  return (
+    <div className="grid min-h-screen md:grid-cols-[1fr_200px]">
       <SChart
-        option={snowInForecast   ? optionsWithSnow : optionsWithoutSnow}
+        option={snowInForecast ? optionsWithSnow : optionsWithoutSnow}
         style={{
           height: "700px",
           minHeight: "80vh",
         }}
       />
       {data.snow.data[selectedPeriod] !== undefined && (
-        <PeriodSummary data={data.snow.data[selectedPeriod]!} />
+        <PeriodSummary data={data.snow.data[selectedPeriod]} />
       )}
     </div>
   );
@@ -551,7 +545,7 @@ function PeriodSummary({
 }) {
   const { lowSnow, highSnow, period, snowText } = data;
   return (
-    <div className="mt-8 flex flex-col gap-2 p-4 text-sm">
+    <div className="flex flex-col gap-2 p-4 text-sm md:mt-8">
       <h3 className=" pb-2 font-bold">{period} </h3>
       <p className="text-sm font-light">
         {snowText ? snowText + " of snow" : "No snow"}

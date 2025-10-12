@@ -8,14 +8,14 @@ import ReactModal from "react-modal";
 import ForecastSnowGraph from "../forecast/components/ForecastSnowGraph";
 import { ForecastWindGraph } from "../forecast/components/ForecastWindGraph";
 import ForecastTemperatureGraph from "../forecast/components/ForecastTemperatureGraph";
-import { DESKTOP_NAVBAR_HEIGHT } from "~/common/components/NavBar";
+import { DESKTOP_NAVBAR_HEIGHT } from "~/common/ui/components/NavBar";
 import ModalMap from "./ModalMap";
 import Forecast from "../forecast";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger} from "~/common/ui/tabs";
 import { ForecastDiscussionSection } from "../forecast/components/ForecastDiscussionSection";
 import { ForecastDetails } from "../forecast/components/ForecastDetails";
 import { SnotelSection } from "./SnotelSection";
-import { Button } from "@/components/ui/button";
+import { Button } from "~/common/ui/button";
 import { ForecastGraphs } from "../forecast/components/ForecastGraphs";
 import { RefreshCcw } from "lucide-react";
 
@@ -71,14 +71,14 @@ export function ForecastModal({
           <div className="flex h-full flex-col gap-y-4 text-sw-gray-500">
             <ModalHeader
               data={forecastData.data}
-              refresh={() => { 
+              refresh={() => {
                 forecastData.refetch().catch((e) => {
                   console.error(e);
                 });
               }}
             />
             <Tabs defaultValue="forecast" className="h-full w-full">
-              <TabsList>
+              <TabsList className="mb-4 grid w-full grid-cols-3 rounded-md bg-sw-gray-100 p-1 text-sw-gray-500">
                 <TabsTrigger value="forecast">Graphs</TabsTrigger>
                 <TabsTrigger value="discussion">Details</TabsTrigger>
                 <TabsTrigger value="snotel">Snotel</TabsTrigger>
@@ -141,9 +141,11 @@ function ModalHeader({
           {data.metadata.getRelativeLocation()}
         </p>
       </div>
-      {false && <div className="-mb-12 hidden w-1/3 overflow-hidden rounded-md sm:block lg:w-1/2">
-        <ModalMap geohash={data.geohash} />
-      </div>}
+      {false && (
+        <div className="-mb-12 hidden w-1/3 overflow-hidden rounded-md sm:block lg:w-1/2">
+          <ModalMap geohash={data.geohash} />
+        </div>
+      )}
     </div>
   );
 }

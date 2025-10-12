@@ -2,7 +2,7 @@
 import dynamic from "next/dynamic";
 import type { Snotel } from "../data";
 
-const SChart = dynamic(() => import("~/common/components/SChart"), {
+const SChart = dynamic(() => import("~/common/ui/components/SChart.jsx"), {
   ssr: false,
 });
 

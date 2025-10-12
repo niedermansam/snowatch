@@ -14,7 +14,7 @@ import { ForecastMarker } from "./components/ForecastMarker";
 import { ClickHandler } from "./ClickHandler";
 import { MoveHandler } from "./MoveHandler";
 
-import { DESKTOP_NAVBAR_HEIGHT } from "~/common/components/NavBar";
+import { DESKTOP_NAVBAR_HEIGHT } from "~/common/ui/components/NavBar";
 import { useMapStore } from "../forecast/forecastStore";
 export const GEOHASH_PRECISION = 8;
 
@@ -43,16 +43,18 @@ function ForecastMap() {
   const mapStore = useMapStore();
   const forecastStore = useMapStore();
 
-  useEffect(() => {
-    const locations = query.get("locations")?.split(",") || [];
-    mapStore.forecastDispatch({
-      type: "SET",
-      payload: locations,
-    });
-   }
+  useEffect(
+    () => {
+      const locations = query.get("locations")?.split(",") || [];
+      mapStore.forecastDispatch({
+        type: "SET",
+        payload: locations,
+      });
+    },
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  ,[])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
 
   const center = Geohash.decode(
     query.get("center") || Geohash.encode(44, -114, GEOHASH_PRECISION)

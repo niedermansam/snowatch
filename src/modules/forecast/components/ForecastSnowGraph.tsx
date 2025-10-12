@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import SChart from "~/common/components/SChart";
+import SChart from "~/common/ui/components/SChart";
 import { getDisplayDates } from "../utils/getDisplayDates";
 import { BLUE, GRAY } from "~/common/styles/ColorPalette";
 import { MIN_GRAPH_HEIGHT } from "./utils";
@@ -128,8 +128,8 @@ export const ForecastSnowGraph = ({
       axisPointer: {
         type: "shadow",
       },
-      position:   {
-        top: '100%',
+      position: {
+        top: "100%",
         right: 0,
       },
       formatter: (
@@ -182,7 +182,12 @@ export const ForecastSnowGraph = ({
     },
   } satisfies ECBasicOption;
 
-  return <SChart option={options} style={{ height: "100%", minHeight: MIN_GRAPH_HEIGHT, zIndex: 1200 }} />;
+  return (
+    <SChart
+      option={options}
+      style={{ height: "100%", minHeight: MIN_GRAPH_HEIGHT, zIndex: 1200 }}
+    />
+  );
 };
 
 export default ForecastSnowGraph;

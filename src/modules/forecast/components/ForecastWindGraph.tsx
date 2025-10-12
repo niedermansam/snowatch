@@ -1,4 +1,4 @@
-import SChart from "~/common/components/SChart";
+import SChart from "~/common/ui/components/SChart";
 import { getDisplayDates } from "../utils/getDisplayDates";
 import { GRAY, RED, YELLOW } from "~/common/styles/ColorPalette";
 import type { ECBasicOption } from "echarts/types/dist/shared";
@@ -81,7 +81,7 @@ export const ForecastWindGraph = ({
             fontWeight: "lighter",
             verticalAlign: "bottom",
           },
-        }
+        },
       },
     },
     tooltip: {
@@ -91,7 +91,7 @@ export const ForecastWindGraph = ({
       },
       position: TOOLTIP_POSITION,
       formatter: function (
-        params: { name: string; value: number; marker: string  }[]
+        params: { name: string; value: number; marker: string }[]
       ) {
         const lowWindObj = params[0];
         const highWindObj = params[1];
