@@ -7,10 +7,18 @@ export async function getNearestSnotel(
   n: number,
   minElevation = 0,
 ) {
+  try {
   const response  = await nearestSnotelAPI(geohash, n, minElevation)
   
 
   const safeData = nearbySnotelMetadata.parse(response);
-
   return safeData;
+  } catch (error) {
+    console.log("Error fetching nearest snotel")
+    console.error(error)
+    throw error
+  }
+
+
+
 }

@@ -128,7 +128,7 @@ function ModalHeader({
   );
 
   return (
-    <div className="-mb-10 flex h-[100px] min-h-[100px] justify-between">
+    <div className="  flex  justify-between">
       <div>
         <h2 className="text-lg font-bold leading-none">
           Forecast{" "}
@@ -141,9 +141,9 @@ function ModalHeader({
           {data.metadata.getRelativeLocation()}
         </p>
       </div>
-      <div className="-mb-12 hidden w-1/3 overflow-hidden rounded-md sm:block lg:w-1/2">
+      {false && <div className="-mb-12 hidden w-1/3 overflow-hidden rounded-md sm:block lg:w-1/2">
         <ModalMap geohash={data.geohash} />
-      </div>
+      </div>}
     </div>
   );
 }

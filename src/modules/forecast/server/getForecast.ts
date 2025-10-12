@@ -29,8 +29,8 @@ import { USER_AGENT } from "../utils/userAgents";
           .object({ value: z.number().nullable() })
           .transform((val) => val.value),
         relativeHumidity: z
-          .object({ value: z.number() })
-          .transform((val) => val.value),
+          .object({ value: z.number() }).optional()
+          .transform((val) => val?.value),
       })
     ),
   }),
@@ -43,6 +43,8 @@ export type ValidForecastPeriod = z.infer<
 
 
 export async function getForecast(url: string) {
+  console.log("FETCHING FORECAST DATA FROM NOAA")
+  console.log(url)
   try {
      const res = await fetch(url, {
         next: {

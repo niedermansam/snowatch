@@ -355,21 +355,33 @@ export function ForecastGraphs({
         top: "5%",
         left: 20,
         text: "Daily Snowfall",
+        textStyle: {
+          color: "#616E7C",
+        },
       },
       {
         text: "Total Snowfall",
         left: 20,
         top: "25%",
+        textStyle: {
+          color: "#616E7C",
+        },
       },
       {
         text: "Temperature",
         top: "45%",
         left: 20,
+        textStyle: {
+          color: "#616E7C",
+        },
       },
       {
         text: "Wind",
         top: "65%",
         left: 20,
+        textStyle: {
+          color: "#616E7C",
+        },
       },
     ],
     visualMap,
@@ -441,23 +453,29 @@ export function ForecastGraphs({
 
   const optionsWithoutSnow = {
     animation: false,
-    title: [ 
+    title: [
       {
         text: "Temperature",
         top: "5%",
         left: 20,
+        textStyle: {
+          color: "#616E7C",
+        },
       },
       {
         text: "Wind",
         top: "25%",
         left: 20,
+        textStyle: {
+          color: "#616E7C",
+        },
       },
     ],
     visualMap,
     grid: [
-  { left: "25px", bottom: "80%", width: "95%", height: "12%" },
-  { left: "25px", bottom: "60%", width: "95%", height: "12%" }, 
-],
+      { left: "25px", bottom: "80%", width: "95%", height: "12%" },
+      { left: "25px", bottom: "60%", width: "95%", height: "12%" },
+    ],
     tooltip: {
       trigger: "axis",
       axisPointer: {
@@ -484,11 +502,11 @@ export function ForecastGraphs({
         return "";
       },
     },
-    xAxis: [ 
+    xAxis: [
       { gridIndex: 0, data: data.getDateLabels() },
       { gridIndex: 1, data: data.getDateLabels() },
     ],
-    yAxis: [ 
+    yAxis: [
       {
         gridIndex: 0,
         max:
@@ -505,20 +523,12 @@ export function ForecastGraphs({
         },
       ],
     },
-    series: [ 
-      ...tempSeries,
-      ...windSeries,
-    ],
+    series: [...tempSeries, ...windSeries],
   } satisfies EChartsOption;
 
-  return ( <div>
+  return (  
 
-      {!snowInForecast && (
-        <>  
-          <h3 className="text-2xl font-bold leading-none h-0 pt-1 -mb-2">No Snow Expected</h3> 
-        <div/></>
-      )
-        }
+ 
     <div className="grid min-h-screen grid-cols-[1fr_200px]">
       <SChart
         option={snowInForecast   ? optionsWithSnow : optionsWithoutSnow}
@@ -530,7 +540,7 @@ export function ForecastGraphs({
       {data.snow.data[selectedPeriod] !== undefined && (
         <PeriodSummary data={data.snow.data[selectedPeriod]!} />
       )}
-    </div></div>
+    </div>
   );
 }
 
