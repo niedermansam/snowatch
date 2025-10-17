@@ -1,7 +1,7 @@
 "use client";
-import React, { use } from "react";
+import React  from "react";
 import {
-  NearbySnotel,
+   type NearbySnotel,
   Snotel,
   useNearbySnotel,
 } from "../snotel/hooks/useSnotel";
@@ -9,11 +9,10 @@ import { translateBearing } from "~/common/utils/translateBearing";
 import { METERS_TO_FEET } from "~/common/utils/units";
 import { SnowIcon } from "~/app/test/SnowIcon";
 import { twMerge } from "tailwind-merge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/common/ui/tabs";
 import SChart from "~/common/components/SChart";
-import { EChartsOption } from "echarts";
-import { INDIGO, PURPLE, RED } from "~/common/styles/ColorPalette";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
+import type { EChartsOption } from "echarts";
+import { INDIGO, PURPLE, RED } from "~/common/styles/ColorPalette"; 
 const N_SNOTEL = 6;
 
 function SnotelCard({

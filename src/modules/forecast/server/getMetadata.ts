@@ -14,9 +14,7 @@ export async function getForecastMetadata(lat: number, lng: number) {
     if (!res.ok) throw new Error("Error fetching metadata");
     const data = (await res.json()) as unknown;
 
-    const parsed = validateMetadata.parse(data, {
-      errorMap: () => ({ message: "Error parsing metadata" }),
-    });
+ 
 
     return validateMetadata.parse(data);
   } catch (error) {

@@ -8,7 +8,7 @@ import { useMapStore, useMapUrl } from "../forecastStore";
 import { useRouter } from "next/navigation";
 import { createUrl } from "~/modules/map/ForecastMap";
 
-const captureWindSpeed = /(?<low>[0-9]+)( to (?<high>[0-9]+))?( )?mph/;
+const captureWindSpeed = /([0-9]+)( to ([0-9]+))?( )?mph/;
 
 const parseSnowData = (data: ValidForecastPeriod) => {
   const gustMatch = parseGusts(data);
@@ -60,23 +60,23 @@ const parseSnowData = (data: ValidForecastPeriod) => {
 
 const parseGusts = (data: ValidForecastPeriod) => {
   const gusts = data.detailedForecast.match(
-    /gust(s?) as high as (?<gusts>.\d+) mph/i
+    /gust(s?) as high as (\d+) mph/i
   );
 
-  return parseInt(gusts?.groups?.gusts || "0") || null;
+  return parseInt(gusts?.[2] || "0") || null;
 };
 
 const parseWindData = (data: ValidForecastPeriod) => {
   const windMatch = data.windSpeed?.match(captureWindSpeed);
   const gusts = data.detailedForecast.match(
-    /gust(s?) as high as (?<gusts>.\d+) mph/i
+    /gust(s?) as high as (\d+) mph/i
   );
   const result = {
-    lowSnow: parseInt(windMatch?.groups?.low || "0"),
+    lowSnow: parseInt(windMatch?.[1] || "0"),
     highSnow: parseInt(
-      windMatch?.groups?.high || windMatch?.groups?.low || "0"
+      windMatch?.[3] || windMatch?.[1] || "0"
     ),
-    gusts: parseInt(gusts?.groups?.gusts || "0") || null,
+    gusts: parseInt(gusts?.[2] || "0") || null,
     text: data.windSpeed,
     period: data.name,
   };

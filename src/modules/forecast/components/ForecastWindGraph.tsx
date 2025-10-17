@@ -17,7 +17,7 @@ export const ForecastWindGraph = ({
 } & ({ dates: Date[] } | { dates: string[] } | { dates: undefined })) => {
   if (!dates || !low) return null;
 
-  const options: ECBasicOption = {
+  const options ={
     grid: { top: 8, right: 8, bottom: 17, left: 40 },
     visualMap: [
       {
@@ -71,7 +71,7 @@ export const ForecastWindGraph = ({
     },
     yAxis: {
       type: "value",
-      interval: 10,
+      interval: 10, 
       axisLabel: {
         formatter: (value: number) => `${value}{a|mph}`,
         rich: {
@@ -146,7 +146,7 @@ export const ForecastWindGraph = ({
         name: "gusts",
       },
     ],
-  };
+  } satisfies ECBasicOption;
 
   return (
     <SChart

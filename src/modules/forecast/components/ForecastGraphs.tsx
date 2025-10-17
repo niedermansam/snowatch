@@ -124,6 +124,7 @@ export function ForecastGraphs({
       smooth: true,
       stack: "gusts",
       name: "high-wind",
+      
       xAxisIndex: snowInForecast ? 3 : 1,
       yAxisIndex: snowInForecast ? 3 : 1,
       label: {
@@ -164,11 +165,12 @@ export function ForecastGraphs({
       colorBy: "series",
       itemStyle: { color: RED[600], borderRadius: 4, opacity: 0.7 },
       name: "gusts",
-      xAxisIndex: snowInForecast ? 3 : 0,
-      yAxisIndex: snowInForecast ? 3 : 0,
+      xAxisIndex: snowInForecast ? 3 : 1,
+      yAxisIndex: snowInForecast ? 3 : 1,
       emphasis: {
         disabled: true,
       },
+      
       // label: {
       //   show: true,
       //   align: "center",
@@ -444,7 +446,6 @@ export function ForecastGraphs({
     },
     series: [
       ...dailySnowSeries,
-
       ...cummulativeSnowSeries,
       ...tempSeries,
       ...windSeries,
@@ -514,7 +515,12 @@ export function ForecastGraphs({
             (data.temperature.getHottestPeriod().temperature + 10) / 10
           ) * 10,
       },
-      { gridIndex: 1 },
+      {
+        gridIndex: 1,
+        min: 0,
+        max: Math.ceil((data.wind.getWindiestPeriod().gusts ?? 0) / 10) * 10,
+      },
+ 
     ],
     axisPointer: {
       link: [

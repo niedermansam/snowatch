@@ -2,7 +2,7 @@
   "name": "snowatch",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
+    "scripts": {
     "build": "next build",
     "dev": "next dev",
     "postinstall": "prisma generate",
@@ -44,6 +44,7 @@
     "next-auth": "^4.24.4",
     "next-query-params": "^5.0.0",
     "next-transpile-modules": "^10.0.1",
+    "nuqs": "^2.7.1",
     "pg": "^8.10.0",
     "react": "^18.2.0",
     "react-datepicker": "^4.16.0",
