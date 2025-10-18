@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import type { UseForecastReturn } from "~/modules/forecast/hooks/useForecast";
+import type { UseForecastReturn } from "~/common/components/hooks/useForecast";
 import { WiStrongWind, WiThermometer } from "react-icons/wi";
 import SnowflakeIcon from "~public/snowflake64.png";
 import Image from "next/image";
@@ -10,14 +10,14 @@ export function ForecastDetails({ forecast }: { forecast: UseForecastReturn }) {
   if (forecast.isError) return null;
 
   return (
-    <div className="flex flex-col mt-8">
+    <div className="mt-8 flex flex-col">
       <h3 className="text-lg font-bold">Detailed Forecast</h3>
       {forecast.data?.snow.data.map((period) => {
         return (
           <div key={period.startTime.toISOString()}>
             <div className="grid grid-cols-[1fr_20%] gap-2">
               <div className="flex flex-col">
-                <div className=" grid grid-cols-2 justify-between sm:pr-6 font-bold ">
+                <div className=" grid grid-cols-2 justify-between font-bold sm:pr-6 ">
                   {" "}
                   <p>{period.name}</p>
                   <div className="flex gap-x-1 place-self-end">
@@ -29,16 +29,17 @@ export function ForecastDetails({ forecast }: { forecast: UseForecastReturn }) {
                           width={24}
                           height={24}
                           style={{
-                            filter: "drop-shadow( 3px 3px 2px rgba(0, 0, 0, .15))",
+                            filter:
+                              "drop-shadow( 3px 3px 2px rgba(0, 0, 0, .15))",
                             maxHeight: "24px",
                           }}
                           fill={false}
-                          className="inline  h-[24px]!"
+                          className="h-[24px]!  inline"
                         />
                         {period.lowSnow}
-                        {period.highSnow &&
-                          period.highSnow !== period.lowSnow ?
-                          ` - ${period.highSnow}"` : '"'}
+                        {period.highSnow && period.highSnow !== period.lowSnow
+                          ? ` - ${period.highSnow}"`
+                          : '"'}
                       </span>
                     ) : (
                       <span className="text-gray-200 opacity-10">

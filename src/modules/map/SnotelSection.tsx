@@ -9,7 +9,7 @@ import { translateBearing } from "~/common/utils/translateBearing";
 import { METERS_TO_FEET } from "~/common/utils/units";
 import { SnowIcon } from "~/app/test/SnowIcon";
 import { twMerge } from "tailwind-merge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/common/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import SChart from "~/common/components/SChart";
 import type { EChartsOption } from "echarts";
 import { INDIGO, PURPLE, RED } from "~/common/styles/ColorPalette"; 

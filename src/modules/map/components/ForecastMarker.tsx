@@ -2,13 +2,12 @@
 import React, { use } from "react";
 import { Marker, Popup, useMap } from "react-leaflet";
 import Geohash from "latlon-geohash";
-import useForecast from "~/modules/forecast/hooks/useForecast";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { GEOHASH_PRECISION, createUrl } from "../ForecastMap";
+import useForecast from "~/common/components/hooks/useForecast";
+import { useSearchParams } from "next/navigation";
+import { GEOHASH_PRECISION } from "../ForecastMap";
 import { ForecastModal } from "../ForecastModal";
 import { useMapStore } from "~/modules/forecast/forecastStore";
-import { useIsFetching, useQueryClient } from "@tanstack/react-query";
-import { Button } from "@/components/ui/button";
+import { Button } from "~/components/ui/button";
 import { SnowIcon } from "~/app/test/SnowIcon";
 import { AlertTriangle } from "lucide-react";
 import { ReloadIcon } from "@radix-ui/react-icons";
@@ -33,13 +32,9 @@ function RemoveMarkerButton({
 export function ForecastMarker({ lat, lng }: { lat: number; lng: number }) {
   const map = useMap();
   const forecastStore = useMapStore();
-  const queryClient = useQueryClient();
 
   const forecast = useForecast({ lat, lng });
-  const router = useRouter();
   const searchParams = useSearchParams();
-  const currentPath = usePathname();
-  const queriesLoading = useIsFetching();
 
   const markerRef = React.useRef<L.Marker>(null);
   const popupRef = React.useRef<L.Popup>(null);
@@ -91,14 +86,8 @@ export function ForecastMarker({ lat, lng }: { lat: number; lng: number }) {
   if (forecast.isLoading)
     return (
       <Marker position={[lat, lng]} ref={markerRef} autoPan={false}>
-        <Popup
-          autoPan={false}
-          autoClose={false}
-          ref={popupRef} 
-        >
-          <div 
-            className="  -m-1 grid w-32   grid-cols-2 place-items-center gap-x-6"
-          >
+        <Popup autoPan={false} autoClose={false} ref={popupRef}>
+          <div className="  -m-1 grid w-32   grid-cols-2 place-items-center gap-x-6">
             <span
               className="my-0! col-span-2 flex w-full animate-pulse items-end gap-x-1 pb-2 text-xs font-bold text-slate-400"
               style={{ margin: 0 }}
@@ -116,7 +105,7 @@ export function ForecastMarker({ lat, lng }: { lat: number; lng: number }) {
               }}
             >
               <ReloadIcon
-                className="size-3 mr-1 stroke-[4]"
+                className="mr-1 size-3 stroke-[4]"
                 strokeWidth={2.75}
               />{" "}
               reload
@@ -139,7 +128,7 @@ export function ForecastMarker({ lat, lng }: { lat: number; lng: number }) {
         <Popup autoPan={false} autoClose={false}>
           <div className="flex flex-col">
             <span className="flex items-end gap-x-1 pb-1 text-xs font-bold text-sw-red-600">
-              <AlertTriangle className="size-4 mb-0.5" /> Error loading forecast
+              <AlertTriangle className="mb-0.5 size-4" /> Error loading forecast
             </span>
             <div className="flex justify-between">
               <Button
@@ -177,13 +166,9 @@ export function ForecastMarker({ lat, lng }: { lat: number; lng: number }) {
       ref={markerRef}
       autoPan={false}
       riseOnHover={true}
-      riseOffset={100} 
+      riseOffset={100}
     >
-      <Popup
-        autoPan={false}
-        autoClose={false}
-        
-      >
+      <Popup autoPan={false} autoClose={false}>
         <div className="-m-1 text-xs hover:z-[10000]">
           <span> {forecast.data?.snow.total}</span> &nbsp;
           <span className="font-light">{elevationString}</span>

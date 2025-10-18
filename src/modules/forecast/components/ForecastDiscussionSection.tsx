@@ -3,8 +3,8 @@ import React from "react";
 import {
   type UseForecastDiscussion,
   useForecastDiscussion,
-} from "../hooks/useForecastDiscussion";
-import { DiscussionCombobox } from "../../map/DiscussionCombobox"; 
+} from "../../../common/components/hooks/useForecastDiscussion";
+import { DiscussionCombobox } from "../../map/DiscussionCombobox";
 import { SnowIcon } from "~/app/test/SnowIcon";
 
 export function ForecastDiscussionSection({ office }: { office: string }) {
@@ -80,7 +80,6 @@ function ForecastDiscussionSelector({ data }: { data: UseForecastDiscussion }) {
     </div>
   );
 }
-
 
 function ForecastDiscussionText({
   text,

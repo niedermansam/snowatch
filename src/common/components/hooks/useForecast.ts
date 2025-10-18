@@ -1,10 +1,13 @@
 import { useIsFetching, useQuery, useQueryClient } from "@tanstack/react-query";
 import Geohash from "latlon-geohash";
-import { getForecastMetadata } from "../server/getMetadata";
-import type { ValidForecastPeriod } from "../server/getForecast";
-import { getForecast } from "../server/getForecast";
+import { getForecastMetadata } from "../../../modules/forecast/server/getMetadata";
+import type { ValidForecastPeriod } from "../../../modules/forecast/server/getForecast";
+import { getForecast } from "../../../modules/forecast/server/getForecast";
 import { useEffect } from "react";
-import { useMapStore, useMapUrl } from "../forecastStore";
+import {
+  useMapStore,
+  useMapUrl,
+} from "../../../modules/forecast/forecastStore";
 import { useRouter } from "next/navigation";
 import { createUrl } from "~/modules/map/ForecastMap";
 
@@ -59,23 +62,17 @@ const parseSnowData = (data: ValidForecastPeriod) => {
 };
 
 const parseGusts = (data: ValidForecastPeriod) => {
-  const gusts = data.detailedForecast.match(
-    /gust(s?) as high as (\d+) mph/i
-  );
+  const gusts = data.detailedForecast.match(/gust(s?) as high as (\d+) mph/i);
 
   return parseInt(gusts?.[2] || "0") || null;
 };
 
 const parseWindData = (data: ValidForecastPeriod) => {
   const windMatch = data.windSpeed?.match(captureWindSpeed);
-  const gusts = data.detailedForecast.match(
-    /gust(s?) as high as (\d+) mph/i
-  );
+  const gusts = data.detailedForecast.match(/gust(s?) as high as (\d+) mph/i);
   const result = {
     lowSnow: parseInt(windMatch?.[1] || "0"),
-    highSnow: parseInt(
-      windMatch?.[3] || windMatch?.[1] || "0"
-    ),
+    highSnow: parseInt(windMatch?.[3] || windMatch?.[1] || "0"),
     gusts: parseInt(gusts?.[2] || "0") || null,
     text: data.windSpeed,
     period: data.name,
@@ -124,20 +121,20 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
 
       router.replace(newUrl);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loadingQueries, forecastStore.forecasts]);
 
   // cancel query if metadata hasn't loaded in 5 seconds
   useEffect(() => {
     const timeout = setTimeout(() => {
-       if (metadata.status === "loading") {
+      if (metadata.status === "loading") {
         metadata.remove();
         metadata.refetch().catch(() => {
           // do nothing
         });
       }
       if (forecast.status === "loading") {
-         forecast.remove();
+        forecast.remove();
         // forecast.refetch().catch(() => {
         //   // do nothing
         // });
@@ -234,8 +231,6 @@ function useForecast({ lat, lng }: { lat: number; lng: number }) {
     if (!lastPeriod) return null;
     return lastPeriod.name;
   };
-
-  
 
   return {
     ...forecast,

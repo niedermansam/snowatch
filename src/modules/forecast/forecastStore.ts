@@ -1,8 +1,6 @@
 import { useRouter } from "next/navigation";
 import { create } from "zustand";
 import { createUrl } from "../map/ForecastMap";
-import { useQueryClient } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
 
 type forecastDispatch =
   | {

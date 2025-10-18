@@ -3,6 +3,7 @@ import "~/common/styles/globals.css";
 
 import { Inter } from "next/font/google";
 import { headers } from "next/headers";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 import { TRPCReactProvider } from "~/trpc/react";
 import ModalProvider from "~/common/providers/ModalProvider";
@@ -31,11 +32,13 @@ export default function Layout({
       <body className={`font-sans ${inter.variable}`}>
         <MyQueryParamProvider>
           <TRPCReactProvider headers={headers()}>
+            <NuqsAdapter >
             <NavBar />
             <main>
               {children}
               <ModalProvider />
             </main>
+            </NuqsAdapter>
           </TRPCReactProvider>
         </MyQueryParamProvider>
       </body>

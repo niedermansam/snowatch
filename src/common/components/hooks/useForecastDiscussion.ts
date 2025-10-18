@@ -1,35 +1,39 @@
 import { useEffect, useState } from "react";
-import { getDiscussion, getDiscussionList } from "../server/getDiscussion";
+import {
+  getDiscussion,
+  getDiscussionList,
+} from "../../../modules/forecast/server/getDiscussion";
 import { useQueries, useQuery } from "@tanstack/react-query";
 
 export function useForecastDiscussion(office: string) {
-  const forecastDiscussionList = useQuery(["discussion-metadata", office], () =>
-    getDiscussionList(office), {
-        staleTime: Infinity
+  const forecastDiscussionList = useQuery(
+    ["discussion-metadata", office],
+    () => getDiscussionList(office),
+    {
+      staleTime: Infinity,
     }
   );
   const mostRecentDiscussionMetadata = forecastDiscussionList.data?.["@graph"]
     ? forecastDiscussionList.data["@graph"][0]
     : undefined;
 
- 
   const [selectedId, setSelectedId] = useState(
     mostRecentDiscussionMetadata?.id
   );
 
-  useEffect(() => { 
-    setSelectedId(mostRecentDiscussionMetadata?.id)
-  }, [mostRecentDiscussionMetadata])
-
-
+  useEffect(() => {
+    setSelectedId(mostRecentDiscussionMetadata?.id);
+  }, [mostRecentDiscussionMetadata]);
 
   const discussions = useQueries({
-    queries: forecastDiscussionList.data ? forecastDiscussionList.data["@graph"].map((x) => ({
-      queryKey: ["discussion", x.id],
-      queryFn: () => getDiscussion(x["@id"]),
-      enabled: selectedId == x.id,
-      staleTime: Infinity
-    })) : [],
+    queries: forecastDiscussionList.data
+      ? forecastDiscussionList.data["@graph"].map((x) => ({
+          queryKey: ["discussion", x.id],
+          queryFn: () => getDiscussion(x["@id"]),
+          enabled: selectedId == x.id,
+          staleTime: Infinity,
+        }))
+      : [],
   });
 
   return {
@@ -40,7 +44,7 @@ export function useForecastDiscussion(office: string) {
     })),
     discussions,
     selectedId,
-    setSelectedId
+    setSelectedId,
   };
 }
 
