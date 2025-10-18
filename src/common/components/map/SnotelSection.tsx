@@ -1,13 +1,16 @@
 "use client";
 import React from "react";
 import { api } from "~/trpc/react";
-import { useSettings } from "./ForecastMarker"; 
+import { useSettings } from "./useSettings";
 import { UnitConverter } from "~/app/UnitConverter";
 import { translateBearingToAbbreviation } from "./PopupContent";
-import {type SnotelElementCodes, useSnotelData} from '../hooks/noaa/useSnotelData'
-import { Card, CardHeader, CardContent } from  "~/components/ui/card";
-import Echarts from  "echarts-for-react";
- 
+import {
+  type SnotelElementCodes,
+  useSnotelData,
+} from "../hooks/noaa/useSnotelData";
+import { Card, CardHeader, CardContent } from "~/components/ui/card";
+import Echarts from "echarts-for-react";
+
 type SnotelMetadata = {
   id: string;
   name: string;
@@ -18,7 +21,6 @@ type SnotelMetadata = {
   dist: number;
   bearing: number;
 };
-
 
 export const SnotelSection = ({ hash }: { hash: string }) => {
   const data = api.snotel.list.useQuery({
@@ -59,7 +61,7 @@ const SnotelGraph = ({ data: meta }: { data: SnotelMetadata }) => {
   else distance = meta.dist.toFixed(1) + " km.";
 
   const currentData = query.data?.data.find(
-    (d) => d.stationElement.elementCode === elementCode,
+    (d) => d.stationElement.elementCode === elementCode
   );
   return (
     <Card key={meta.id}>
@@ -93,12 +95,13 @@ const SnotelGraph = ({ data: meta }: { data: SnotelMetadata }) => {
 
             dataset: {
               source:
-              typeof currentData === "undefined" ? [] :
-                units === "imperial"
+                typeof currentData === "undefined"
+                  ? []
+                  : units === "imperial"
                   ? currentData?.values
                   : currentData?.values.map((v) => ({
                       date: v.date,
-                      value: Math.round( UnitConverter.inchesToCm(v.value)),
+                      value: Math.round(UnitConverter.inchesToCm(v.value)),
                     })),
               dimensions: [
                 {

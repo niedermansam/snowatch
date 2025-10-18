@@ -3,9 +3,10 @@
 import React from "react";
 import type { useDailyForecast } from "~/common/components/hooks/noaa/useDailyForecast";
 import Echarts from "echarts-for-react";
-import { useSettings } from "../ForecastMarker";
+import { useSettings } from "../useSettings";
 import { UnitConverter } from "~/app/UnitConverter";
 import { TemperatureGraph } from "./TemperatureGraph";
+import { ForecastWindGraph } from "~/modules/forecast/components/ForecastWindGraph";
 
 type Params = {
   data: {
@@ -33,27 +34,31 @@ export const GRID = { top: 50, right: 20, bottom: 45, left: 30 };
 
 export const HEIGHT = 200;
 
-
-
- export  const tooltipDiv =
-    '<div style="display:flex;flex-direction:column;min-width:200px;">'; 
+export const tooltipDiv =
+  '<div style="display:flex;flex-direction:column;min-width:200px;">';
 const parseWindData = (text: string, units: "imperial" | "metric") => {
   const windSpeed = /(\d+)(?:\s*to\s*(\d+))?/.exec(text);
-  
-  if (!windSpeed) return  {
-    minWindSpeed: 0,
-    maxWindSpeed: 0,
-  }
 
-  const minWindSpeed = parseInt(windSpeed[1] ?? '0');
-  const maxWindSpeed = parseInt(windSpeed[2] ?? windSpeed[1] ?? '0');
+  if (!windSpeed)
+    return {
+      minWindSpeed: 0,
+      maxWindSpeed: 0,
+    };
+
+  const minWindSpeed = parseInt(windSpeed[1] ?? "0");
+  const maxWindSpeed = parseInt(windSpeed[2] ?? windSpeed[1] ?? "0");
 
   return {
-    minWindSpeed: units === "metric" ? minWindSpeed : Math.round(UnitConverter.kphToMph(minWindSpeed)),
-    maxWindSpeed: units === "metric" ? maxWindSpeed : Math.round(UnitConverter.kphToMph(maxWindSpeed)),
+    minWindSpeed:
+      units === "metric"
+        ? minWindSpeed
+        : Math.round(UnitConverter.kphToMph(minWindSpeed)),
+    maxWindSpeed:
+      units === "metric"
+        ? maxWindSpeed
+        : Math.round(UnitConverter.kphToMph(maxWindSpeed)),
   };
-
-}
+};
 
 export const ForecastGraphs = ({
   dailyForecast,
@@ -65,10 +70,10 @@ export const ForecastGraphs = ({
   let cummulativeMin = 0;
   let cummulativeMax = 0;
 
-  const chartData = dailyForecast.data?.data.map((period ) => {
+  const chartData = dailyForecast.data?.data.map((period) => {
     const minSnow =
       units === "metric"
-        ? (period.snow.min ?? 0)
+        ? period.snow.min ?? 0
         : Math.round(UnitConverter.cmToInches(period.snow.min ?? 0));
 
     // this is the difference between the max and min snowfall so the bar chart can show the range
@@ -77,8 +82,8 @@ export const ForecastGraphs = ({
         ? (period.snow.max ?? 0) - (period.snow.min ?? 0)
         : Math.round(
             UnitConverter.cmToInches(
-              (period.snow.max ?? 0) - (period.snow.min ?? 0),
-            ),
+              (period.snow.max ?? 0) - (period.snow.min ?? 0)
+            )
           );
 
     cummulativeMin += minSnow;
@@ -89,10 +94,10 @@ export const ForecastGraphs = ({
         ? period.temperature
         : Math.round(UnitConverter.celsiusToFareinheit(period.temperature));
 
-
-        const { minWindSpeed, maxWindSpeed } = parseWindData(period.windSpeed, units);
-
-          
+    const { minWindSpeed, maxWindSpeed } = parseWindData(
+      period.windSpeed,
+      units
+    );
 
     return {
       name: period.name,
@@ -157,7 +162,7 @@ export const ForecastGraphs = ({
                 trigger: "axis",
                 axisPointer: { type: "shadow" },
                 formatter: (params: unknown) => {
-                  const typedParams = params   as Params[];
+                  const typedParams = params as Params[];
                   const data = typedParams[0]!;
                   const { name, minSnow, maxSnow } = data.data;
                   const color1 = `<span style="display:inline-block;margin-right:4px;border-radius:10px;width:10px;height:10px;background-color:${data.color};"></span>`;
@@ -188,7 +193,7 @@ export const ForecastGraphs = ({
             }}
           />
           <Echarts
-            className="max-h-[200px]" 
+            className="max-h-[200px]"
             option={{
               title: {
                 subtext:
@@ -226,7 +231,7 @@ export const ForecastGraphs = ({
                 trigger: "axis",
                 axisPointer: { type: "shadow" },
                 confine: true,
-                formatter: (params:unknown) => {
+                formatter: (params: unknown) => {
                   const typedParams = params as Params[];
                   const data = typedParams[0]!;
                   const { name, minTotalSnow, maxTotalSnow } = data.data;
@@ -265,7 +270,7 @@ export const ForecastGraphs = ({
       <TemperatureGraph data={chartData} />
 
       <h3 className="ml-1 text-[.8rem] font-bold">Wind Forecast</h3>
-      <Echarts
+      {/* <Echarts
         className="max-h-[200px -mt-2" 
         option={{
           title: {
@@ -328,6 +333,12 @@ export const ForecastGraphs = ({
         opts={{
           height: HEIGHT - 20,
         }}
+      /> */}
+      <ForecastWindGraph
+        dates={chartData?.map((d) => d.name) ?? []}
+        low={chartData?.map((d) => d.minWindSpeed) ?? []}
+        high={chartData?.map((d) => d.maxWindSpeed) ?? []}
+        gusts={dailyForecast.data?.gusts ?? []}
       />
     </div>
   );

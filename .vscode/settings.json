@@ -1,8 +1,4 @@
 {
-    "cSpell.words": [
-        "defaulticon",
-        "geohash",
-        "snotel",
-        "snotels"
-    ]
+  "cSpell.words": ["defaulticon", "geohash", "snotel", "snotels"],
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

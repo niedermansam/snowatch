@@ -6,9 +6,9 @@ export type TileLayerProps = {
   attribution: string;
   provider: string;
   type: string;
-};
+}
 
-export const baseMaps: TileLayerProps[] = [
+export const baseMaps = [
   {
     name: "ESRI World Topo Map",
     url: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",

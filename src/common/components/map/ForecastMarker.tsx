@@ -3,22 +3,13 @@ import { Popup, Marker } from "react-leaflet";
 import * as L from "leaflet";
 import React from "react";
 import Geohash from "latlon-geohash";
-import { useForecastMetadata } from  "../hooks/noaa/useForecastMetadata";
-import { useGridForecast } from   "../hooks/noaa/useGridForecast";
-import { useDailyForecast } from  "../hooks/noaa/useDailyForecast"; 
-import { UnitConverter } from  "~/app/UnitConverter"
+import { useForecastMetadata } from "../hooks/noaa/useForecastMetadata";
+import { useGridForecast } from "../hooks/noaa/useGridForecast";
+import { useDailyForecast } from "../hooks/noaa/useDailyForecast";
+import { UnitConverter } from "~/app/UnitConverter";
 import { PopupContent } from "./PopupContent";
 import { getSnowRangeString } from "./getSnowRangeString";
-import { useLocalStorage } from  "usehooks-ts"
-
-export const useSettings = () => {
-  const [units, setUnits] = useLocalStorage<"metric" | "imperial">(
-    "units",
-    "imperial"
-  );
-  return { units, setUnits };
-};
-
+import { useSettings } from "./useSettings";
 
 export const ForecastMarker = ({ hash }: { hash: string }) => {
   const coords = Geohash.decode(hash);
@@ -37,18 +28,24 @@ export const ForecastMarker = ({ hash }: { hash: string }) => {
     lon: coords.lon,
   });
 
-  if (!dailyForecast.data) return  <Marker position={[coords.lat, coords.lon]} key={hash} 
-    icon={L.divIcon({
-      className: "forecast-icon hover:z-marker-hover",
-      iconSize: [30, 30],
-      iconAnchor: [15, 15],
-      popupAnchor: [15, -15],
-      html: `<div class="bg-white/70 backdrop-blur-sm  animate-pulse relative text-primary w-fit py-2 px-1 mx-auto text-center rounded-full shadow-xl shadow-zinc-800/50  border-2 border-zinc-500  "> 
+  if (!dailyForecast.data)
+    return (
+      <Marker
+        position={[coords.lat, coords.lon]}
+        key={hash}
+        icon={L.divIcon({
+          className: "forecast-icon hover:z-marker-hover",
+          iconSize: [30, 30],
+          iconAnchor: [15, 15],
+          popupAnchor: [15, -15],
+          html: `<div class="bg-white/70 backdrop-blur-sm  animate-pulse relative text-primary w-fit py-2 px-1 mx-auto text-center rounded-full shadow-xl shadow-zinc-800/50  border-2 border-zinc-500  "> 
           <div class="text-2xs font-semibold min-w-12"> 
+          <img src="/snowflake64.png" alt="Snowfall" class="inline-block -mb-1 size-4 -mb-2 animate-bounce "/>
           </div> 
       </div>`,
-    })}
-  />;
+        })}
+      />
+    );
 
   // const elevationString =
   //   units === "metric"
@@ -90,7 +87,7 @@ export const ForecastMarker = ({ hash }: { hash: string }) => {
       >
         <PopupContent
           hash={hash}
-          dailyForecast={dailyForecast} 
+          dailyForecast={dailyForecast}
           meta={meta}
           coords={coords}
         />

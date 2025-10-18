@@ -1,21 +1,20 @@
 "use client";
 import React, { useState } from "react";
-import type { useForecastMetadata } from "../hooks/noaa/useForecastMetadata"
+import type { useForecastMetadata } from "../hooks/noaa/useForecastMetadata";
 import type { useGridForecast } from "../hooks/noaa/useGridForecast";
-import type { useDailyForecast } from "../hooks/noaa/useDailyForecast";  
+import type { useDailyForecast } from "../hooks/noaa/useDailyForecast";
 
- 
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from  "~/components/ui/dialog";
+} from "~/components/ui/dialog";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from  "~/components/ui/tabs";
-import { Button } from  "~/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { Button } from "~/components/ui/button";
 import { useForecastList } from "../hooks/noaa/useForecastList";
 import { Cross2Icon } from "@radix-ui/react-icons";
 import { DiscussionSection } from "./DiscussionSection";
@@ -23,7 +22,7 @@ import { Trash2Icon } from "lucide-react";
 import { SnotelSection } from "./SnotelSection";
 import { ForecastGraphs } from "./graphs/ForecastGraphs";
 import { UnitConverter } from "~/app/UnitConverter";
-import { useSettings } from "./ForecastMarker";
+import { useSettings } from "./useSettings";
 
 function convertMetricForecastToImperial(text: string) {
   // Conversion constants
@@ -52,8 +51,10 @@ function convertMetricForecastToImperial(text: string) {
       const fahrenheit =
         parseFloat(temp) * CELSIUS_TO_FAHRENHEIT_MULTIPLIER +
         CELSIUS_TO_FAHRENHEIT_OFFSET;
-      return `${before as string}${tempPrefix as string} ${fahrenheit.toFixed(0)} °F`;
-    },
+      return `${before as string}${tempPrefix as string} ${fahrenheit.toFixed(
+        0
+      )} °F`;
+    }
   );
 
   // Convert wind speed from km/h to mph, including ranges (e.g., "9 to 17 km/h")
@@ -63,8 +64,18 @@ function convertMetricForecastToImperial(text: string) {
       const mph1 = parseFloat(kmh1) * KMH_TO_MPH;
       const mph2 = parseFloat(kmh2) * KMH_TO_MPH;
       return `${mph1.toFixed(0)} to ${mph2.toFixed(0)} mph`;
-    },
+    }
   );
+
+  // convert gusts from km/h to mph
+  text = text.replace(
+    /gust(s?) as high as (\d+)\s*km\/h\b/g,
+    (match, s: string, kmh: string) => {
+      const mph = parseFloat(kmh) * KMH_TO_MPH;
+      return `gust${s} as high as ${mph.toFixed(0)} mph`;
+    }
+  );
+
   text = text.replace(/(\d+(?:\.\d+)?)\s*km\/h\b/g, (match, kmh: string) => {
     const mph = parseFloat(kmh) * KMH_TO_MPH;
     return `${mph.toFixed(0)} mph`;
@@ -76,7 +87,7 @@ function convertMetricForecastToImperial(text: string) {
     (match, cm: string) => {
       const inches = parseFloat(cm) * CM_TO_INCHES;
       return `less than ${inches.toFixed(0)} inches`;
-    },
+    }
   );
   text = text.replace(
     /(\d+(?:\.\d+)?)\s*to\s*(\d+(?:(\.|,)\d+)?)\s*cm\b/g,
@@ -84,7 +95,7 @@ function convertMetricForecastToImperial(text: string) {
       const inches1 = parseFloat(cm1) * CM_TO_INCHES;
       const inches2 = parseFloat(cm2) * CM_TO_INCHES;
       return `${inches1.toFixed(0)} to ${inches2.toFixed(0)} inches`;
-    },
+    }
   );
   text = text.replace(/(\d+(?:(\.|,)\d+)?)\s*cm\b/g, (match, cm: string) => {
     const inches = parseFloat(cm) * CM_TO_INCHES;
@@ -187,8 +198,8 @@ export function PopupContent({
       : (distance / 1000).toFixed(1)
   } 
     ${units === "imperial" ? "miles" : "km"}  ${UnitConverter.translateBearing(
-      relativeLocation?.bearing.value,
-    )} of ${relativeLocation?.city ?? ''}, ${relativeLocation?.state ??''}`;
+    relativeLocation?.bearing.value
+  )} of ${relativeLocation?.city ?? ""}, ${relativeLocation?.state ?? ""}`;
 
   return (
     <div className="-mx-3 -mt-4 flex flex-col text-xs">
@@ -252,15 +263,15 @@ export function PopupContent({
           >
             snotel
           </Button>
-          <DialogContent className="z-[1050] flex h-[80vh] flex-col rounded-none! p-0">
+          <DialogContent className="rounded-none! z-[1050] flex h-[80vh] flex-col p-0">
             <Tabs defaultValue={tab} className="w-full overflow-y-scroll px-3">
-              <DialogHeader className="z-[1100] bg-background sticky top-0 pt-2">
+              <DialogHeader className="sticky top-0 z-[1100] bg-background pt-2">
                 <DialogTitle className="flex items-center justify-between text-sm">
                   <div className="flex items-center">
-                    <div className="text-muted-foreground ml-2 text-sm">
+                    <div className="ml-2 text-sm text-muted-foreground">
                       {relativeLocationString} at {elevationString}
                     </div>
-                  </div> 
+                  </div>
                 </DialogTitle>
                 <TabsList className="w-full shadow-md">
                   <TabsTrigger value="graphs" className="w-full text-xs">
@@ -289,7 +300,7 @@ export function PopupContent({
                         {units === "metric"
                           ? period.detailedForecast
                           : convertMetricForecastToImperial(
-                              period.detailedForecast,
+                              period.detailedForecast
                             )}
                       </div>
                     </div>

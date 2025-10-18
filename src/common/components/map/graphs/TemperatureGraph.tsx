@@ -1,10 +1,10 @@
 "use client";
 import React from "react";
-import EChartsReact  from "echarts-for-react";
-import { useSettings } from "../ForecastMarker";
+import EChartsReact from "echarts-for-react";
+import { useSettings } from "../useSettings";
 import { INDIGO, PURPLE, RED } from "~/common/styles/ColorPalette";
 import type { EChartsOption } from "echarts";
-import { type ChartData, GRID, HEIGHT, tooltipDiv } from "./ForecastGraphs"; 
+import { type ChartData, GRID, HEIGHT, tooltipDiv } from "./ForecastGraphs";
 
 const TEMP_VISUAL_MAP_IMPERIAL = {
   show: false,
@@ -101,7 +101,7 @@ export const TemperatureGraph = ({
           trigger: "axis",
           axisPointer: { type: "shadow" },
           formatter: (params: unknown) => {
-            const typedParams = params  as {
+            const typedParams = params as {
               data: { name: string; temperature: number; isDaytime: boolean };
               marker: string;
             }[];

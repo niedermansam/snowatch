@@ -59,14 +59,17 @@ const parseGusts = (data: ValidForecastPeriod) => {
   return parseInt(gusts?.[2] || "0") || null;
 };
 
-const parseWindData = (data: ValidForecastPeriod) => {
-  const windMatch = data.windSpeed?.match(captureWindSpeed);
-  const gusts = data.detailedForecast.match(/gust(s?) as high as (\d+) mph/i);
+const parseWindData = (data: 
+   Pick<ValidForecastPeriod, "name" | "detailedForecast" >
+
+) => {
+  const windMatch = data.detailedForecast?.match(captureWindSpeed);
+  const gusts = data.detailedForecast.match(/gust(s?) as high as (\d+) (mph|km\/h)/i);
   const result = {
     lowSnow: parseInt(windMatch?.[1] || "0"),
     highSnow: parseInt(windMatch?.[3] || windMatch?.[1] || "0"),
     gusts: parseInt(gusts?.[2] || "0") || null,
-    text: data.windSpeed,
+    
     period: data.name,
   };
 
@@ -151,6 +154,7 @@ export const useDailyForecast = (
         });
         return {
           data: newPeriods,
+          gusts: newPeriods.map((p) => parseWindData(p).gusts),
           snowfall: {
             min: minSnowFall,
             max: maxSnowFall,

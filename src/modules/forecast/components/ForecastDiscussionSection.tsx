@@ -6,6 +6,7 @@ import {
 } from "../../../common/components/hooks/useForecastDiscussion";
 import { DiscussionCombobox } from "../../map/DiscussionCombobox";
 import { SnowIcon } from "~/app/test/SnowIcon";
+import { Button } from "~/components/ui/button";
 
 export function ForecastDiscussionSection({ office }: { office: string }) {
   const discussion = useForecastDiscussion(office);
@@ -55,7 +56,7 @@ function ForecastDiscussionSelector({ data }: { data: UseForecastDiscussion }) {
           options={data.metadata}
         />
       </div>
-      {/* <div className="flex gap-4">
+      <div className="flex gap-4">
         <Button
           variant="secondary"
           className="w-24 "
@@ -76,7 +77,7 @@ function ForecastDiscussionSelector({ data }: { data: UseForecastDiscussion }) {
         >
           Next
         </Button>
-      </div> */}
+      </div>
     </div>
   );
 }
