@@ -46,8 +46,7 @@ function convertMetricForecastToImperial(text: string) {
   // Convert temperature from Celsius to Fahrenheit in the first sentence
   text = text.replace(
     /(.*?)(a (high|low) (near|of|around))\s*(-?\d+(?:\.\d+)?)/i,
-    (match, before, tempPrefix, _, _2, temp: string) => {
-      console.log(temp);
+    (match, before, tempPrefix, _, _2, temp: string) => { 
       const fahrenheit =
         parseFloat(temp) * CELSIUS_TO_FAHRENHEIT_MULTIPLIER +
         CELSIUS_TO_FAHRENHEIT_OFFSET;
@@ -263,8 +262,8 @@ export function PopupContent({
           >
             snotel
           </Button>
-          <DialogContent className="rounded-none! z-[1050] flex h-[80vh] flex-col p-0">
-            <Tabs defaultValue={tab} className="w-full overflow-y-scroll px-3">
+          <DialogContent className="rounded-none! z-[1050] flex  h-[80vh] max-w-4xl flex-col p-0">
+            <Tabs defaultValue={tab} className="w-full overflow-y-scroll px-3 h-full">
               <DialogHeader className="sticky top-0 z-[1100] bg-background pt-2">
                 <DialogTitle className="flex items-center justify-between text-sm">
                   <div className="flex items-center">
@@ -288,11 +287,11 @@ export function PopupContent({
                   </TabsTrigger>
                 </TabsList>
               </DialogHeader>
-              <TabsContent value="graphs">
+              <TabsContent value="graphs" className="h-full">
                 <ForecastGraphs dailyForecast={forecast} />
               </TabsContent>
-              <TabsContent value="details">
-                <div className="space-y-4">
+              <TabsContent value="details" className="">
+                <div className="min-h-full space-y-4">
                   {forecast.data?.data.map((period) => (
                     <div key={period.number}>
                       <div>{period.name}</div>

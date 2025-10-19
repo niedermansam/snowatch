@@ -119,7 +119,7 @@ export async function getSnotelCSVData(
     });
     const data = await response.text();
     const json = processSnotelCSV(data);
-    console.log(data)
+    // console.log(data)
 
     return { ...metadata, id, data: json, url };
   } catch (e) {

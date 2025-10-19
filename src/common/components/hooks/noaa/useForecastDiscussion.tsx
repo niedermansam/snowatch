@@ -33,25 +33,18 @@ type ForecastDiscussion = {
   productText: string;
 };
 
-
 async function getDiscussionList(station: string) {
-  try {
-    const res = await fetch(
-      "https://api.weather.gov/products/types/AFD/locations/" + station,
-      {
-        next: {
-          revalidate: 60 * 5,
-        },
-        headers: {
-          
-        },
+  const res = await fetch(
+    "https://api.weather.gov/products/types/AFD/locations/" + station,
+    {
+      next: {
+        revalidate: 60 * 5, // every 5 minutes
       },
-    );
+      headers: {},
+    }
+  );
 
-    return (await res.json()) as DiscussionList;
-  } catch (error) {
-    console.error(error);
-  }
+  return (await res.json()) as DiscussionList;
 }
 async function getDiscussion(url: string) {
   const res = await fetch(url, {
@@ -63,21 +56,18 @@ async function getDiscussion(url: string) {
 }
 
 export function useForecastDiscussion(office: string | undefined) {
-  const forecastDiscussionList = useQuery(
-    {
-      queryKey: ["forecast-discussion-list", office],
-      queryFn: () => getDiscussionList(office!),
-      enabled: !!office,
-      staleTime: Infinity,
-    }
-
-  );
+  const forecastDiscussionList = useQuery({
+    queryKey: ["forecast-discussion-list", office],
+    queryFn: () => getDiscussionList(office!),
+    enabled: !!office,
+    staleTime: Infinity,
+  });
   const mostRecentDiscussionMetadata = forecastDiscussionList.data?.["@graph"]
     ? forecastDiscussionList.data["@graph"][0]
     : undefined;
 
   const [selectedId, setSelectedId] = useState(
-    mostRecentDiscussionMetadata?.id,
+    mostRecentDiscussionMetadata?.id
   );
 
   useEffect(() => {
@@ -96,6 +86,7 @@ export function useForecastDiscussion(office: string | undefined) {
   });
 
   return {
+    discussionList: forecastDiscussionList,
     metadata: forecastDiscussionList.data?.["@graph"].map((x) => ({
       ...x,
       url: x["@id"],

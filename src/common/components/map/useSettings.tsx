@@ -4,7 +4,7 @@ import { useLocalStorage } from "usehooks-ts";
 export const useSettings = () => {
   const [units, setUnits] = useLocalStorage<"metric" | "imperial">(
     "units",
-    "metric"
+    "imperial"
   );
   return { units, setUnits };
 };

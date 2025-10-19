@@ -2,6 +2,8 @@
 import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 import type { ValidForecastPeriod } from "../../../../modules/forecast/server/getForecast";
+import { useSettings } from "../../map/useSettings";
+import { UnitConverter } from "~/app/UnitConverter";
 
 const captureWindSpeed = /([0-9]+)( to ([0-9]+))?( )?mph/;
 
@@ -54,22 +56,25 @@ const parseSnowData = (data: ValidForecastPeriod) => {
 };
 
 const parseGusts = (data: ValidForecastPeriod) => {
-  const gusts = data.detailedForecast.match(/gust(s?) as high as (\d+) mph/i);
+  const gusts = data.detailedForecast.match(
+    /gust(s?) as high as (\d+) (mph|km\/h)/i
+  );
 
   return parseInt(gusts?.[2] || "0") || null;
 };
 
-const parseWindData = (data: 
-   Pick<ValidForecastPeriod, "name" | "detailedForecast" >
-
+const parseWindData = (
+  data: Pick<ValidForecastPeriod, "name" | "detailedForecast">
 ) => {
   const windMatch = data.detailedForecast?.match(captureWindSpeed);
-  const gusts = data.detailedForecast.match(/gust(s?) as high as (\d+) (mph|km\/h)/i);
+  const gusts = data.detailedForecast.match(
+    /gust(s?) as high as (\d+) (mph|km\/h)/i
+  );
   const result = {
     lowSnow: parseInt(windMatch?.[1] || "0"),
     highSnow: parseInt(windMatch?.[3] || windMatch?.[1] || "0"),
     gusts: parseInt(gusts?.[2] || "0") || null,
-    
+
     period: data.name,
   };
 
@@ -80,10 +85,12 @@ export function extractSnowfall(text: string): [number, number] {
   // Match the snow accumulation pattern
 
   // a snow numbers pattern to capture the digits from sentences like "1 to 2 cm" "15 to 20 cm" "less than 1 cm" or "around 3 cm" preceeded by the word "snow" but with optional words in between
-  const snowNumbersPattern =
-    /snow(?:\s+(?:accumulation|amount|total))?.*?(\d+(?:[.,]\d+)?)\s*(?:to|and|or|,|-|–)?\s*(\d+(?:[.,]\d+)?)?\s*(cm|in)/i;
+  const snowNumbersPattern = // /new\s+snow(?:\s+\w+)\s+(?:around|about|less\s+than|up\s+to|near|from)?\s*(\d+(?:\.\d+)?(?:\s*(?:to|-|–|—)\s*\d+(?:\.\d+)?)?)\s*(?:cm|in|cm\/in)/i
+    /\..*new snow(?:\s+(?:accumulation|amount|total))?.*?(\d+(?:[.,]\d+)?)\s*(?:to|and|or|,|-|–)?\s*(\d+(?:[.,]\d+)?)?\s*(cm|in)/i;
 
   const match = snowNumbersPattern.exec(text);
+
+  console.log("Extracting snowfall from text2:", text, match);
 
   if (match) {
     // Replace commas with periods and parse the numbers
@@ -91,6 +98,13 @@ export function extractSnowfall(text: string): [number, number] {
     const secondNumber = parseFloat(
       (match[2] ?? match[1] ?? "0").replace(",", ".")
     );
+
+    console.log("Extracted snowfall from text:", text);
+    console.table({
+      text,
+      firstNumber,
+      secondNumber,
+    });
 
     // Return a tuple with 0 if there's only one number
     return match[2] ? [firstNumber, secondNumber] : [0, firstNumber];
@@ -112,9 +126,10 @@ const validator = z.object({
 
 export const useDailyForecast = (
   url: string | undefined,
-  position: { lat: number; lon: number },
-  units: "si" | "us" = "si"
+  position: { lat: number; lon: number }
+  // units: "si" | "us"
 ) => {
+  const { units } = useSettings();
   const query = useQuery({
     queryKey: ["daily-forecast", position],
     enabled: !!url,
@@ -122,7 +137,7 @@ export const useDailyForecast = (
       if (!url) throw new Error("No URL provided");
       try {
         console.log("Fetching daily forecast from", url);
-        const res = await fetch(url + `?units=${units}`);
+        const res = await fetch(url + `?units=us`);
 
         let minSnowFall = 0;
         let maxSnowFall = 0;
@@ -139,6 +154,13 @@ export const useDailyForecast = (
 
         const newPeriods = data.properties.periods.map((period) => {
           const snowfall = extractSnowfall(period.detailedForecast);
+          // if(units === "imperial"){
+          //   // convert from cm to inches
+          //   snowfall = [
+          //     snowfall[0] * 0.393701,
+          //     snowfall[1] * 0.393701,
+          //   ];
+          // }
           minSnowFall += snowfall[0];
           maxSnowFall += snowfall[1];
           dailySnowfall.push(snowfall);
@@ -189,10 +211,10 @@ export type DailyForecastData = {
       windSpeed: string;
       windDirection: string;
     }[];
-  generatedAt: string;
-  elevation: {
-    unitCode: string;
-    value: number;
-  };
+    generatedAt: string;
+    elevation: {
+      unitCode: string;
+      value: number;
+    };
   };
 };

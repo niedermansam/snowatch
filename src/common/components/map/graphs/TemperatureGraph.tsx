@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import EChartsReact from "echarts-for-react";
+import { Echarts as EChartsReact } from "../../echarts";
 import { useSettings } from "../useSettings";
 import { INDIGO, PURPLE, RED } from "~/common/styles/ColorPalette";
 import type { EChartsOption } from "echarts";
@@ -66,7 +66,7 @@ export const TemperatureGraph = ({
   return (
     <EChartsReact
       className="-mt-2 max-h-[200px]"
-      // group="forecast"
+      group="forecast"
       option={{
         title: {
           subtext: "High and low temperature forecast for the next 7 days",

@@ -1,11 +1,13 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
+import { useSettings } from "./map/useSettings";
 
 export const DESKTOP_NAVBAR_HEIGHT = 50;
 
 export function NavBar() {
     const [isOpen, setIsOpen] = useState(false);
+    const {units, setUnits} = useSettings()
   return (
       <nav className="flex flex-wrap items-center justify-between bg-gradient-to-r  from-sw-indigo-700 to-sw-indigo-900 px-6 py-3 " style={{
             height: DESKTOP_NAVBAR_HEIGHT,
@@ -48,6 +50,7 @@ export function NavBar() {
                     <Link href="/snotel"><span className="block mt-2 lg:inline-block lg:mt-0 text-white hover:text-white mr-4">Snotel</span></Link>
                 </div>
             </div>}
+
       </nav>
   );
 }

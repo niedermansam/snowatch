@@ -26,7 +26,8 @@ export const ForecastMarker = ({ hash }: { hash: string }) => {
   const dailyForecast = useDailyForecast(meta.data?.properties.forecast, {
     lat: coords.lat,
     lon: coords.lon,
-  });
+  } 
+);
 
   if (!dailyForecast.data)
     return (
