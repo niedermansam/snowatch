@@ -104,7 +104,7 @@ function ForecastMap() {
         forecastLocations={mapStore.forecasts || []}
         setForecasts={addForecasts}
       />
-      <MoveHandler />
+      <MoveHandler forecastName="locations" />
     </MapContainer>
   );
 }

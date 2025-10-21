@@ -66,13 +66,12 @@ export function processSnotelCSV(csv: string) {
             obj.temp.max = processSnotelDatum(datum);
 
           if(currentHeader.startsWith("Air Temperature Observed"))
-          console.log(currentHeader, datum)
-            obj.temp.obs = processSnotelDatum(datum);
+             obj.temp.obs = processSnotelDatum(datum);
 
           // obj[currentHeader] = datum;
         } else {
-          console.log( currentHeader, datum);
-        }
+          console.warn("No header for datum:", datum);
+         }
       }
       result = [...result, obj];
     }

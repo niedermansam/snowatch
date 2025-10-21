@@ -185,7 +185,7 @@ function ModalForecastBody({
           dates={data.getDateLabels()}
           low={data.wind.getLowWind()}
           high={data.wind.getHighWind()}
-          gusts={data.wind.getGusts("stacked")}
+          gusts={data.wind.getGusts("stacked")} 
         />
       </div>
       <div className="h-1/4 py-4">

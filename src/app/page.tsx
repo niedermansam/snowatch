@@ -6,7 +6,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "SnoWatch | Find Your Next Powder Day",
-  description: "Welcome to Next.js",
+  description:  "SnoWatch is here to help backcountry skiers and riders find the best snow conditions for their next adventure.",
 };
 
 const Home: NextPage = () => {

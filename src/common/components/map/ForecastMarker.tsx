@@ -11,7 +11,7 @@ import { PopupContent } from "./PopupContent";
 import { getSnowRangeString } from "./getSnowRangeString";
 import { useSettings } from "./useSettings";
 
-export const ForecastMarker = ({ hash }: { hash: string }) => {
+export const NewForecastMarker = ({ hash }: { hash: string }) => {
   const coords = Geohash.decode(hash);
 
   const meta = useForecastMetadata({ position: [coords.lat, coords.lon] });
@@ -26,8 +26,7 @@ export const ForecastMarker = ({ hash }: { hash: string }) => {
   const dailyForecast = useDailyForecast(meta.data?.properties.forecast, {
     lat: coords.lat,
     lon: coords.lon,
-  } 
-);
+  });
 
   if (!dailyForecast.data)
     return (

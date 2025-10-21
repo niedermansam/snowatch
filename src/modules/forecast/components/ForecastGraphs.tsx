@@ -410,7 +410,7 @@ export function ForecastGraphs({
         if (selectedPeriod === params[0].dataIndex) return "";
 
         setSelectedPeriod(params[0].dataIndex);
-        return "";
+        return  ` `;
       },
     },
     xAxis: [

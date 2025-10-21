@@ -1,5 +1,5 @@
 "use client";
-import React,    { type LegacyRef } from "react";
+import React, { type LegacyRef } from "react";
 // import the core library.
 import ReactEChartsCore from "echarts-for-react/lib/core";
 // Import the echarts core module, which provides the necessary interfaces for using echarts.
@@ -27,7 +27,7 @@ import {
   // PictorialBarChart,
   // ThemeRiverChart,
   // SunburstChart,
-  // CustomChart,
+  CustomChart,
 } from "echarts/charts";
 // import components, all suffixed with Component
 import {
@@ -67,8 +67,9 @@ import {
   CanvasRenderer,
   // SVGRenderer,
 } from "echarts/renderers";
-import type { EChartsOption } from "echarts";
-import type EChartsReactCore from "echarts-for-react/lib/core";
+import type { EChartsOption, } from "echarts";
+import type EChartsReactCore  from "echarts-for-react/lib/core";
+import { Opts, } from "echarts-for-react/lib/types";
 
 // Register the required components
 echarts.use([
@@ -81,16 +82,18 @@ echarts.use([
   DatasetComponent,
   VisualMapComponent,
   VisualMapContinuousComponent,
+  CustomChart,
 ]);
 
 export function Echarts(props: {
   option: EChartsOption;
   onEvents?: Record<string, (params: unknown) => void>;
-  opts?: Record<string, unknown>;
+  opts?:  Opts;
   className?: string;
   ref?: LegacyRef<EChartsReactCore> | undefined;
   group?: string;
   style?: Record<string, unknown>;
+  onChartReady?: (instance: unknown) => void;
 }) {
   return (
     <ReactEChartsCore
@@ -98,13 +101,14 @@ export function Echarts(props: {
       ref={props.ref}
       echarts={echarts}
       option={props.option}
-      notMerge={true}
-      lazyUpdate={true}
+      notMerge={false}
+      lazyUpdate={false}
       theme={"theme_name"}
       onChartReady={(instance) => {
         type Instance = {
           group: string;
         };
+        props.onChartReady?.(instance);
         if (props.group) {
           (instance as Instance).group = props.group;
           echarts.connect(props.group);

@@ -90,21 +90,14 @@ export function extractSnowfall(text: string): [number, number] {
 
   const match = snowNumbersPattern.exec(text);
 
-  console.log("Extracting snowfall from text2:", text, match);
-
+ 
   if (match) {
     // Replace commas with periods and parse the numbers
     const firstNumber = parseFloat((match[1] ?? "0").replace(",", "."));
     const secondNumber = parseFloat(
       (match[2] ?? match[1] ?? "0").replace(",", ".")
     );
-
-    console.log("Extracted snowfall from text:", text);
-    console.table({
-      text,
-      firstNumber,
-      secondNumber,
-    });
+ 
 
     // Return a tuple with 0 if there's only one number
     return match[2] ? [firstNumber, secondNumber] : [0, firstNumber];

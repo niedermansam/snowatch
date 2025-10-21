@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { createUrl } from "./ForecastMap";
 import { useMapStore, useMapUrl } from "../forecast/forecastStore";
 import { sendGAEvent } from "@next/third-parties/google";
+import { NewForecastMarker } from "~/common/components/map/ForecastMarker";
 
 const MAX_LOCATIONS = 5;
 
@@ -46,5 +47,12 @@ export function ClickHandler({
     },
   });
 
-  return null;
+  console.log("Rendering ClickHandler markers");
+  console.log(forecastLocations);
+
+  return  <>
+    {
+      forecastLocations.map((loc) => ( <NewForecastMarker key={loc} hash={loc} /> ))
+    }
+  </>
 }

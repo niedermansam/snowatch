@@ -13,10 +13,12 @@ export const ForecastWindGraph = ({
   low,
   high,
   gusts,
+  setHighlightedPeriod: setHighlightedPeriod,
 }: {
   low: number[] | undefined;
   high: number[] | undefined;
   gusts: (number | null)[] | undefined;
+  setHighlightedPeriod?: (index: number | null) => void;
 } & ({ dates: Date[] } | { dates: string[] } | { dates: undefined })) => {
   const { units } = useSettings();
   if (!dates || !low) return null;
@@ -27,11 +29,10 @@ export const ForecastWindGraph = ({
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       gust !== null && high ? Math.max(gust - high[index]! ?? 0, 0) : null
     ) || [];
- 
 
   return (
     <Echarts
-    group="forecast"
+      group="forecast"
       option={{
         grid: { top: 8, right: 8, bottom: 17, left: 40 },
         visualMap: [
@@ -105,7 +106,8 @@ export const ForecastWindGraph = ({
           axisPointer: {
             type: "shadow",
           },
-          formatter: function (params):string {
+          
+          formatter: function (params): string {
             const typedParams = params as {
               name: string;
               value: number;
@@ -115,7 +117,7 @@ export const ForecastWindGraph = ({
             const highWindObj = typedParams[1];
             const gustsObj = typedParams[2];
 
-            if (!lowWindObj || !highWindObj) return  "";
+            if (!lowWindObj || !highWindObj) return "";
 
             const date = lowWindObj?.name;
             const lowWind = lowWindObj?.value;
@@ -140,8 +142,6 @@ export const ForecastWindGraph = ({
             ${date}<br/>
             ${highWindObj.marker} ${windString}
         </div>`;
-
-              
           },
         },
         series: [

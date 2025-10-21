@@ -6,7 +6,9 @@ import { GEOHASH_PRECISION, createUrl } from "./ForecastMap";
 import { useIsFetching, useQueryClient } from "@tanstack/react-query";
 import { useMapStore } from "../forecast/forecastStore";
 
-export function MoveHandler() {
+export function MoveHandler({forecastName}:{
+  forecastName: string;
+}) {
   const router = useRouter();
   const query = useSearchParams();
   const loadingQueries = useIsFetching();
@@ -28,7 +30,7 @@ export function MoveHandler() {
         createUrl({
           center: centerGeoHash,
           zoom,
-          locations: mapStore.forecasts
+          [forecastName]: mapStore.forecasts
         })
       );
     },

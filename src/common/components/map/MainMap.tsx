@@ -4,10 +4,12 @@ import { MapContainer, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import React, { Suspense, useEffect, useRef } from "react";
 import Geohash from "latlon-geohash";
-import { ForecastMarker } from "./ForecastMarker";
+import { NewForecastMarker } from "./ForecastMarker";
 import { useMapState } from "./useMapState";
 import { MyTileLayer } from "./MyTileLayer";
 import { EventHandler } from "./event-handler";
+import { MoveHandler } from "~/modules/map/MoveHandler";
+import { ClickHandler } from "~/modules/map/ClickHandler";
 export const MISSOULA_COORDS = [46.8721, -113.994];
 
 
@@ -42,11 +44,11 @@ const MainMap = () => {
         opacity={0.9}
       /> */}
       {forecasts?.map((hash) => (
-        <ForecastMarker key={hash} hash={hash} />
+        <NewForecastMarker key={hash} hash={hash} />
       ))}
-      <EventHandler forecasts={forecasts} setForecast={setForecasts} />
+      <EventHandler forecasts={forecasts} setForecast={setForecasts} />  
     </MapContainer>
   );
 };
- 
+
 export default MainMap;
