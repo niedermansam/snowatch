@@ -27,7 +27,7 @@ export const ForecastWindGraph = ({
   const adjustedGusts =
     gusts?.map((gust, index) =>
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      gust !== null && high ? Math.max(gust - high[index]! ?? 0, 0) : null
+      gust !== null && high ? Math.max(gust - (high[index] ?? 0), 0) : null
     ) || [];
 
   return (

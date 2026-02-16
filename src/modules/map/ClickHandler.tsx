@@ -52,7 +52,7 @@ export function ClickHandler({
 
   return  <>
     {
-      forecastLocations.map((loc) => ( <NewForecastMarker key={loc} hash={loc} /> ))
+      // forecastLocations.map((loc) => ( <NewForecastMarker key={loc} hash={loc} /> ))
     }
   </>
 }
